@@ -22,23 +22,11 @@ logging.basicConfig(filename=expanduser('~/pylogs/transfer_tweet_data_'+currentd
     Collection also must have a hashed object ID index to function properly
     (see ensure_hashed_id_index())
 '''
-<<<<<<< HEAD
-<<<<<<< HEAD
-def enable_collection_sharding(target_mongo, target_db, collection):
-    try:
-        target_mongo.admin.command(
-            "shardCollection",
-=======
-=======
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
+
 def enable_collection_sharding(authed_mongo_target, target_db, collection):
     try:
         authed_mongo_target.admin.command(
-            "shar- 5  5   dCollection",
-<<<<<<< HEAD
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
-=======
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
+            "shardCollection",
             "{}.{}".format(target_db, collection.name),
             key={'_id': "hashed"})
     except pymongo.errors.OperationFailure as e:
@@ -152,11 +140,6 @@ if __name__ == "__main__":
         help="[None] Target mongo user password")
     parser.add_argument("-td", "--targetdb", required=True,
         help="[Required] Database to transfer source data in to")
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
 
     parser.add_argument("-au", "--username", default=None,
         help="[None] Source data mongo server user")
@@ -165,10 +148,6 @@ if __name__ == "__main__":
     parser.add_argument("-ad", "--adb", required=True,
         help="[Required] Database to transfer on source server")
 
-<<<<<<< HEAD
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
-=======
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
     args = parser.parse_args()
 
     # connect to the db
@@ -177,14 +156,7 @@ if __name__ == "__main__":
     source_db = source_mongo[args.db]
     source_metadata_collection = source_db['smapp_metadata']
     if args.username and args.password:
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
         source_mongo_target = source_mongo[args.ad].authenticate(args.au, args.aw)
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
-=======
-        source_mongo_target = source_mongo[args.ad].authenticate(args.au, args.aw)
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
         source_db.authenticate(args.username, args.password)
     source_metadata_document = source_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
     source_collections_list = source_metadata_document['tweet_collections'][::-1]
@@ -193,14 +165,7 @@ if __name__ == "__main__":
     target_db = target_mongo[args.targetdb]
     target_metadata_collection = target_db['smapp_metadata']
     if args.targetuser and args.targetpassword:
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
         authed_mongo_target = target_mongo[args.ad].authenticate(args.au, args.aw)
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
-=======
-        authed_mongo_target = target_mongo[args.ad].authenticate(args.au, args.aw)
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
         target_db.authenticate(args.targetuser, args.targetpassword)
     target_metadata_document = target_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
     target_collections_list = target_metadata_document['tweet_collections']
@@ -224,29 +189,12 @@ if __name__ == "__main__":
             target_db.create_collection(source_collection_name)
             logger.info("Adding new collection to metadata and saving")
             target_collections_list.insert(0, source_collection_name)
-<<<<<<< HEAD
-<<<<<<< HEAD
-            target_db['smapp_metadata'].update_one({'document': 'smapp-tweet-collection-metadata'}, {'tweet_collections': target_collections_list})
-=======
             target_db['smapp_metadata'].update_one({'document': 'smapp-tweet-collection-metadata'}, {'$set': {'tweet_collections': target_collections_list}})
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
-=======
-            target_db['smapp_metadata'].update_one({'document': 'smapp-tweet-collection-metadata'}, {'$set': {'tweet_collections': target_collections_list}})
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
-
         # Create indexes and enable sharding on new collection
         logger.info("Creating indexes and enabling sharding on {0}".format(source_collection_name))
 
         ensure_hashed_id_index(target_db[source_collection_name])
-<<<<<<< HEAD
-<<<<<<< HEAD
-        enable_collection_sharding(target_mongo, target_db,target_db[source_collection_name])
-=======
         enable_collection_sharding(authed_mongo_target, target_db,target_db[source_collection_name])
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
-=======
-        enable_collection_sharding(authed_mongo_target, target_db,target_db[source_collection_name])
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
         
         # BULK (chunk-wise insert, to speed up)
         bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
