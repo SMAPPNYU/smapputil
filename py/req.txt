@@ -1,0 +1,20 @@
+smapputilities py
+decorator==4.0.9
+networkx==1.11
+numpy==1.10.4
+pandas==0.17.1
+pip-autoremove==0.9.0
+pymongo==3.2.1
+python-dateutil==2.4.2
+pytz==2015.7
+simplejson==3.8.2
+six==1.10.0
+smapp-toolkit==0.1.34
+smappPy==0.1.28
+wheel==0.29.0
+argparse==1.4.0
+logging==0.4.9.6
+pymongo==3.2
+tweepy==3.4.0
+smappPy==0.1.26
+paramiko==1.16.0
