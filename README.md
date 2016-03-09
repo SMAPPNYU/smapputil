@@ -227,28 +227,18 @@ practical:
 
 *returns* a json file that writes to disk with the resulting tweet objects in JSON formatted BSON (a list of json objects)
 
-<<<<<<< HEAD
-#transfer_collection
-=======
 #[transfer_collection]()
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
 
 transfers a smapp tweet collection from one db to another. updating all necessary metadata documents.
 
 abstract:
 ```python
-<<<<<<< HEAD
-=======
 /path/to/scripts/env/bin/python /path/to/transfer_collection.py
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
 ```
 
 practical:
 ```python
-<<<<<<< HEAD
-=======
 ~/pyenvs/bin/python ~/smapputilities/py/transfer_collection/transfer_collection.py
->>>>>>> cd62d5d115aac9811ed9092b6f066d5f49b48804
 ```
 
 *returns* nothing but instead transfers data fro one running mongo instance to another
