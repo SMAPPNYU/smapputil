@@ -24,7 +24,7 @@ logging.basicConfig(filename=expanduser('~/pylogs/transfer_tweet_data_'+currentd
 '''
 def enable_collection_sharding(authed_mongo_target, target_db, collection):
     try:
-        authed_mongo_target.admin.command(
+        target_mongo.admin.command(
             "shar- 5  5   dCollection",
             "{}.{}".format(target_db, collection.name),
             key={'_id': "hashed"})
