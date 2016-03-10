@@ -148,6 +148,9 @@ if __name__ == "__main__":
     parser.add_argument("-adb", "--adb", required=True,
         help="[Required] Database to transfer on source server")
 
+    parser.add_argument('-tsh', '--targetsharded', action='store_true', default=False,
+      help="Call this flag like so --targetsharded or -tsh with no value to tell the collector to start a new sharded collection.")
+
     args = parser.parse_args()
 
     # connect to the db
@@ -192,8 +195,9 @@ if __name__ == "__main__":
         # Create indexes and enable sharding on new collection
         logger.info("Creating indexes and enabling sharding on {0}".format(source_collection_name))
 
-        ensure_hashed_id_index(target_db[source_collection_name])
-        enable_collection_sharding(target_mongo, target_db, target_db[source_collection_name])
+        if args.targetsharded:
+            ensure_hashed_id_index(target_db[source_collection_name])
+            enable_collection_sharding(target_mongo, target_db, target_db[source_collection_name])
         
         # BULK (chunk-wise insert, to speed up)
         bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
