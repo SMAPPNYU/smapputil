@@ -162,7 +162,7 @@ if __name__ == "__main__":
 
     target_mongo = pymongo.MongoClient(args.targethost, int(args.targetport))
     if args.targetuser and args.targetpassword and args.ausr and args.apwd:
-        authed_mongo_target = target_mongo[args.adb].authenticate(args.ausr, args.apwd)
+        target_mongo[args.adb].authenticate(args.ausr, args.apwd)
         target_db = target_mongo[args.targetdb]
         target_db.authenticate(args.targetuser, args.targetpassword)
     target_metadata_collection = target_db['smapp_metadata']
@@ -193,7 +193,7 @@ if __name__ == "__main__":
         logger.info("Creating indexes and enabling sharding on {0}".format(source_collection_name))
 
         ensure_hashed_id_index(target_db[source_collection_name])
-        enable_collection_sharding(authed_mongo_target, target_db,target_db[source_collection_name])
+        enable_collection_sharding(target_mongo, target_db,target_db[source_collection_name])
         
         # BULK (chunk-wise insert, to speed up)
         bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
