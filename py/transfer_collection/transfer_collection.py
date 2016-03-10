@@ -141,9 +141,9 @@ if __name__ == "__main__":
     parser.add_argument("-td", "--targetdb", required=True,
         help="[Required] Database to transfer source data in to")
 
-    parser.add_argument("-au", "--username", default=None,
+    parser.add_argument("-au", "--username", required=True,
         help="[None] Source data mongo server user")
-    parser.add_argument("-aw", "--password", default=None,
+    parser.add_argument("-aw", "--password", required=True,
         help="[None] Source data mongo user password")
     parser.add_argument("-ad", "--adb", required=True,
         help="[Required] Database to transfer on source server")
@@ -164,7 +164,7 @@ if __name__ == "__main__":
     target_mongo = pymongo.MongoClient(args.targethost, int(args.targetport))
     target_db = target_mongo[args.targetdb]
     target_metadata_collection = target_db['smapp_metadata']
-    if args.targetuser and args.targetpassword:
+    if args.targetuser and args.targetpassword and args.ad and args.aw:
         authed_mongo_target = target_mongo[args.ad].authenticate(args.au, args.aw)
         target_db.authenticate(args.targetuser, args.targetpassword)
     target_metadata_document = target_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
