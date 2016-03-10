@@ -145,7 +145,7 @@ if __name__ == "__main__":
         help="[None] Source data mongo server user")
     parser.add_argument("-aw", "--apwd", required=True,
         help="[None] Source data mongo user password")
-    parser.add_argument("-ad", "--adb", required=True,
+    parser.add_argument("-adb", "--adb", required=True,
         help="[Required] Database to transfer on source server")
 
     args = parser.parse_args()
@@ -164,7 +164,7 @@ if __name__ == "__main__":
     target_db = target_mongo[args.targetdb]
     target_metadata_collection = target_db['smapp_metadata']
     if args.targetuser and args.targetpassword and args.ausr and args.apwd:
-        authed_mongo_target = target_mongo[args.ad].authenticate(args.ausr, args.apwd)
+        authed_mongo_target = target_mongo[args.adb].authenticate(args.ausr, args.apwd)
         target_db.authenticate(args.targetuser, args.targetpassword)
     target_metadata_document = target_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
     target_collections_list = target_metadata_document['tweet_collections']
