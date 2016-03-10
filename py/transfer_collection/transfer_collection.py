@@ -27,7 +27,7 @@ def enable_collection_sharding(authed_mongo_target, target_db, collection):
     try:
         authed_mongo_target.admin.command(
             "shardCollection",
-            "{}.{}".format(target_db, collection.name),
+            "{}.{}".format(target_db.name, collection.name),
             key={'_id': "hashed"})
     except pymongo.errors.OperationFailure as e:
         logger.info('opfailure in sharding of collection {}'.format(e))
@@ -181,10 +181,10 @@ if __name__ == "__main__":
 
         if source_collection_name in target_db.collection_names():
             logger.info("Collection of tweets exists on target db, inserting into: {0}".format(source_collection_name))
-            print 'if ' + source_collection_name
+            print('if ' + source_collection_name)
         else:
             logger.info("Creating new collection on target: {0}".format(source_collection_name))
-            print 'else ' + source_collection_name
+            print('else ' + source_collection_name)
             target_db.create_collection(source_collection_name)
             logger.info("Adding new collection to metadata and saving")
             target_collections_list.insert(0, source_collection_name)
@@ -193,7 +193,7 @@ if __name__ == "__main__":
         logger.info("Creating indexes and enabling sharding on {0}".format(source_collection_name))
 
         ensure_hashed_id_index(target_db[source_collection_name])
-        enable_collection_sharding(target_mongo, target_db,target_db[source_collection_name])
+        enable_collection_sharding(target_mongo, target_db, target_db[source_collection_name])
         
         # BULK (chunk-wise insert, to speed up)
         bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
