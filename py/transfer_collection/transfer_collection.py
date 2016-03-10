@@ -25,7 +25,7 @@ logging.basicConfig(filename=expanduser('~/pylogs/transfer_tweet_data_'+currentd
 
 def enable_collection_sharding(authed_mongo_target, target_db, collection):
     try:
-        authed_mongo_target.command(
+        authed_mongo_target.admin.command(
             "shardCollection",
             "{}.{}".format(target_db, collection.name),
             key={'_id': "hashed"})
@@ -161,11 +161,11 @@ if __name__ == "__main__":
     source_collections_list = source_metadata_document['tweet_collections'][::-1]
 
     target_mongo = pymongo.MongoClient(args.targethost, int(args.targetport))
-    target_db = target_mongo[args.targetdb]
-    target_metadata_collection = target_db['smapp_metadata']
     if args.targetuser and args.targetpassword and args.ausr and args.apwd:
         authed_mongo_target = target_mongo[args.adb].authenticate(args.ausr, args.apwd)
+        target_db = target_mongo[args.targetdb]
         target_db.authenticate(args.targetuser, args.targetpassword)
+    target_metadata_collection = target_db['smapp_metadata']
     target_metadata_document = target_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
     target_collections_list = target_metadata_document['tweet_collections']
 
