@@ -149,7 +149,7 @@ if __name__ == "__main__":
         help="[Required] Database to transfer on source server")
 
     parser.add_argument('-tsh', '--targetsharded', action='store_true', default=False,
-      help="Call this flag like so --targetsharded or -tsh with no value to tell the collector to start a new sharded collection.")
+      help="Call this flag like so --targetsharded or -tsh if the target databases's collections are intended to be sharded.")
 
     args = parser.parse_args()
 
