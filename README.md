@@ -227,18 +227,18 @@ practical:
 
 *returns* a json file that writes to disk with the resulting tweet objects in JSON formatted BSON (a list of json objects)
 
-#[transfer_collection]()
+#[transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
 
 transfers a smapp tweet collection from one db to another. updating all necessary metadata documents.
 
 abstract:
 ```python
-/path/to/scripts/env/bin/python /path/to/transfer_collection.py
+/path/to/scripts/env/bin/python /path/to/transfer_collection.py -s SOURCE_HOST -p SOURCE_HOST_PORT -u SOURCE_USERNAME -w SOURCE_USER_PASSOWRD -d SOURCE_DB_NAME -ts TARGET_HOST -tp TARGET_HOST_PORT -tu TARGET_USERNAME -tw TARGET_USER_PASSWORD -td TARGET_DB_NAME -au AUTHENTICATION_USER -aw AUTHENTICATION_USER_PASSWORD -adb AUTHENTICATION_DATABASE
 ```
 
 practical:
 ```python
-~/pyenvs/bin/python ~/smapputilities/py/transfer_collection/transfer_collection.py
+~/pyenvs/bin/python ~/smapputilities/py/transfer_collection/transfer_collection.py -s localhost -p 27017 -u db_user -w supersecret_pwd -d germany_election -ts foreign.host.org -tp 27017 -tu foreign_usr -tw foreign_usr_secret_pwd5 -td new_germany_election -au auth_user_Admin_of_some_kind -aw super_secret_yo -adb admin
 ```
 
 *returns* nothing but instead transfers data fro one running mongo instance to another

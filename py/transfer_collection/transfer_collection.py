@@ -22,11 +22,12 @@ logging.basicConfig(filename=expanduser('~/pylogs/transfer_tweet_data_'+currentd
     Collection also must have a hashed object ID index to function properly
     (see ensure_hashed_id_index())
 '''
+
 def enable_collection_sharding(authed_mongo_target, target_db, collection):
     try:
-        target_mongo.admin.command(
-            "shar- 5  5   dCollection",
-            "{}.{}".format(target_db, collection.name),
+        authed_mongo_target.admin.command(
+            "shardCollection",
+            "{}.{}".format(target_db.name, collection.name),
             key={'_id': "hashed"})
     except pymongo.errors.OperationFailure as e:
         logger.info('opfailure in sharding of collection {}'.format(e))
@@ -140,12 +141,15 @@ if __name__ == "__main__":
     parser.add_argument("-td", "--targetdb", required=True,
         help="[Required] Database to transfer source data in to")
 
-    parser.add_argument("-au", "--username", default=None,
+    parser.add_argument("-au", "--ausr", required=True,
         help="[None] Source data mongo server user")
-    parser.add_argument("-aw", "--password", default=None,
+    parser.add_argument("-aw", "--apwd", required=True,
         help="[None] Source data mongo user password")
-    parser.add_argument("-ad", "--adb", required=True,
+    parser.add_argument("-adb", "--adb", required=True,
         help="[Required] Database to transfer on source server")
+
+    parser.add_argument('-tsh', '--targetsharded', action='store_true', default=False,
+      help="Call this flag like so --targetsharded or -tsh if the target databases's collections are intended to be sharded.")
 
     args = parser.parse_args()
 
@@ -155,17 +159,16 @@ if __name__ == "__main__":
     source_db = source_mongo[args.db]
     source_metadata_collection = source_db['smapp_metadata']
     if args.username and args.password:
-        source_mongo_target = source_mongo[args.ad].authenticate(args.au, args.aw)
         source_db.authenticate(args.username, args.password)
     source_metadata_document = source_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
     source_collections_list = source_metadata_document['tweet_collections'][::-1]
 
     target_mongo = pymongo.MongoClient(args.targethost, int(args.targetport))
-    target_db = target_mongo[args.targetdb]
-    target_metadata_collection = target_db['smapp_metadata']
-    if args.targetuser and args.targetpassword:
-        authed_mongo_target = target_mongo[args.ad].authenticate(args.au, args.aw)
+    if args.targetuser and args.targetpassword and args.ausr and args.apwd:
+        target_mongo[args.adb].authenticate(args.ausr, args.apwd)
+        target_db = target_mongo[args.targetdb]
         target_db.authenticate(args.targetuser, args.targetpassword)
+    target_metadata_collection = target_db['smapp_metadata']
     target_metadata_document = target_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
     target_collections_list = target_metadata_document['tweet_collections']
 
@@ -181,20 +184,20 @@ if __name__ == "__main__":
 
         if source_collection_name in target_db.collection_names():
             logger.info("Collection of tweets exists on target db, inserting into: {0}".format(source_collection_name))
-            print 'if ' + source_collection_name
+            print('if ' + source_collection_name)
         else:
             logger.info("Creating new collection on target: {0}".format(source_collection_name))
-            print 'else ' + source_collection_name
+            print('else ' + source_collection_name)
             target_db.create_collection(source_collection_name)
             logger.info("Adding new collection to metadata and saving")
             target_collections_list.insert(0, source_collection_name)
             target_db['smapp_metadata'].update_one({'document': 'smapp-tweet-collection-metadata'}, {'$set': {'tweet_collections': target_collections_list}})
-
         # Create indexes and enable sharding on new collection
         logger.info("Creating indexes and enabling sharding on {0}".format(source_collection_name))
 
-        ensure_hashed_id_index(target_db[source_collection_name])
-        enable_collection_sharding(authed_mongo_target, target_db,target_db[source_collection_name])
+        if args.targetsharded:
+            ensure_hashed_id_index(target_db[source_collection_name])
+            enable_collection_sharding(target_mongo, target_db, target_db[source_collection_name])
         
         # BULK (chunk-wise insert, to speed up)
         bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
