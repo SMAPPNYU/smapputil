@@ -197,19 +197,21 @@ test: `python test/test_list_collections.py SERVER_IP_OR_NAME SERVER_USERNAME`
 
 *Not yet functional.*
 
-Take a list of users and get their 3200 most recent tweets with a token pool. Works on the twitter api with tweepy.
+take a list of users and get each of their 3200 most recent tweets. Works on the twitter api with tweepy.
 
 abstract:
 ```python
-/path/to/scriptsenv/bin/python twitter_query_tweets.py -i /path/to/input.csv -o /path/to/output.json -a /path/to/auth.json -l /path/to/log.log
+/path/to/scriptsenv/bin/python query_user_tweets.py -i /path/to/input.json -o /path/to/output.json -a /path/to/auth.json -l /path/to/log.log
 ```
 
 practical:
 ```python
-~/smapputilities/scriptsenv/bin/python twitter_query_tweets.py -i ~/input.csv -o ~/output.json -a ~/auth.json -l ~/log.log
+~/smapputilities/scriptsenv/bin/python query_user_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
 ```
 
 *returns* a json file that writes to disk, with the 3200 (or less) of a user's most recent tweets.
+
+note input is json or csv
 
 #[query_search_tweets]()
 

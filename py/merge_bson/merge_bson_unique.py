@@ -8,6 +8,7 @@ import sys
 import logging
 import argparse
 import datetime
+
 from os.path import expanduser
 from bson import BSON, decode_file_iter
 
