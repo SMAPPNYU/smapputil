@@ -75,7 +75,7 @@ You must write tests for every function in every script. Whenever you add a new 
 
 python utilities / scripts that do useful things. Built in python 2.7.X. To ru nthe python scripts I suggest activating the scriptsenv virtual environment with `source scriptsenv/bin/activate`. You should see a `(scriptsenv)` appear at the beginning of your consode prompt. (you can deactivate by typing `deactivate` anytime)
 
-environment.yml - for anaconda users to be able to create an environment easily, installs things from pip
+environment.yml - for anaconda users to be able to create an environment easily, installs things from pip. to replicate the environment run `conda env create -f environment.yml` or simply `conda env create` in the `py` directory. [see this page.](http://conda.pydata.org/docs/using/envs.html#export-the-environment-file)
 requirements.txt - a file containing dependencies smapputilities needs
 
 #tests:
