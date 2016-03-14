@@ -75,6 +75,9 @@ You must write tests for every function in every script. Whenever you add a new 
 
 python utilities / scripts that do useful things. Built in python 2.7.X. To ru nthe python scripts I suggest activating the scriptsenv virtual environment with `source scriptsenv/bin/activate`. You should see a `(scriptsenv)` appear at the beginning of your consode prompt. (you can deactivate by typing `deactivate` anytime)
 
+environment.yml - for anaconda users to be able to create an environment easily, installs things from pip
+requirements.txt - a file containing dependencies smapputilities needs
+
 #tests:
 
 to test your scripts create a file called `test_NAME_OF_YOUR_SCRIPT.py` following the format of files like [test_date_filter.py](https://github.com/SMAPPNYU/smapputilities/blob/master/py/test/test_date_filter.py) then run `python test/test_NAME_OF_YOUR_SCRIPT.py`
@@ -211,7 +214,7 @@ practical:
 
 *returns* a json file that writes to disk, with the 3200 (or less) of a user's most recent tweets.
 
-note input is json or csv
+note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list ['id_one', 'id_two']
 
 #[query_search_tweets]()
 

@@ -89,5 +89,6 @@ if __name__ == '__main__':
     twitter_query(args)
 
 '''
-c* http://stackoverflow.com/questions/22242181/csv-row-import-into-python-array
+http://tweepy.readthedocs.org/en/v3.5.0/api.html?highlight=user_timeline#API.user_timeline
+https://dev.twitter.com/rest/reference/get/statuses/user_timeline
 '''

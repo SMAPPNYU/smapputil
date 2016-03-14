@@ -70,3 +70,6 @@ target/
 
 # pyc files
 *.pyc
+
+# thing that turns on our env
+.env
