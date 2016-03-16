@@ -228,7 +228,7 @@ note: make sure you have `~/pylogs` directory before running this script.
 
 test: `python test/test_list_collections.py SERVER_IP_OR_NAME SERVER_USERNAME`
 
-#[query_user_tweets]()
+#[query_user_tweets](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_tweets.py)
 
 take a list of users and get each of their 3200 most recent tweets. Works on the twitter api with tweepy.
 
@@ -246,7 +246,7 @@ python query_user_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~
 
 note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list ['id_one', 'id_two']
 
-#[query_search_tweets]()
+#[query_search_tweets](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_search_tweets.py)
 
 queries the twitter search api for any list of terms.
 
