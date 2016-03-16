@@ -42,7 +42,7 @@ class TestMergeBson(unittest.TestCase):
         self.tearDown()
 
     # this test will only run on objects with an _id field
-    def test_merge_bson_unique_parse_args(self):
+    def test_merge_bson_unique_merge_bson(self):
         self.setUp()
         args = merge_bson_unique.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.bson',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.bson', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.bson', '-f', '_id'])
         merge_bson_unique.merge_bson(args)

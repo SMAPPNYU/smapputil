@@ -3,7 +3,6 @@ Takes multiple json files in as inputs and merges them.
 '''
 
 import sys
-import json
 import logging
 import argparse
 import datetime
@@ -18,8 +17,7 @@ def merge_json(args):
         for jsonfile in args.inputs:
             logger.info('Opening input file : %s', jsonfile)
             with open(jsonfile, 'rb') as jsonfile_handle:
-                iterator = decode_file_iter(jsonfile_handle)
-                for line in iterator:
+                for line in jsonfile_handle:
                     outputjson.write(line)
     logger.info('Finished merging input file : %s', jsonfile)
     logger.info('Finished merging all input files to path : %s', args.output)

@@ -5,6 +5,7 @@ given as an input by the user.
 '''
 
 import sys
+import json
 import logging
 import argparse
 import datetime
@@ -20,18 +21,19 @@ def merge_json(args):
     #configure logging
     logger = logging.getLogger(__name__)
     logger.info('Creating your output file : %s', args.output)
-    with open(args.output, 'wb') as outputjson:
+    with open(args.output, 'w') as outputjson:
         for jsonfile in args.inputs:
             totalcount += 1
             logger.info('Opening input file : %s', jsonfile)
-            with open(jsonfile, 'rb') as jsonfile_handle:
-                iterator = decode_file_iter(jsonfile_handle)
-                for singleobject in iterator:
+            with open(jsonfile, 'r') as jsonfile_handle:
+                for line in jsonfile_handle:
+                    singleobject = json.loads(line)
                     if args.uniquefield not in singleobject:
                         invalidcount += 1
-                    if singleobject[args.uniquefield] not in uniquefieldset:
-                        outputjson.write(singleobject)
-                        uniquefieldset.add(singleobject[args.uniquefield])
+                    if json.dumps(singleobject[args.uniquefield]) not in uniquefieldset:
+                        outputjson.write(json.dumps(singleobject))
+                        outputjson.write('\n')
+                        uniquefieldset.add(json.dumps(singleobject[args.uniquefield]))
                     else:
                         duplicatecount += 1
             logging.info('Finished merging input file : %s', jsonfile)
