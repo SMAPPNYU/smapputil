@@ -1,0 +1,55 @@
+# c* http://stackoverflow.com/questions/9623114/check-if-two-unordered-lists-are-equal
+# c* http://stackoverflow.com/questions/12161223/testing-argparse-in-python
+
+# add the packages to the path
+# so we can test them, IK it's
+# bad but this is literally the 
+# best way pthon offers
+import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/../merge_json')
+
+import unittest
+
+import merge_json
+import merge_json_unique
+
+class TestMergeJson(unittest.TestCase):
+
+    def setUp(self):
+        if os.path.exists(os.path.dirname(os.path.abspath(__file__))+'/../test/output.json'):
+            os.remove(os.path.dirname(os.path.abspath(__file__))+'/../test/output.json')
+
+    def tearDown(self):
+        if os.path.exists(os.path.dirname(os.path.abspath(__file__))+'/../test/output.json'):
+            os.remove(os.path.dirname(os.path.abspath(__file__))+'/../test/output.json')
+
+    def test_control(self):
+        self.assertTrue(True, 'Control test successful!')
+
+    def test_merge_json_parse_args(self):
+        args = merge_json.parse_args(['-i', '~/data1.json', '~/data2.json', '-o', '~/data3.json'])
+        self.assertEqual(set(args.inputs),set(['~/data1.json', '~/data2.json']))
+        self.assertEqual(args.output,'~/data3.json')
+
+    def test_merge_json_merge_json(self):
+        self.setUp()
+        args = merge_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json'])
+        merge_json.merge_json(args)
+        #the output file should have 2x the size of the input file because standard merge
+        self.assertEqual(2 * os.path.getsize(os.path.dirname(os.path.abspath(__file__))+'/../test/test.json'),os.path.getsize(os.path.dirname(os.path.abspath(__file__))+'/../test/output.json'))
+        #delete output.json when test is done
+        self.tearDown()
+
+    # this test will only run on objects with an _id field
+    def test_merge_json_unique_parse_args(self):
+        self.setUp()
+        args = merge_json_unique.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '-f', '_id'])
+        merge_json_unique.merge_json(args)
+        #ouput should be the same size as one input since the merge merges the same file with same object ids 2x.
+        self.assertEqual(os.path.getsize(os.path.dirname(os.path.abspath(__file__))+'/../test/test.json'), os.path.getsize(os.path.dirname(os.path.abspath(__file__))+'/../test/output.json'))
+        #delete output.json when test is done
+        self.tearDown()
+
+if __name__ == '__main__':
+    unittest.main()

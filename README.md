@@ -12,10 +12,12 @@ Repository that contains utility scripts in python, bash or javascript. Javascri
 - [py](https://github.com/SMAPPNYU/smapputilities#py)
     - [merge_bson](https://github.com/SMAPPNYU/smapputilities#merge_bson)
     - [merge_bson_unique](https://github.com/SMAPPNYU/smapputilities#merge_bson_unique)
+    - [merge_json]()
+    - [merge_json_unique]()
     - [date_filter_bson](https://github.com/SMAPPNYU/smapputilities#date_filter_bson)
     - [list_collections](https://github.com/SMAPPNYU/smapputilities#list_collections)
-    - [query_search_tweets]()
-    - [query_user_tweets]()
+    - [query_user_tweets](https://github.com/SMAPPNYU/smapputilities#query_user_tweets)
+    - [query_search_tweets](https://github.com/SMAPPNYU/smapputilities#query_user_tweets)
     - [transfer_collection](https://github.com/SMAPPNYU/smapputilities#transfer_collection)
 - [js](https://github.com/SMAPPNYU/smapputilities#js)
     - [mailtweetcounts](https://github.com/SMAPPNYU/smapputilities#mailtweetcounts)
@@ -110,7 +112,7 @@ Test: `python test/test_merge_bson.py`
 
 #[merge_bson_unique](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_bson/merge_bson_unique.py)
 
-Takes arbitrary number of bson files and merges them. Also takes a unique field submitted by the user and enforces uniqueness on that field.
+tkes arbitrary number of bson files and merges them. also takes a unique field submitted by the user and enforces uniqueness on that field.
 
 Abstract:
 ```python
@@ -125,6 +127,36 @@ Practical:
 *Returns* a bson file that writes to disk in the output.
 
 Test: `python test/test_merge_bson.py`
+
+#[merge_json]()
+
+merges two files where each file has a json object on each line, or each file i a list of json objects
+
+abstract:
+```python
+```
+
+practical:
+```python
+```
+
+*returns* a json file that writes to disk with the original input files merged
+
+#[merge_json_unique]()
+
+merges two files where each file has a json object on each line, or each file i a list of json objects. also takes a unique field submitted by the user and enforces uniqueness on that field.
+
+abstract:
+```python
+python merge_json.py -i /path/to/json1.json /path/to/json2.json -o /path/to/output.json -f 'FIELD_TO_TEST' -l /path/to/log.log
+```
+
+practical:
+```python
+python merge_json.py -i ~/json1.json ~/json2.json -o ~/output.json -f 'id' -l ~/merge_json_log.log
+```
+
+*returns* a json file that writes to disk with the original input files merged
 
 #[date_filter_bson](https://github.com/SMAPPNYU/smapputilities/blob/master/py/date_filter/date_filter_bson.py)
 
