@@ -174,20 +174,20 @@ goes to
 
 Takes two date times of format `2016-01-19 09:47:00` and produces a new bson file filtered by the date we want. A quick trick is add 5 hours to new york time (eastern standard time) to get the right time/date in utc. Do not forget to roll over the day.
 
-Abstract:
+abstract:
 ```python
 /path/to/scriptsvenv/bin/python merge_bson.py -i /path/to/bson1.bson -d1 '2016-01-18 02:00:00' -d2 '2016-01-18 04:00:00' -o /path/to/output.bson -l /path/to/log.log
 ```
-Practical:
+practical:
 ```python
-~/smapputilities/scriptsvenv/bin/python merge_bson.py -i ~/bson1.bson -d1 '2016-01-18 02:00:00' -d2 '2016-01-18 04:00:00' -o ~/output.bson -l ~/log.log
+python merge_bson.py -i ~/bson1.bson -d1 '2016-01-18 02:00:00' -d2 '2016-01-18 04:00:00' -o ~/output.bson -l ~/log.log
 ```
 
 `d1` the first date (applied via [since](https://github.com/SMAPPNYU/smapp-toolkit#since) in the smapp-toolkit)
 
 `d2` the second date (applied via [until](https://github.com/SMAPPNYU/smapp-toolkit#until) in smapp-toolkit)
 
-*Returns* a bson file that writes to disk. Filtered by the dates given.
+*returns* a bson file that writes to disk. Filtered by the dates given.
 
 test: `python test/test_date_filter.py`
 
@@ -202,7 +202,7 @@ abrstact:
 
 practical:
 ```python
-~/pyenvs/bin/python ~/smapputilities/py/list_collections/list_collections.py -i ~/serverlist.json -o ~/pylogs/collections.json 
+python ~/smapputilities/py/list_collections/list_collections.py -i ~/serverlist.json -o ~/pylogs/collections.json 
 ```
 
 *inputs* a csv or json file that is a list of ip addresses or severnames
@@ -230,8 +230,6 @@ test: `python test/test_list_collections.py SERVER_IP_OR_NAME SERVER_USERNAME`
 
 #[query_user_tweets]()
 
-*Not yet functional.*
-
 take a list of users and get each of their 3200 most recent tweets. Works on the twitter api with tweepy.
 
 abstract:
@@ -241,7 +239,7 @@ abstract:
 
 practical:
 ```python
-~/smapputilities/scriptsenv/bin/python query_user_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
+python query_user_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
 ```
 
 *returns* a json file that writes to disk, with the 3200 (or less) of a user's most recent tweets.
@@ -250,19 +248,21 @@ note: input is json or csv, csv must be a one column csv with `id_str` as the co
 
 #[query_search_tweets]()
 
-*Not yet functional.*
+queries the twitter search api for any list of terms.
 
 abstract:
 ```python
-
+/path/to/scriptsenv/bin/python query_search_tweets.py -i /path/to/input.json -o /path/to/output.json -a /path/to/auth.json -l /path/to/log.log
 ```
 
 practical:
 ```python
-
+python query_search_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
 ```
 
-*returns* a json file that writes to disk with the resulting tweet objects in JSON formatted BSON (a list of json objects)
+*returns* a json file that writes to disk with the resulting tweet objects in JSON format
+
+note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list ['id_one', 'id_two']
 
 #[transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
 
