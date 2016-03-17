@@ -14,7 +14,7 @@ repository that contains utility scripts in python, bash or javascript. Javascri
     - [merge_bson_unique](https://github.com/SMAPPNYU/smapputilities#merge_bson_unique)
     - [merge_json](https://github.com/SMAPPNYU/smapputilities#merge_json)
     - [merge_json_unique](https://github.com/SMAPPNYU/smapputilities#merge_json_unique)
-    - [csv_to_json]()
+    - [csv_to_json](https://github.com/SMAPPNYU/smapputilities#csv_to_json)
     - [date_filter_bson](https://github.com/SMAPPNYU/smapputilities#date_filter_bson)
     - [list_collections](https://github.com/SMAPPNYU/smapputilities#list_collections)
     - [query_user_tweets](https://github.com/SMAPPNYU/smapputilities#query_user_tweets)
@@ -97,35 +97,21 @@ Formerly in `Sandbox/cluster/join_bsons.py`.
 
 Takes arbitrary number of bson files and merges them.
 
-Abstract:
+abstract:
 ```python
 /path/to/scriptsvenv/bin/python merge_bson.py -i /path/to/bson1.bson /path/to/bson2.bson -o /path/to/output.bson -l /path/to/log.log
+# or if you want to ensure a unique field
+/path/to/scriptsvenv/bin/python merge_bson.py -i /path/to/bson1.bson /path/to/bson2.bson -o /path/to/output.bson  -l /path/to/log.log -f 'FIELD_TO_TEST'
 ```
 
-Practical:
+practical:
 ```python
-~/smapputilities/py/scriptsvenv/bin/python merge_bson.py -i ~/bson1.bson ~/bson2.bson -o ~/output.bson -l ~/log.log
+python merge_bson.py -i ~/bson1.bson ~/bson2.bson -o ~/output.bson -l ~/log.log
+# or if you want to ensure a unique field
+python merge_bson.py -i ~/bson1.bson ~/bson2.bson -o ~/output.bson -l ~/log.log -f '_id'
 ```
 
-*Returns* a bson file that writes to disk in the output.
-
-Test: `python test/test_merge_bson.py`
-
-#[merge_bson_unique](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_bson/merge_bson_unique.py)
-
-tkes arbitrary number of bson files and merges them. also takes a unique field submitted by the user and enforces uniqueness on that field.
-
-Abstract:
-```python
-/path/to/scriptsvenv/bin/python merge_bson.py -i /path/to/bson1.bson /path/to/bson2.bson -o /path/to/output.bson -f 'FIELD_TO_TEST' -l /path/to/log.log
-```
-
-Practical:
-```python
-~/smapputilities/py/scriptsvenv/bin/python merge_bson.py -i ~/bson1.bson ~/bson2.bson -o ~/output.bson -f '_id' -l ~/log.log
-```
-
-*Returns* a bson file that writes to disk in the output.
+*returns* a bson file that writes to disk in the output.
 
 Test: `python test/test_merge_bson.py`
 
@@ -168,6 +154,8 @@ take a csv and make it into a json file or a json list
 abstract:
 ```python
 python csv_to_json.py -i /path/to/csv1.csv /path/to/csv2.json -o /path/to/output.json -l /path/to/log.log
+# or if you want the output as a json list
+python csv_to_json.py -i /path/to/csv1.csv /path/to/csv2.json -o /path/to/output.json -l /path/to/log.log --jsonlist
 ```
 
 practical:
