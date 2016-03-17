@@ -14,6 +14,7 @@ repository that contains utility scripts in python, bash or javascript. Javascri
     - [merge_bson_unique](https://github.com/SMAPPNYU/smapputilities#merge_bson_unique)
     - [merge_json](https://github.com/SMAPPNYU/smapputilities#merge_json)
     - [merge_json_unique](https://github.com/SMAPPNYU/smapputilities#merge_json_unique)
+    - [csv_to_json]()
     - [date_filter_bson](https://github.com/SMAPPNYU/smapputilities#date_filter_bson)
     - [list_collections](https://github.com/SMAPPNYU/smapputilities#list_collections)
     - [query_user_tweets](https://github.com/SMAPPNYU/smapputilities#query_user_tweets)
@@ -159,6 +160,24 @@ python merge_json_unique.py -i ~/json1.json ~/json2.json -o ~/output.json -f '_i
 ```
 
 *returns* a json file that writes to disk with the original input files merged
+
+#[csv_to_json]()
+
+take a csv and make it into a json file or a json list
+
+abstract:
+```python
+python csv_to_json.py -i /path/to/csv1.csv /path/to/csv2.json -o /path/to/output.json -l /path/to/log.log
+```
+
+practical:
+```python
+python csv_to_json.py -i ~/csv1.csv ~/csv2.csv -o ~/output.json -l ~/csv_to_json.log
+# or if you want the output as a json list
+python csv_to_json.py -i ~/csv1.csv ~/csv2.csv -o ~/output.json -l ~/csv_to_json.log --jsonlist
+```
+
+*returns* a json file that has a json object on each line or it returns a json list file.
 
 #[date_filter_bson](https://github.com/SMAPPNYU/smapputilities/blob/master/py/date_filter/date_filter_bson.py)
 
