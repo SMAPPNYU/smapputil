@@ -98,8 +98,6 @@ Takes arbitrary number of bson files and merges them.
 abstract:
 ```python
 /path/to/scriptsvenv/bin/python merge_bson.py -i /path/to/bson1.bson /path/to/bson2.bson -o /path/to/output.bson -l /path/to/log.log
-# or if you want to ensure a unique field
-/path/to/scriptsvenv/bin/python merge_bson.py -i /path/to/bson1.bson /path/to/bson2.bson -o /path/to/output.bson  -l /path/to/log.log -f 'FIELD_TO_TEST'
 ```
 
 practical:
@@ -120,8 +118,6 @@ merges two files where each file has a json object on each line, or each file i 
 abstract:
 ```python
 python merge_json.py -i /path/to/json1.json /path/to/json2.json -o /path/to/output.json -l /path/to/log.log
-# or if you want to ensure a unique field
-python merge_json.py -i /path/to/json1.json /path/to/json2.json -o /path/to/output.json -l /path/to/log.log -f 'FIELD_TO_TEST' 
 ```
 
 practical:
@@ -140,8 +136,6 @@ take a csv and make it into a json file or a json list
 abstract:
 ```python
 python csv_to_json.py -i /path/to/csv1.csv /path/to/csv2.json -o /path/to/output.json -l /path/to/log.log
-# or if you want the output as a json list
-python csv_to_json.py -i /path/to/csv1.csv /path/to/csv2.json -o /path/to/output.json -l /path/to/log.log --jsonlist
 ```
 
 practical:
