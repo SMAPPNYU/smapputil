@@ -11,9 +11,7 @@ repository that contains utility scripts in python, bash or javascript. Javascri
 
 - [py](https://github.com/SMAPPNYU/smapputilities#py)
     - [merge_bson](https://github.com/SMAPPNYU/smapputilities#merge_bson)
-    - [merge_bson_unique](https://github.com/SMAPPNYU/smapputilities#merge_bson_unique)
     - [merge_json](https://github.com/SMAPPNYU/smapputilities#merge_json)
-    - [merge_json_unique](https://github.com/SMAPPNYU/smapputilities#merge_json_unique)
     - [csv_to_json](https://github.com/SMAPPNYU/smapputilities#csv_to_json)
     - [date_filter_bson](https://github.com/SMAPPNYU/smapputilities#date_filter_bson)
     - [list_collections](https://github.com/SMAPPNYU/smapputilities#list_collections)
