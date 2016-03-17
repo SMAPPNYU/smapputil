@@ -16,7 +16,7 @@ class TestListCollections(unittest.TestCase):
         self.assertTrue(True, 'Control test successful!')
 
     def test_paramiko_list_crontab(self):
-        ssh_stdin, ssh_stdout, ssh_stderr = list_collections.paramiko_list_crontab(self.server, self.user)
+        ssh_stdout = list_collections.paramiko_list_crontab(self.server, self.user)
         self.assertTrue(hasattr(ssh_stdout, 'read'))
 
     def test_build_collection_list(self):

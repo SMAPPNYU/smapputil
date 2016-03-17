@@ -1,6 +1,7 @@
 import argparse
 import datetime
 import logging
+import urllib
 import time
 import json
 import csv
@@ -32,21 +33,18 @@ def query_search_tweets(output, terms_list):
 
     for term in terms_list:
         num_users_queried = num_users_queried + 1
-        # even though the count is 200 we can cycle through 3200 items.
-        # if you put a count variable in this cursor it will iterate up 
-        # to about 3200
+        count = 0
         if not term == '':
             try:
-                count = 0
-                for item in Cursor(api_pool.search, q=term).items():
+                for item in Cursor(api_pool.search, q=urllib.quote(term)).items():
                     logger.debug('tweet text: %s', item.text) 
                     count = count + 1
                     if not term in tweets_id_json:
                         tweets_id_json[term] = {}
                     tweets_id_json[term][str(count)] = item.text
-                logger.info('counted %s tweets for term %s', count, term)
             except TweepError as e:
                 logger.info('tweepy error: %s', e)
+            logger.info('counted %s tweets for term %s', count, term)
         logger.info('number of users queried so far: %s', num_users_queried)
 
     write_fd = open(args.output, 'w')
@@ -68,7 +66,7 @@ def get_terms_list(file_input):
             for rowdict in list(csv.DictReader(f)):
                 # if list is not empty
                 if rowdict:
-                    terms_list.append(rowdict['id_str'])
+                    terms_list.append(rowdict['term'])
         logger.info('launching query for %s users', len(terms_list))
     return terms_list
 
