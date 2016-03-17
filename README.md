@@ -91,7 +91,7 @@ to test your scripts create a file called `test_NAME_OF_YOUR_SCRIPT.py` followin
 
 [Adding imports to python sys path](http://askubuntu.com/questions/470982/how-to-add-a-python-module-to-syspath/471168)
 
-#[merge_bson](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_bson/merge_bson.py)
+#[merge_bson](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_bson)
 
 Formerly in `Sandbox/cluster/join_bsons.py`.
 
@@ -115,34 +115,22 @@ python merge_bson.py -i ~/bson1.bson ~/bson2.bson -o ~/output.bson -l ~/log.log 
 
 Test: `python test/test_merge_bson.py`
 
-#[merge_json]()
+#[merge_json](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_json)
 
 merges two files where each file has a json object on each line, or each file i a list of json objects
 
 abstract:
 ```python
 python merge_json.py -i /path/to/json1.json /path/to/json2.json -o /path/to/output.json -l /path/to/log.log
+# or if you want to ensure a unique field
+python merge_json.py -i /path/to/json1.json /path/to/json2.json -o /path/to/output.json -l /path/to/log.log -f 'FIELD_TO_TEST' 
 ```
 
 practical:
 ```python
 python merge_json.py -i ~/json1.json ~/json2.json -o ~/output.json -l ~/merge_json_log.log
-```
-
-*returns* a json file that writes to disk with the original input files merged
-
-#[merge_json_unique]()
-
-merges two files where each file has a json object on each line, or each file i a list of json objects. also takes a unique field submitted by the user and enforces uniqueness on that field.
-
-abstract:
-```python
-python merge_json_unique.py -i /path/to/json1.json /path/to/json2.json -o /path/to/output.json -f 'FIELD_TO_TEST' -l /path/to/log.log
-```
-
-practical:
-```python
-python merge_json_unique.py -i ~/json1.json ~/json2.json -o ~/output.json -f '_id' -l ~/merge_json_log.log
+# or if you want to ensure a unique field
+python merge_json_unique.py -i ~/json1.json ~/json2.json -o ~/output.json -l ~/merge_json_log.log -f '_id'
 ```
 
 *returns* a json file that writes to disk with the original input files merged
