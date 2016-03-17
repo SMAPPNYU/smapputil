@@ -91,9 +91,7 @@ to test your scripts create a file called `test_NAME_OF_YOUR_SCRIPT.py` followin
 
 #[merge_bson](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_bson)
 
-Formerly in `Sandbox/cluster/join_bsons.py`.
-
-Takes arbitrary number of bson files and merges them.
+takes arbitrary number of bson files and merges them.
 
 abstract:
 ```python
@@ -109,7 +107,7 @@ python merge_bson.py -i ~/bson1.bson ~/bson2.bson -o ~/output.bson -l ~/log.log 
 
 *returns* a bson file that writes to disk in the output.
 
-Test: `python test/test_merge_bson.py`
+test: `python -m unittest test.test_merge_bson`
 
 #[merge_json](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_json)
 
@@ -129,6 +127,8 @@ python merge_json_unique.py -i ~/json1.json ~/json2.json -o ~/output.json -l ~/m
 
 *returns* a json file that writes to disk with the original input files merged
 
+test: `python -m unittest test.test_merge_json`
+
 #[csv_to_json]()
 
 take a csv and make it into a json file or a json list
@@ -146,6 +146,8 @@ python csv_to_json.py -i ~/csv1.csv ~/csv2.csv -o ~/output.json -l ~/csv_to_json
 ```
 
 *returns* a json file that has a json object on each line or it returns a json list file.
+
+test: `python -m unittest test.test_csv_to_json`
 
 #[date_filter_bson](https://github.com/SMAPPNYU/smapputilities/blob/master/py/date_filter/date_filter_bson.py)
 
