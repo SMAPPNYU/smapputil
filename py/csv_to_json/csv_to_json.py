@@ -33,7 +33,7 @@ def csv_to_json_list(args):
             json_list.append(row)
         csvfile.close()
 
-    json.dump(json_list, json_output, indent=2)
+    json.dump(json_list, json_output, indent=1)
     json_output.close()
 
 def parse_args(args):
