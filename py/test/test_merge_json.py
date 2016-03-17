@@ -12,7 +12,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/../merge_json')
 import unittest
 
 import merge_json
-import merge_json_unique
 
 class TestMergeJson(unittest.TestCase):
 
@@ -48,10 +47,10 @@ class TestMergeJson(unittest.TestCase):
         self.tearDown()
 
     # this test will only run on objects with an _id field
-    def test_merge_json_unique_merge_json(self):
+    def test_merge_json_merge_json_unique(self):
         self.setUp()
-        args = merge_json_unique.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '-f', '_id'])
-        merge_json_unique.merge_json(args)
+        args = merge_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '-f', '_id'])
+        merge_json.merge_json_unique(args)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.json') as f:
             original_count = sum(1 for _ in f)

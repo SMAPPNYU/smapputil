@@ -51,7 +51,6 @@ def merge_bson_unique(args):
     logger.info('Finished merging all input files to path : %s', args.output)
     logger.info('Duplicates: %s, Total: %s, Invalid: %s', duplicatecount, totalcount, invalidcount)
 
-
 def parse_args(args):
     currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     parser = argparse.ArgumentParser()
