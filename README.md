@@ -12,8 +12,8 @@ Repository that contains utility scripts in python, bash or javascript. Javascri
 - [py](https://github.com/SMAPPNYU/smapputilities#py)
     - [merge_bson](https://github.com/SMAPPNYU/smapputilities#merge_bson)
     - [merge_bson_unique](https://github.com/SMAPPNYU/smapputilities#merge_bson_unique)
-    - [merge_json]()
-    - [merge_json_unique]()
+    - [merge_json](https://github.com/SMAPPNYU/smapputilities#merge_json)
+    - [merge_json_unique](https://github.com/SMAPPNYU/smapputilities#merge_json_unique)
     - [date_filter_bson](https://github.com/SMAPPNYU/smapputilities#date_filter_bson)
     - [list_collections](https://github.com/SMAPPNYU/smapputilities#list_collections)
     - [query_user_tweets](https://github.com/SMAPPNYU/smapputilities#query_user_tweets)
@@ -121,7 +121,7 @@ Abstract:
 
 Practical:
 ```python
-~/smapputilities/py/scriptsvenv/bin/python merge_bson.py -i ~/bson1.bson ~/bson2.bson -o ~/output.bson -f 'id' -l ~/log.log
+~/smapputilities/py/scriptsvenv/bin/python merge_bson.py -i ~/bson1.bson ~/bson2.bson -o ~/output.bson -f '_id' -l ~/log.log
 ```
 
 *Returns* a bson file that writes to disk in the output.
@@ -134,10 +134,12 @@ merges two files where each file has a json object on each line, or each file i 
 
 abstract:
 ```python
+python merge_json.py -i /path/to/json1.json /path/to/json2.json -o /path/to/output.json -l /path/to/log.log
 ```
 
 practical:
 ```python
+python merge_json.py -i ~/json1.json ~/json2.json -o ~/output.json -l ~/merge_json_log.log
 ```
 
 *returns* a json file that writes to disk with the original input files merged
@@ -148,12 +150,12 @@ merges two files where each file has a json object on each line, or each file i 
 
 abstract:
 ```python
-python merge_json.py -i /path/to/json1.json /path/to/json2.json -o /path/to/output.json -f 'FIELD_TO_TEST' -l /path/to/log.log
+python merge_json_unique.py -i /path/to/json1.json /path/to/json2.json -o /path/to/output.json -f 'FIELD_TO_TEST' -l /path/to/log.log
 ```
 
 practical:
 ```python
-python merge_json.py -i ~/json1.json ~/json2.json -o ~/output.json -f 'id' -l ~/merge_json_log.log
+python merge_json_unique.py -i ~/json1.json ~/json2.json -o ~/output.json -f '_id' -l ~/merge_json_log.log
 ```
 
 *returns* a json file that writes to disk with the original input files merged
