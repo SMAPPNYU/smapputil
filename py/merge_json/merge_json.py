@@ -7,7 +7,6 @@ import json
 import logging
 import argparse
 import datetime
-import pprint
 
 from os.path import expanduser
 
