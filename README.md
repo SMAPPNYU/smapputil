@@ -129,7 +129,7 @@ python merge_json_unique.py -i ~/json1.json ~/json2.json -o ~/output.json -l ~/m
 
 test: `python -m unittest test.test_merge_json`
 
-#[csv_to_json]()
+#[csv_to_json](https://github.com/SMAPPNYU/smapputilities/tree/master/py/csv_to_json)
 
 take a csv and make it into a json file or a json list
 
@@ -143,10 +143,11 @@ practical:
 python csv_to_json.py -i ~/csv1.csv ~/csv2.csv -o ~/output.json -l ~/csv_to_json.log
 # or if you want the output as a json list
 python csv_to_json.py -i ~/csv1.csv ~/csv2.csv -o ~/output.json -l ~/csv_to_json.log --jsonlist
+# or if you want to skip the header
+python csv_to_json.py -i ~/csv1.csv ~/csv2.csv -o ~/output.json -l ~/csv_to_json.log --skipheader
 ```
 
 *returns* a json file that has a json object on each line or it returns a json list file.
-
 
 test: `python -m unittest test.test_csv_to_json`
 
