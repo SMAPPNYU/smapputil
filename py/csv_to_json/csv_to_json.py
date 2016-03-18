@@ -12,10 +12,19 @@ def csv_to_json(args):
 
     for csv_input in args.inputs:
         csvfile = open(csv_input, 'r')
-        fieldnames = ("consumer_key","consumer_secret","access_token","access_token_secret")
+        fieldnames = tuple(args.fieldnames)
         reader = csv.DictReader(csvfile, fieldnames)
+        if args.skipheader:
+            reader.next() # skip header
         for row in reader:
-            json.dump(row, json_output)
+            json_data = json.loads(json.dumps(row))
+            keys_to_del = []
+            for key in json_data:
+                if key not in fieldnames:
+                    keys_to_del.append(key)
+            for key in keys_to_del:
+                del json_data[key]
+            json_output.write(json.dumps(json_data))
             json_output.write('\n')
         csvfile.close()
 
@@ -27,10 +36,19 @@ def csv_to_json_list(args):
 
     for csv_input in args.inputs:
         csvfile = open(csv_input, 'r')
-        fieldnames = ("consumer_key","consumer_secret","access_token","access_token_secret")
+        fieldnames = tuple(args.fieldnames)
         reader = csv.DictReader(csvfile, fieldnames)
+        if args.skipheader:
+            reader.next() # skip header
         for row in reader:
-            json_list.append(row)
+            json_data = json.loads(json.dumps(row))
+            keys_to_del = []
+            for key in json_data:
+                if key not in fieldnames:
+                    keys_to_del.append(key)
+            for key in keys_to_del:
+                del json_data[key]
+            json_list.append(json_data)
         csvfile.close()
 
     json.dump(json_list, json_output, indent=1)
@@ -42,7 +60,9 @@ def parse_args(args):
     parser.add_argument('-i', '--inputs', dest='inputs', required=True, nargs='+', help='These inputs are paths to your bson files. Required.')
     parser.add_argument('-o', '--output', dest='output', required=True, help='This will be your outputted single bson file. Required')
     parser.add_argument('-l', '--log', dest='log', default=expanduser('~/pylogs/merge_bson_'+currentdate+'.log'), help='This is the path to where your output log should be. Required')
-    parser.add_argument('-jlist', '--jsonlist', dest="jsonlist", action='store_true', default=False, help="call this flag to let the script know you want a json list and not a json object on each page")    
+    parser.add_argument('-f', '--fieldnames', dest='fieldnames', required=True, nargs='+', help='these are the field names that will, in order of appearance be the keys of your json objects in yous output file')
+    parser.add_argument('--jsonlist', dest="jsonlist", action='store_true', default=False, help="call this flag to let the script know you want a json list and not a json object on each page")    
+    parser.add_argument('--skipheader', dest="skipheader", action='store_true', default=False, help="call this flag to tell the script to skip the csv file's headers")
     return parser.parse_args(args)
 
 if __name__ == '__main__':

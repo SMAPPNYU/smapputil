@@ -26,7 +26,7 @@ def merge_json(args):
 					if isinstance(json_data, list):
 						for json_obj in json_data:
 							if args.jsonlist:
-								json_list.extend(json_obj)
+								json_list.append(json_obj)
 							else:
 								outputjson.write(json.dumps(json_obj))
 								outputjson.write('\n')
@@ -74,7 +74,7 @@ def merge_json_unique(args):
 						for json_obj in json_data:
 							if json.dumps(json_obj[args.uniquefield]) not in uniquefieldset:
 								if args.jsonlist:
-									json_list.extend(json_obj)
+									json_list.append(json_obj)
 								else:
 									outputjson.write(json.dumps(json_obj))
 									outputjson.write('\n')
@@ -111,8 +111,8 @@ def parse_args(args):
 	parser.add_argument('-o', '--output', dest='output', required=True, help='This will be your outputted single json file. Required')
 	parser.add_argument('-f', '--uniquefield', dest='uniquefield', required=False, help='This takes one field that you can enforce uniqueness on like an \'id\' field.')
 	parser.add_argument('-l', '--log', dest='log', default=expanduser('~/pylogs/merge_json_'+currentdate+'.log'), help='This is the path to where your output log should be. Required')
-	parser.add_argument('-jload', '--jsonload', dest="jsonload", action='store_true', default=False, help="call this flag if you want yous script to load each entire json file at once antd not go line by line through each file")
-	parser.add_argument('-jlist', '--jsonlist', dest="jsonlist", action='store_true', default=False, help="call this flag to let the script know you want a json list and not a json object on each page")    
+	parser.add_argument('--jsonload', dest="jsonload", action='store_true', default=False, help="call this flag if you want yous script to load each entire json file at once antd not go line by line through each file")
+	parser.add_argument('--jsonlist', dest="jsonlist", action='store_true', default=False, help="call this flag to let the script know you want a json list and not a json object on each page")    
 	return parser.parse_args(args)
 
 if __name__ == '__main__':

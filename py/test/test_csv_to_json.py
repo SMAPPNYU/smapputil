@@ -20,13 +20,14 @@ class TestCsvToJson(unittest.TestCase):
         self.assertTrue(True, 'Control test successful!')
 
     def test_merge_json_parse_args(self):
-        args = csv_to_json.parse_args(['-i', '~/data1.csv', '~/data2.csv', '-o', '~/data3.json'])
+        args = csv_to_json.parse_args(['-i', '~/data1.csv', '~/data2.csv', '-o', '~/data3.json', '-f', 'consumer_key', 'consumer_secret', 'access_token', 'access_token_secret'])
         self.assertEqual(set(args.inputs),set(['~/data1.csv', '~/data2.csv']))
         self.assertEqual(args.output,'~/data3.json')
+        self.assertEqual(args.fieldnames, ['consumer_key', 'consumer_secret', 'access_token', 'access_token_secret'])
 
     def test_csv_to_json(self):
         self.setUp()
-        args = csv_to_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json'])
+        args = csv_to_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '-f', 'consumer_key', 'consumer_secret', 'access_token', 'access_token_secret'])
         csv_to_json.csv_to_json(args)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv') as f:
@@ -42,7 +43,7 @@ class TestCsvToJson(unittest.TestCase):
     # this test will only run on objects with an _id field
     def test_csv_to_json_list(self):
         self.setUp()
-        args = csv_to_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '--jsonlist'])
+        args = csv_to_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json','-f', 'consumer_key', 'consumer_secret', 'access_token', 'access_token_secret', '--jsonlist'])
         csv_to_json.csv_to_json_list(args)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv') as f:
