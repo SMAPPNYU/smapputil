@@ -7,6 +7,7 @@ import json
 import logging
 import argparse
 import datetime
+import pprint
 
 from os.path import expanduser
 
@@ -33,11 +34,11 @@ def merge_json(args):
                         outputjson.write('\n')
                 else:
                     for line in jsonfile_handle:
+                        singleobject = json.loads(line)
                         if args.jsonlist:
-                            singleobject = json.loads(line)
-                            json_list.extend(singleobject)
+                            json_list.append(singleobject)
                         else:
-                            outputjson.write(line)
+                            outputjson.write(line.rstrip())
                             outputjson.write('\n')
         if args.jsonlist:
             json.dump(json_list, outputjson)
@@ -72,7 +73,6 @@ def merge_json_unique(args):
                                     json_list.extend(singleobject)
                                 else:
                                     outputjson.write(json.dumps(singleobject))
-                                    outputjson.write('\n')
                                 uniquefieldset.add(json.dumps(singleobject[args.uniquefield]))
                     else:
                         if json.dumps(singleobject[args.uniquefield]) not in uniquefieldset:
@@ -80,16 +80,15 @@ def merge_json_unique(args):
                                 json_list.append(singleobject)
                             else:
                                 outputjson.write(json.dumps(singleobject))
-                                outputjson.write('\n')
                             uniquefieldset.add(json.dumps(singleobject[args.uniquefield]))
                 else:
                     for line in jsonfile_handle:
                         singleobject = json.loads(line)
                         if json.dumps(singleobject[args.uniquefield]) not in uniquefieldset:
                             if args.jsonlist:
-                                json_list.extend(singleobject)
+                                json_list.append(singleobject)
                             else:
-                                outputjson.write(json.dumps(singleobject))
+                                outputjson.write(line.rstrip())
                                 outputjson.write('\n')
                             uniquefieldset.add(json.dumps(singleobject[args.uniquefield]))
                     logging.info('Finished merging input file : %s', jsonfile)

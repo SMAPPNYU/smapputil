@@ -96,10 +96,10 @@ class TestMergeJson(unittest.TestCase):
         #delete output.json when test is done
         self.tearDown()
 
-        # this test will only run on objects with an _id field
+    # this test will only run on objects with an _id field
     def test_merge_unique_json_list(self):
         self.setUp()
-        args = merge_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '--jsonlist', '-f', 'id_str'])
+        args = merge_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '--jsonlist', '-f', '_id'])
         merge_json.merge_json_unique(args)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.json') as f:
@@ -109,14 +109,14 @@ class TestMergeJson(unittest.TestCase):
             json_list = json.load(f)
             new_count = len(json_list)
         #ouput should be the same number of lines as one input since the merge merges the same file with same object ids 2x.
-        self.assertEqual(2*original_count, new_count)
+        self.assertEqual(original_count, new_count)
         #delete output.json when test is done
         self.tearDown()
 
     # this test will only run on objects with an _id field
     def test_merge_unique_json_load(self):
         self.setUp()
-        args = merge_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.one.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.one.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '--jsonload', '-f', 'id_str'])
+        args = merge_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.one.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.one.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '--jsonload', '-f', '_id'])
         merge_json.merge_json_unique(args)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.one.json') as f:
@@ -125,7 +125,7 @@ class TestMergeJson(unittest.TestCase):
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/output.json') as f:
             new_count = sum(1 for _ in f)
         #ouput should be the same number of lines as one input since the merge merges the same file with same object ids 2x.
-        self.assertEqual(2*original_count, new_count)
+        self.assertEqual(original_count, new_count)
         #delete output.json when test is done
         self.tearDown()
 
