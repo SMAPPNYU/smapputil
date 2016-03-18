@@ -123,11 +123,16 @@ practical:
 python merge_json.py -i ~/json1.json ~/json2.json -o ~/output.json -l ~/merge_json_log.log
 # or if you want to ensure a unique field
 python merge_json_unique.py -i ~/json1.json ~/json2.json -o ~/output.json -l ~/merge_json_log.log -f '_id'
+# or with flags
+python merge_json_unique.py -i ~/json1.json ~/json2.json -o ~/output.json -l ~/merge_json_log.log --jsonload --jsonlist
 ```
 
 *returns* a json file that writes to disk with the original input files merged
 
 test: `python -m unittest test.test_merge_json`
+
+--jsonload: loads input files as entire json objects, not line by line (useful for a jsonlist input or file w/ one object spaced over multiple lines)
+--jsonlist: outputs a json list instead of a json object on each line
 
 #[csv_to_json](https://github.com/SMAPPNYU/smapputilities/tree/master/py/csv_to_json)
 
@@ -150,6 +155,9 @@ python csv_to_json.py -i ~/csv1.csv ~/csv2.csv -o ~/output.json -l ~/csv_to_json
 *returns* a json file that has a json object on each line or it returns a json list file.
 
 test: `python -m unittest test.test_csv_to_json`
+
+--skipheader: skips the first line of every input file
+--jsonlist: outputs a json list instead of a json object on each line
 
 #[date_filter_bson](https://github.com/SMAPPNYU/smapputilities/blob/master/py/date_filter/date_filter_bson.py)
 
