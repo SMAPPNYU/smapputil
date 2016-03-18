@@ -57,8 +57,8 @@ def get_terms_list(file_input):
     terms_list = []
     if file_extension == '.json':
         logger.info('loading json...')
-        id_data = open(file_input).read()
-        terms_list = json.loads(id_data)
+        with open(file_input) as data:
+            terms_list = json.load(data)
     elif file_extension == '.csv':
         logger.info('loading csv...')
         count = 0
