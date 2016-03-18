@@ -31,6 +31,8 @@ def query_search_tweets(output, terms_list):
     oauth = json.loads(json_data)
     api_pool = tweepy_pool.APIPool(oauth)
 
+    write_fd = open(args.output, 'w+')
+
     for term in terms_list:
         num_users_queried = num_users_queried + 1
         count = 0
@@ -41,14 +43,15 @@ def query_search_tweets(output, terms_list):
                     count = count + 1
                     if not term in tweets_id_json:
                         tweets_id_json[term] = {}
-                    tweets_id_json[term][str(count)] = item.text
+                    tweet_item = json.loads(json.dumps(item._json))
+                    tweet_item['smapp_term'] = term
+                    tweet_item['smapp_count'] = count
+                    write_fd.write(json.dumps(tweet_item))
+                    write_fd.write('\n')
             except TweepError as e:
                 logger.info('tweepy error: %s', e)
             logger.info('counted %s tweets for term %s', count, term)
         logger.info('number of users queried so far: %s', num_users_queried)
-
-    write_fd = open(args.output, 'w')
-    write_fd.write(json.dumps(tweets_id_json, indent=4))
     write_fd.close()
 
 def get_terms_list(file_input):
@@ -58,7 +61,7 @@ def get_terms_list(file_input):
     if file_extension == '.json':
         logger.info('loading json...')
         with open(file_input) as data:
-            terms_list = data
+            terms_list = json.load(data)
     elif file_extension == '.csv':
         logger.info('loading csv...')
         count = 0

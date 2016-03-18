@@ -1,4 +1,4 @@
-smapputilities
+smapputil
 decorator==4.0.9
 networkx==1.11
 numpy==1.10.4

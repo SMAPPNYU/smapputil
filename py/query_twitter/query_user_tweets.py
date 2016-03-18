@@ -30,8 +30,9 @@ def query_user_tweets(output, id_list):
     oauth = json.loads(json_data)
     api_pool = tweepy_pool.APIPool(oauth)
 
+    write_fd = open(args.output, 'w+')
+
     for userid in id_list:
-        logger.info('number of users queried so far: %s', num_users_queried)
         num_users_queried = num_users_queried + 1
         # even though the count is 200 we can cycle through 3200 items.
         # if you put a count variable in this cursor it will iterate up 
@@ -44,12 +45,14 @@ def query_user_tweets(output, id_list):
                     count = count + 1
                     if not userid in tweets_id_json:
                         tweets_id_json[userid] = {}
-                    tweets_id_json[userid][str(count)] = item.text
+                    tweet_item = json.loads(json.dumps(item._json))
+                    tweet_item['smapp_count'] = count
+                    write_fd.write(json.dumps(tweet_item))
+                    write_fd.write('\n')
             except TweepError as e:
-                logger.info('tweepy error: %s', e) 
-
-    write_fd = open(args.output, 'w')
-    write_fd.write(json.dumps(tweets_id_json, indent=4))
+                logger.info('tweepy error: %s', e)
+            logger.info('counted %s tweets for userid %s', count, userid)
+        logger.info('number of users queried so far: %s', num_users_queried)
     write_fd.close()
 
 def get_id_list(file_input):

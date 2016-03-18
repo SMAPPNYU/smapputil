@@ -17,7 +17,7 @@ def merge_json(args):
 	if args.jsonlist:
 		json_list = []
 
-	with open(args.output, 'a') as outputjson:
+	with open(args.output, 'w+') as outputjson:
 		for jsonfile in args.inputs:
 			logger.info('Opening input file : %s', jsonfile)
 			with open(jsonfile, 'r') as jsonfile_handle:
@@ -63,7 +63,7 @@ def merge_json_unique(args):
 	if args.jsonlist:
 		json_list = []
 
-	with open(args.output, 'a') as outputjson:
+	with open(args.output, 'w+') as outputjson:
 		for jsonfile in args.inputs:
 			totalcount += 1
 			logger.info('Opening input file : %s', jsonfile)
