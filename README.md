@@ -247,7 +247,7 @@ python query_user_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~
 
 *returns* a json file that writes to disk, with the 3200 (or less) of a user's most recent tweets.
 
-note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list [{'id': id_one'}, {'id':'id_two'}]
+note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list ['id_one', 'id_two']
 
 #[query_search_tweets](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_search_tweets.py)
 
@@ -265,7 +265,7 @@ python query_search_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l
 
 *returns* a json file that writes to disk with the resulting tweet objects in JSON format
 
-note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list [{'id': id_one'}, {'id':'id_two'}]
+note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list ['id_one', 'id_two']
 
 #[transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
 
