@@ -669,3 +669,7 @@ log "hey it works, nvm, error, error, oh man this is baaadddd"
 
 test: `bash sh/logger/test/test_logger.sh`
 
+#author
+
+[yvan](https://github.com/yvan)
+
