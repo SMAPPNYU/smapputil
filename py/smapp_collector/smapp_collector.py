@@ -8,8 +8,9 @@ from subprocess import Popen
 from crontab import CronTab
 
 def start_collector():
-    command = sys.executable 
-    Popen([command], stdin=None, stdout=None, stderr=None, shell=True)
+    pass
+    # command = "nohup " + sys.executable + expanduser('~/smapprepos/smappcollector/tweet_collector.py') + " &"
+    # Popen([command], stdin=None, stdout=None, stderr=None, shell=True)
 
 def remove_collector():
     pass
@@ -27,6 +28,7 @@ def make_oauth(output, args_list):
         "access_token": args_list[2],
         "access_token_secret": args_list[3]
     }
+
     json.dump(oauth_file, output)
 
 def make_filter(output, track, follow, locations):
