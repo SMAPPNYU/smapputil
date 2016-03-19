@@ -125,7 +125,7 @@ python py/ssh_tunnel/ssh_tunnel.py -lo LOGIN_HOST -u LOGIN_USERNAME -p LOGIN_PAS
 
 practical:
 ```python
-python py/ssh_tunnel/ssh_tunnel.py -lo hpc.nyu.edu -u LOGIN_USERNAME -p 'LOGIN_PASSWORD' -rh REMOTE_HOST -rp 27017 -lp 27017
+python py/ssh_tunnel/ssh_tunnel.py -lo hpc.nyu.edu -u LOGIN_USERNAME -p LOGIN_PASSWORD -rh REMOTE_HOST -rp 27017 -lp 27017
 # or in a script
 from ssh_tunnel import start_ssh_tunnel, stop_ssh_tunnel
 
