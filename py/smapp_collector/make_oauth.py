@@ -4,14 +4,7 @@ import logging
 import argparse
 import datetime
 
-def make_oauth(output, args_list):
-    oauth_file = {
-        "consumer_key": args_list[0],
-        "consumer_secret": args_list[1],
-        "access_token": args_list[2],
-        "access_token_secret": args_list[3]
-    }
-    json.dump(oauth_file, output)
+from smapp_collector import make_oauth
 
 def parse_args(args):
     currentdate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
@@ -27,4 +20,3 @@ if __name__ == '__main__':
     #configure logs
     logging.basicConfig(filename=args.log, level=logging.INFO)
     make_oauth(args.output, args.inputs)
-    
