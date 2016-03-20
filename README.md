@@ -686,11 +686,3 @@ note: you will also have to close all running terminal sessions to clear history
 #author
 
 [yvan](https://github.com/yvan)
-
-{
-  "consumer_secret": "e6OaiFjh109qxwwWjFEAlGKxB9QUNCWTJFycvnjMYjZULFUIwT", 
-  "access_token": "4791798739-3iBeS5rPUUcBACRwPL5JwVGcWOI4NBEGEupHvCQ", 
-  "consumer_key": "qzB6UqeLORyuDuLOcgg5STzVNR3I1RB67Moz9PbYR8vfM", 
-  "access_token_secret": "kXsXNcSEJuIfgMsl0dWuRgSgRt1SUJYgO4gohl9zQjbdL"
- }, 
-
