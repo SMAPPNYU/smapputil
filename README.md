@@ -32,8 +32,8 @@ repository that contains utility scripts in python, bash or javascript. Javascri
 - [sh](https://github.com/SMAPPNYU/smapputilities#sh)
     - [hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputilities#hades_rotating_tunnel)
     - [kill_hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputilities#kill_hades_rotating_tunnel)
-    - [split_tweet_collector](https://github.com/SMAPPNYU/smapputilities#split_tweet_collector)
     - [logger](https://github.com/SMAPPNYU/smapputilities#logger)
+    - [clear_history](https://github.com/SMAPPNYU/smapputilities#clear_history)
 
 #logging
 
@@ -669,6 +669,19 @@ log "hey it works, nvm, error, error, oh man this is baaadddd"
 *returns* the ability to log in your bash script mad easily
 
 test: `bash sh/logger/test/test_logger.sh`
+
+#[clear_history](https://github.com/SMAPPNYU/smapputil/blob/master/sh/utility/clear_history.sh)
+
+clears bash history when run
+
+abstract / practical:
+```bash
+bash clear_history.sh
+```
+
+*returns* a cleared bash history
+
+note: you will also have to close all running terminal sessions to clear history as this is the only way to completely wipe bash history.
 
 #author
 
