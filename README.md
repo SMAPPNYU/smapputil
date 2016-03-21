@@ -550,58 +550,6 @@ cd smapputilities/sh/hades_tunnels/test
 echo 'YOUR_HPC_PWD' | bash test_tunnel_functions.sh
 ```
 
-#[make_ssh_tunnel](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/ssh_tunnels/make_ssh_tunnel.sh)
-
-a script that simplifies making an ssh tunnel by getting rid of a few inputs.
-
-abstract:
-```sh
-bash /path/to/make_hades_tunnel.sh LOGIN_USER LOGIN_SERVER REMOTE_HOST REMOTE_PORT
-```
-
-practical:
-```sh
-bash ~/smapprepos/smapputilities/sh/hades_tunnels/make_hades_tunnel.sh jka564 hpc.nyu.edu REMOTE_HOST REMOTE_PORT
-```
-
-*returns* a running ssh tunnel to wherever you tell it to bound on `localhost:49999`
-
-test: 
-
-*WARNING: do not test on a server already running tunnels*
-
-```sh
-cd smapputilities/sh/hades_tunnels/test
-# then
-bash test_original_hades_tunnels.sh 
-```
-
-#[kill_hades_tunnels](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/hades_tunnels/kill_hades_tunnels.sh)
-
-a script that can kill all hades tunnels, kills a single tunnel or tunnel made with [make_hades_tunnel.sh]() , does not kill a hades rotating tunnel
-
-abstract:
-```sh
-bash /path/to/kill_hades_tunnels.sh
-```
-
-practical:
-```sh
-bash ~/smapprepos/smapputilities/sh/hades_tunnels/kill_hades_tunnels.sh
-```
-
-*returns* nothing really, kills the tunnels.
-
-test: 
-
-*WARNING: do not test on a server already running tunnels*
-
-```sh
-cd smapputilities/sh/hades_tunnels/test
-# then
-bash test_original_hades_tunnels.sh 
-```
-
 #[kill_hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/hades_tunnels/kill_hades_rotating_tunnel.sh)
 
 a script that kills a running [hades_rotating_tunnel.sh]() 
@@ -627,28 +575,6 @@ cd smapputilities/sh/hades_tunnels/test
 # then
 bash test_tunnel_functions.sh 
 ```
-
-#[split_tweet_collector](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/tweet_collector/split_tweet_collector.sh)
-
-*not ready*
-
-this script lets you transfer tweets going into one collection to a new collection with a new name. GOPDebate_1 -> GOPDebate_2
-
-abstract:
-```sh
-bash /path/to/split_tweet_collection.sh OLD_NAME NEW_NAME 'DB_ADMIN_USER' 'DB_ADMIN_PASS' 
-```
-
-practical:
-```sh
-bash ~/split_tweet_collection.sh GOPDebate_1 GOPDebate_2 'monkeyman' 'bananas' 
-```
-
-*returns* a new collection started with the new name. 
-
-note: do no actually make your db login 'monkeyman' 'bananas'
-
-test: none for now.
 
 #[logger](https://github.com/SMAPPNYU/smapputilities/tree/master/sh/logger)
 
