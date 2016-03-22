@@ -10,21 +10,21 @@ import datetime
 from os.path import expanduser
 from bson import BSON, decode_file_iter
 
-def merge_bson(args):
+def merge_bson(output, inputs):
     #configure logging
     logger = logging.getLogger(__name__)
-    logger.info('Creating your output file : %s', args.output)
-    with open(args.output, 'wb') as outputbson:
-        for bsonfile in args.inputs:
+    logger.info('Creating your output file : %s', output)
+    with open(output, 'wb') as outputbson:
+        for bsonfile in inputs:
             logger.info('Opening input file : %s', bsonfile)
             with open(bsonfile, 'rb') as bsonfile_handle:
                 iterator = decode_file_iter(bsonfile_handle)
                 for line in iterator:
                     outputbson.write(BSON.encode(line))
     logger.info('Finished merging input file : %s', bsonfile)
-    logger.info('Finished merging all input files to path : %s', args.output)
+    logger.info('Finished merging all input files to path : %s', output)
 
-def merge_bson_unique(args):
+def merge_bson_unique(output, inputs, uniquefield):
     uniquefieldset = set()
     duplicatecount = 0
     invalidcount = 0
@@ -32,23 +32,23 @@ def merge_bson_unique(args):
 
     #configure logging
     logger = logging.getLogger(__name__)
-    logger.info('Creating your output file : %s', args.output)
-    with open(args.output, 'wb') as outputbson:
-        for bsonfile in args.inputs:
+    logger.info('Creating your output file : %s', output)
+    with open(output, 'wb') as outputbson:
+        for bsonfile in inputs:
             totalcount += 1
             logger.info('Opening input file : %s', bsonfile)
             with open(bsonfile, 'rb') as bsonfile_handle:
                 iterator = decode_file_iter(bsonfile_handle)
                 for singleobject in iterator:
-                    if args.uniquefield not in singleobject:
+                    if uniquefield not in singleobject:
                         invalidcount += 1
-                    if singleobject[args.uniquefield] not in uniquefieldset:
+                    if singleobject[uniquefield] not in uniquefieldset:
                         outputbson.write(BSON.encode(singleobject))
-                        uniquefieldset.add(singleobject[args.uniquefield])
+                        uniquefieldset.add(singleobject[uniquefield])
                     else:
                         duplicatecount += 1
             logging.info('Finished merging input file : %s', bsonfile)
-    logger.info('Finished merging all input files to path : %s', args.output)
+    logger.info('Finished merging all input files to path : %s', output)
     logger.info('Duplicates: %s, Total: %s, Invalid: %s', duplicatecount, totalcount, invalidcount)
 
 def parse_args(args):
@@ -67,9 +67,9 @@ if __name__ == '__main__':
     logging.basicConfig(filename=args.log, level=logging.INFO)
     # actually merge the bson files
     if args.uniquefield:
-        merge_bson_unique(args)
+        merge_bson_unique(args.output, args.inputs, args.uniquefield)
     else:
-        merge_bson(args)
+        merge_bson(args.output, args.inputs)
 
 # c* http://stackoverflow.com/questions/18160078/how-do-you-write-tests-for-the-argparse-portion-of-a-python-module
 # c* http://stackoverflow.com/questions/4028904/how-to-get-the-home-directory-in-python

@@ -2,14 +2,10 @@ import sys
 import csv
 import json
 import logging
-import warnings
 import paramiko
 import argparse
-from os.path import expanduser
 
-#ignore warnings about matplotlib
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore", "Error importing plotting libraries (seaborn and matplotlib). Plotting functionality will not work.")
+from os.path import expanduser
 
 def paramiko_list_crontab(collector_machine, username):
     logger = logging.getLogger(__name__)

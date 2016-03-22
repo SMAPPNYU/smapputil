@@ -9,26 +9,31 @@
 
 repository that contains utility scripts in python, bash or javascript. Javascript run here will be of the variety node.js 5.0.0. Python is generally python 2.7.11 moving to python 3. Shellscript/bash is expected to be in bash 3.2. A lot of the code here are refined, modularized, improved versions of scripts that used to be in Sandbox and smappPy.
 
-- [py](https://github.com/SMAPPNYU/smapputilities#py)
-    - [merge_bson](https://github.com/SMAPPNYU/smapputilities#merge_bson)
-    - [merge_json](https://github.com/SMAPPNYU/smapputilities#merge_json)
-    - [csv_to_json](https://github.com/SMAPPNYU/smapputilities#csv_to_json)
-    - [date_filter_bson](https://github.com/SMAPPNYU/smapputilities#date_filter_bson)
-    - [list_collections](https://github.com/SMAPPNYU/smapputilities#list_collections)
-    - [query_user_tweets](https://github.com/SMAPPNYU/smapputilities#query_user_tweets)
-    - [query_search_tweets](https://github.com/SMAPPNYU/smapputilities#query_user_tweets)
-    - [transfer_collection](https://github.com/SMAPPNYU/smapputilities#transfer_collection)
-- [js](https://github.com/SMAPPNYU/smapputilities#js)
-    - [mailtweetcounts](https://github.com/SMAPPNYU/smapputilities#mailtweetcounts)
-    - [adduserstomongo](https://github.com/SMAPPNYU/smapputilities#adduserstomongo)
-- [sh](https://github.com/SMAPPNYU/smapputilities#sh)
-    - [hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputilities#hades_rotating_tunnel)
-    - [make_hades_tunnel](https://github.com/SMAPPNYU/smapputilities#make_hades_tunnel)
-    - [kill_hades_tunnels](https://github.com/SMAPPNYU/smapputilities#kill_hades_tunnels)
-    - [kill_hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputilities#kill_hades_rotating_tunnel)
-    - [tunnel_monitor](https://github.com/SMAPPNYU/smapputilities#tunnel_monitor)
-    - [split_tweet_collector](https://github.com/SMAPPNYU/smapputilities#split_tweet_collector)
-    - [logger](https://github.com/SMAPPNYU/smapputilities#logger)
+- [py](https://github.com/SMAPPNYU/smapputil#py)
+    - [merge_bson](https://github.com/SMAPPNYU/smapputil#merge_bson)
+    - [merge_json](https://github.com/SMAPPNYU/smapputil#merge_json)
+    - [csv_to_json](https://github.com/SMAPPNYU/smapputil#csv_to_json)
+    - [date_filter_bson](https://github.com/SMAPPNYU/smapputil#date_filter_bson)
+    - [list_collections](https://github.com/SMAPPNYU/smapputil#list_collections)
+    - [query_user_tweets](https://github.com/SMAPPNYU/smapputil#query_user_tweets)
+    - [query_search_tweets](https://github.com/SMAPPNYU/smapputil#query_search_tweets)
+    - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
+    - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
+    - [smapp_collector]()
+        - [start_collector]()
+        - [remove_collector]()
+        - [freeze_collector]()
+        - [split_collector]()
+        - [make_oauth]()
+        - [make_filter]()
+- [js](https://github.com/SMAPPNYU/smapputil#js)
+    - [mailtweetcounts](https://github.com/SMAPPNYU/smapputil#mailtweetcounts)
+    - [adduserstomongo](https://github.com/SMAPPNYU/smapputil#adduserstomongo)
+- [sh](https://github.com/SMAPPNYU/smapputil#sh)
+    - [hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputil#hades_rotating_tunnel)
+    - [kill_hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputil#kill_hades_rotating_tunnel)
+    - [logger](https://github.com/SMAPPNYU/smapputil#logger)
+    - [clear_history](https://github.com/SMAPPNYU/smapputil#clear_history)
 
 #logging
 
@@ -108,6 +113,30 @@ python merge_bson.py -i ~/bson1.bson ~/bson2.bson -o ~/output.bson -l ~/log.log 
 *returns* a bson file that writes to disk in the output.
 
 test: `python -m unittest test.test_merge_bson`
+
+#[ssh_tunnel](https://github.com/SMAPPNYU/smapputil/tree/master/py/ssh_tunnel)
+
+creates an ssh tunnel.
+
+abstract:
+```python
+python py/ssh_tunnel/ssh_tunnel.py -lo LOGIN_HOST -u LOGIN_USERNAME -p LOGIN_PASSWORD -rh REMOTE_HOST -rp REMOTE_PORT -lh localhost -lp LOCAL_PORT
+```
+
+practical:
+```python
+python py/ssh_tunnel/ssh_tunnel.py -lo hpc.nyu.edu -u LOGIN_USERNAME -p LOGIN_PASSWORD -rh REMOTE_HOST -rp 27017 -lp 27017
+# or in a script
+from ssh_tunnel import start_ssh_tunnel, stop_ssh_tunnel
+
+ssh_tunnel.start_ssh_tunnel(args.loginhost, args.username, args.password, args.localhost, args.localport, args.remotehost, args.remoteport)
+```
+
+`-lh` is optional
+
+*returns* a bson file that writes to disk in the output.
+
+test: `python test/test_ssh_tunnel LOGIN_USER LOGIN_PASSWORD`
 
 #[merge_json](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_json)
 
@@ -249,6 +278,8 @@ python query_user_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~
 
 note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list ['id_one', 'id_two']
 
+note: `smapp_count` term added to each tweet object to tell you which count of a particular user's tweets you are looking at.
+
 #[query_search_tweets](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_search_tweets.py)
 
 queries the twitter search api for any list of terms.
@@ -264,6 +295,8 @@ python query_search_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l
 ```
 
 *returns* a json file that writes to disk with the resulting tweet objects in JSON format
+
+note: fields `smapp_term` and `smapp_count` are added to each tweet object to tell you which term the tweet war queried for and what its count in the query was.
 
 note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list ['id_one', 'id_two']
 
@@ -517,60 +550,6 @@ cd smapputilities/sh/hades_tunnels/test
 echo 'YOUR_HPC_PWD' | bash test_tunnel_functions.sh
 ```
 
-#[make_hades_tunnel](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/hades_tunnels/make_hades_tunnel.sh)
-
-a script that can kill all hades tunnels, requires a keyed login, also requires being on nyu network
-
-abstract:
-```sh
-bash /path/to/make_hades_tunnel.sh USER SERVER LOGIN_NODE
-```
-
-practical:
-```sh
-bash ~/smapprepos/smapputilities/sh/hades_tunnels/make_hades_tunnel.sh jka564 hpc.nyu.edu 0
-```
-
-*returns* a running tunnel to the hades cluster if run with the right inputs...
-
-test: 
-
-*WARNING: do not test on a server already running tunnels*
-
-note* needs to be run on a computer in the nyu network
-
-```sh
-cd smapputilities/sh/hades_tunnels/test
-# then
-bash test_original_hades_tunnels.sh 
-```
-
-#[kill_hades_tunnels](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/hades_tunnels/kill_hades_tunnels.sh)
-
-a script that can kill all hades tunnels, kills a single tunnel or tunnel made with [make_hades_tunnel.sh]() , does not kill a hades rotating tunnel
-
-abstract:
-```sh
-bash /path/to/kill_hades_tunnels.sh
-```
-
-practical:
-```sh
-bash ~/smapprepos/smapputilities/sh/hades_tunnels/kill_hades_tunnels.sh
-```
-
-*returns* nothing really, kills the tunnels.
-
-test: 
-
-*WARNING: do not test on a server already running tunnels*
-
-```sh
-cd smapputilities/sh/hades_tunnels/test
-# then
-bash test_original_hades_tunnels.sh 
-```
-
 #[kill_hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/hades_tunnels/kill_hades_rotating_tunnel.sh)
 
 a script that kills a running [hades_rotating_tunnel.sh]() 
@@ -597,54 +576,6 @@ cd smapputilities/sh/hades_tunnels/test
 bash test_tunnel_functions.sh 
 ```
 
-#[tunnel_monitor](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/hades_tunnels/tunnel_monitor.sh)
-
-*not ready*
-
-a script that watches and checks if a rotating tunnel is properly running. if it is not it will send an email to the programmers with the tunnel that is not running. requires the sever to have smtp setup.
-
-abstract:
-```sh
-bash /path/to/tunnel_monitor.sh
-```
-
-practical:
-```sh
-bash ~/smapprepos/smapputilities/sh/tunnel_monitor.sh
-```
-
-*returns* nothing, just runs and checks for tunnels to hades
-
-test: 
-
-```sh
-cd smapputilities/sh/hades_tunnels/test
-# then
-bash test_tunnel_monitor.sh 
-```
-
-#[split_tweet_collector](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/tweet_collector/split_tweet_collector.sh)
-
-*not ready*
-
-this script lets you transfer tweets going into one collection to a new collection with a new name. GOPDebate_1 -> GOPDebate_2
-
-abstract:
-```sh
-bash /path/to/split_tweet_collection.sh OLD_NAME NEW_NAME 'DB_ADMIN_USER' 'DB_ADMIN_PASS' 
-```
-
-practical:
-```sh
-bash ~/split_tweet_collection.sh GOPDebate_1 GOPDebate_2 'monkeyman' 'bananas' 
-```
-
-*returns* a new collection started with the new name. 
-
-note: do no actually make your db login 'monkeyman' 'bananas'
-
-test: none for now.
-
 #[logger](https://github.com/SMAPPNYU/smapputilities/tree/master/sh/logger)
 
 this is a logger that can log output to a file, written in bash.
@@ -669,14 +600,19 @@ log "hey it works, nvm, error, error, oh man this is baaadddd"
 
 test: `bash sh/logger/test/test_logger.sh`
 
+#[clear_history](https://github.com/SMAPPNYU/smapputil/blob/master/sh/utility/clear_history.sh)
+
+clears bash history when run
+
+abstract / practical:
+```bash
+bash clear_history.sh
+```
+
+*returns* a cleared bash history
+
+note: you will also have to close all running terminal sessions to clear history as this is the only way to completely wipe bash history.
+
 #author
 
 [yvan](https://github.com/yvan)
-
-{
-  "consumer_secret": "e6OaiFjh109qxwwWjFEAlGKxB9QUNCWTJFycvnjMYjZULFUIwT", 
-  "access_token": "4791798739-3iBeS5rPUUcBACRwPL5JwVGcWOI4NBEGEupHvCQ", 
-  "consumer_key": "qzB6UqeLORyuDuLOcgg5STzVNR3I1RB67Moz9PbYR8vfM", 
-  "access_token_secret": "kXsXNcSEJuIfgMsl0dWuRgSgRt1SUJYgO4gohl9zQjbdL"
- }, 
-

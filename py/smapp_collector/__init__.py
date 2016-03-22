@@ -1,4 +1,4 @@
 '''
-csv_to_json package
+smapp_collector package
 https://docs.python.org/2/tutorial/modules.html#packages
 '''

@@ -10,28 +10,28 @@ import datetime
 
 from os.path import expanduser
 
-def merge_json(args):
+def merge_json(output, inputs, jsonlist, jsonload):
 	#configure logging
 	logger = logging.getLogger(__name__)
-	logger.info('Creating your output file : %s', args.output)
-	if args.jsonlist:
+	logger.info('Creating your output file : %s', output)
+	if jsonlist:
 		json_list = []
 
-	with open(args.output, 'w') as outputjson:
-		for jsonfile in args.inputs:
+	with open(output, 'w') as outputjson:
+		for jsonfile in inputs:
 			logger.info('Opening input file : %s', jsonfile)
 			with open(jsonfile, 'r') as jsonfile_handle:
-				if args.jsonload:
+				if jsonload:
 					json_data = json.load(jsonfile_handle)
 					if isinstance(json_data, list):
 						for json_obj in json_data:
-							if args.jsonlist:
+							if jsonlist:
 								json_list.append(json_obj)
 							else:
 								outputjson.write(json.dumps(json_obj))
 								outputjson.write('\n')
 					else:
-						if args.jsonlist:
+						if jsonlist:
 							json_list.append(json_data)
 						else:
 							outputjson.write(json.dumps(json_data))
@@ -39,18 +39,19 @@ def merge_json(args):
 				else:
 					for line in jsonfile_handle:
 						json_data = json.loads(line)
-						if args.jsonlist:
+						if jsonlist:
 							json_list.append(json_data)
 						else:
 							outputjson.write(line.rstrip())
 							outputjson.write('\n')
-		if args.jsonlist:
+		if jsonlist:
 			json.dump(json_list, outputjson, indent=1)
 
 	logger.info('Finished merging input file : %s', jsonfile)
-	logger.info('Finished merging all input files to path : %s', args.output)
+	logger.info('Finished merging all input files to path : %s', output)
 
-def merge_json_unique(args):
+def merge_json_unique(output, inputs, jsonlist, jsonload, uniquefield):
+
 	uniquefieldset = set()
 	duplicatecount = 0
 	invalidcount = 0
@@ -58,50 +59,51 @@ def merge_json_unique(args):
 
 	#configure logging
 	logger = logging.getLogger(__name__)
-	logger.info('Creating your output file : %s', args.output)
 
-	if args.jsonlist:
+	logger.info('Creating your output file : %s', output)
+
+	if jsonlist:
 		json_list = []
 
-	with open(args.output, 'w') as outputjson:
-		for jsonfile in args.inputs:
+	with open(output, 'w') as outputjson:
+		for jsonfile in inputs:
 			totalcount += 1
 			logger.info('Opening input file : %s', jsonfile)
 			with open(jsonfile, 'r') as jsonfile_handle:
-				if args.jsonload:
+				if jsonload:
 					json_data = json.load(jsonfile_handle)
 					if isinstance(json_data, list):
 						for json_obj in json_data:
-							if json.dumps(json_obj[args.uniquefield]) not in uniquefieldset:
-								if args.jsonlist:
+							if json.dumps(json_obj[uniquefield]) not in uniquefieldset:
+								if jsonlist:
 									json_list.append(json_obj)
 								else:
 									outputjson.write(json.dumps(json_obj))
 									outputjson.write('\n')
-								uniquefieldset.add(json.dumps(json_obj[args.uniquefield]))
+								uniquefieldset.add(json.dumps(json_obj[uniquefield]))
 					else:
-						if json.dumps(json_data[args.uniquefield]) not in uniquefieldset:
-							if args.jsonlist:
+						if json.dumps(json_data[uniquefield]) not in uniquefieldset:
+							if jsonlist:
 								json_list.append(json_data)
 							else:
 								outputjson.write(json.dumps(json_data))
 								outputjson.write('\n')
-							uniquefieldset.add(json.dumps(json_data[args.uniquefield]))
+							uniquefieldset.add(json.dumps(json_data[uniquefield]))
 				else:
 					for line in jsonfile_handle:
 						json_data = json.loads(line)
-						if json.dumps(json_data[args.uniquefield]) not in uniquefieldset:
-							if args.jsonlist:
+						if json.dumps(json_data[uniquefield]) not in uniquefieldset:
+							if jsonlist:
 								json_list.append(json_data)
 							else:
 								outputjson.write(line.rstrip())
 								outputjson.write('\n')
-							uniquefieldset.add(json.dumps(json_data[args.uniquefield]))
+							uniquefieldset.add(json.dumps(json_data[uniquefield]))
 					logging.info('Finished merging input file : %s', jsonfile)
-		if args.jsonlist:
+		if jsonlist:
 			json.dump(json_list, outputjson)
 
-	logger.info('Finished merging all input files to path : %s', args.output)
+	logger.info('Finished merging all input files to path : %s', output)
 	logger.info('Duplicates: %s, Total: %s, Invalid: %s', duplicatecount, totalcount, invalidcount)
 
 def parse_args(args):
@@ -122,6 +124,6 @@ if __name__ == '__main__':
 	logging.basicConfig(filename=args.log, level=logging.INFO)
 	# actually merge the json` files
 	if args.uniquefield:
-		merge_json_unique(args)
+		merge_json_unique(output, inputs, jsonlist, jsonload, uniquefield)
 	else:
-		merge_json(args)
+		merge_json(output, inputs, jsonlist, jsonload)

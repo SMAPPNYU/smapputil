@@ -10,27 +10,29 @@ import os
 from smappPy import tweepy_pool
 from tweepy import Cursor, TweepError
 
-def twitter_query(args):
+
+def twitter_query(output, input_file, auth_file):
     logger = logging.getLogger(__name__)
     
-    id_list = get_id_list(args.input)
+    id_list = get_id_list(input_file)
     logger.info('creating oauth pool...')
 
     #query the tweets
-    query_user_tweets(args.output, id_list)
+    query_user_tweets(output, id_list, auth_file)
 
-def query_user_tweets(output, id_list):
+def query_user_tweets(output, id_list, auth_file):
+
     logger = logging.getLogger(__name__)
 
     tweets_id_json = {}
     num_users_queried = 0
 
     #create the api pool
-    json_data = open(args.auth).read()
+    json_data = open(auth_file).read()
     oauth = json.loads(json_data)
     api_pool = tweepy_pool.APIPool(oauth)
 
-    write_fd = open(args.output, 'w+')
+    write_fd = open(output, 'w+')
 
     for userid in id_list:
         num_users_queried = num_users_queried + 1
@@ -89,7 +91,7 @@ if __name__ == '__main__':
     #configure logs
     logging.basicConfig(filename=args.log, level=logging.INFO)
     # actually merge the bson files
-    twitter_query(args)
+    twitter_query(args.output, args.input, args.auth)
 
 '''
 http://tweepy.readthedocs.org/en/v3.5.0/api.html?highlight=user_timeline#API.user_timeline

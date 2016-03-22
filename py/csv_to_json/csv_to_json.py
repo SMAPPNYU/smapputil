@@ -7,14 +7,14 @@ import datetime
 
 from os.path import expanduser
 
-def csv_to_json(args):
-    json_output = open(args.output, 'a')
+def csv_to_json(output, inputs, fieldnames, skipheader):
+    json_output = open(output, 'a')
 
-    for csv_input in args.inputs:
+    for csv_input in inputs:
         csvfile = open(csv_input, 'r')
-        fieldnames = tuple(args.fieldnames)
+        fieldnames = tuple(fieldnames)
         reader = csv.DictReader(csvfile, fieldnames)
-        if args.skipheader:
+        if skipheader:
             reader.next() # skip header
         for row in reader:
             json_data = json.loads(json.dumps(row))
@@ -30,15 +30,15 @@ def csv_to_json(args):
 
     json_output.close()
 
-def csv_to_json_list(args):
+def csv_to_json_list(output, inputs, fieldnames, skipheader):
     json_list = []
-    json_output = open(args.output, 'a')
+    json_output = open(output, 'a')
 
-    for csv_input in args.inputs:
+    for csv_input in inputs:
         csvfile = open(csv_input, 'r')
-        fieldnames = tuple(args.fieldnames)
+        fieldnames = tuple(fieldnames)
         reader = csv.DictReader(csvfile, fieldnames)
-        if args.skipheader:
+        if skipheader:
             reader.next() # skip header
         for row in reader:
             json_data = json.loads(json.dumps(row))
@@ -72,6 +72,6 @@ if __name__ == '__main__':
     logging.basicConfig(filename=args.log, level=logging.INFO)
     # actually merge the bson files
     if args.jsonlist:
-        csv_to_json_list(args)
+        csv_to_json_list(args.output, args.inputs, args.fieldnames, args.skipheader)
     else:
-        csv_to_json(args)
+        csv_to_json(args.output, args.inputs, args.fieldnames, args.skipheader)
