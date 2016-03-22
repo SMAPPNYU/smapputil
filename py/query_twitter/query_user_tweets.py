@@ -10,6 +10,7 @@ import os
 from smappPy import tweepy_pool
 from tweepy import Cursor, TweepError
 
+
 def twitter_query(output, input_file, auth_file):
     logger = logging.getLogger(__name__)
     
@@ -20,6 +21,7 @@ def twitter_query(output, input_file, auth_file):
     query_user_tweets(output, id_list, auth_file)
 
 def query_user_tweets(output, id_list, auth_file):
+
     logger = logging.getLogger(__name__)
 
     tweets_id_json = {}

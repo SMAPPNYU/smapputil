@@ -21,6 +21,7 @@ def twitter_query(output, file_input, auth_file):
     query_search_tweets(output, terms_list, auth_file)
 
 def query_search_tweets(output, terms_list, auth_file):
+
     logger = logging.getLogger(__name__)
 
     tweets_id_json = {}

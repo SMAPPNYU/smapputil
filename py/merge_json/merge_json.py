@@ -51,6 +51,7 @@ def merge_json(output, inputs, jsonlist, jsonload):
 	logger.info('Finished merging all input files to path : %s', output)
 
 def merge_json_unique(output, inputs, jsonlist, jsonload, uniquefield):
+
 	uniquefieldset = set()
 	duplicatecount = 0
 	invalidcount = 0
@@ -58,6 +59,7 @@ def merge_json_unique(output, inputs, jsonlist, jsonload, uniquefield):
 
 	#configure logging
 	logger = logging.getLogger(__name__)
+
 	logger.info('Creating your output file : %s', output)
 
 	if jsonlist:
