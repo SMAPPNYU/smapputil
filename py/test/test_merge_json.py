@@ -35,7 +35,7 @@ class TestMergeJson(unittest.TestCase):
     def test_merge_json(self):
         self.setUp()
         args = merge_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json'])
-        merge_json.merge_json(args)
+        merge_json.merge_json(args.output, args.inputs, args.jsonlist, args.jsonload)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.json') as f:
             original_count = sum(1 for _ in f)
@@ -51,7 +51,7 @@ class TestMergeJson(unittest.TestCase):
     def test_merge_json_unique(self):
         self.setUp()
         args = merge_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '-f', '_id'])
-        merge_json.merge_json_unique(args)
+        merge_json.merge_json_unique(args.output, args.inputs, args.jsonlist, args.jsonload, args.uniquefield)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.json') as f:
             original_count = sum(1 for _ in f)
@@ -67,7 +67,7 @@ class TestMergeJson(unittest.TestCase):
     def test_merge_json_list(self):
         self.setUp()
         args = merge_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '--jsonlist'])
-        merge_json.merge_json(args)
+        merge_json.merge_json(args.output, args.inputs, args.jsonlist, args.jsonload)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.json') as f:
             original_count = sum(1 for _ in f)
@@ -84,7 +84,7 @@ class TestMergeJson(unittest.TestCase):
     def test_merge_json_load(self):
         self.setUp()
         args = merge_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.one.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.one.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '--jsonload'])
-        merge_json.merge_json(args)
+        merge_json.merge_json(args.output, args.inputs, args.jsonlist, args.jsonload)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.one.json') as f:
             original_count = sum(1 for _ in f)
@@ -100,7 +100,7 @@ class TestMergeJson(unittest.TestCase):
     def test_merge_unique_json_list(self):
         self.setUp()
         args = merge_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '--jsonlist', '-f', '_id'])
-        merge_json.merge_json_unique(args)
+        merge_json.merge_json_unique(args.output, args.inputs, args.jsonlist, args.jsonload, args.uniquefield)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.json') as f:
             original_count = sum(1 for _ in f)
@@ -117,7 +117,7 @@ class TestMergeJson(unittest.TestCase):
     def test_merge_unique_json_load(self):
         self.setUp()
         args = merge_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.one.json',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.one.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '--jsonload', '-f', '_id'])
-        merge_json.merge_json_unique(args)
+        merge_json.merge_json_unique(args.output, args.inputs, args.jsonlist, args.jsonload, args.uniquefield)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.one.json') as f:
             original_count = sum(1 for _ in f)

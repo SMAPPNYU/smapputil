@@ -34,7 +34,7 @@ class TestMergeBson(unittest.TestCase):
     def test_merge_bson_merge_bson(self):
         self.setUp()
         args = merge_bson.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.bson',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.bson', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.bson'])
-        merge_bson.merge_bson(args)
+        merge_bson.merge_bson(args.output, args.inputs)
         #the output file should have 2x the size of the input file because standard merge
         self.assertEqual(2 * os.path.getsize(os.path.dirname(os.path.abspath(__file__))+'/../test/test.bson'),os.path.getsize(os.path.dirname(os.path.abspath(__file__))+'/../test/output.bson'))
         #delete output.bson when test is done
@@ -44,7 +44,7 @@ class TestMergeBson(unittest.TestCase):
     def test_merge_bson_unique_merge_bson(self):
         self.setUp()
         args = merge_bson.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.bson',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.bson', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.bson', '-f', '_id'])
-        merge_bson.merge_bson_unique(args)
+        merge_bson.merge_bson_unique(args.output, args.inputs, args.uniquefield)
         #ouput should be the same size as one input since the merge merges the same file with same object ids 2x.
         self.assertEqual(os.path.getsize(os.path.dirname(os.path.abspath(__file__))+'/../test/test.bson'), os.path.getsize(os.path.dirname(os.path.abspath(__file__))+'/../test/output.bson'))
         #delete output.bson when test is done

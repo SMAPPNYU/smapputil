@@ -122,6 +122,6 @@ if __name__ == '__main__':
 	logging.basicConfig(filename=args.log, level=logging.INFO)
 	# actually merge the json` files
 	if args.uniquefield:
-		merge_json_unique(output, inputs, jsonlist, jsonload, uniquefield)
+		merge_json_unique(args.output, args.inputs, args.jsonlist, args.jsonload, args.uniquefield)
 	else:
-		merge_json(output, inputs, jsonlist, jsonload)
+		merge_json(args.output, args.inputs, args.jsonlist, args.jsonload)

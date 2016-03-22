@@ -33,7 +33,7 @@ class TestDateFilter(unittest.TestCase):
         #remove output self.setUp
         self.setUp()
         args = date_filter_bson.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.bson', '-d1', '2016-01-21 00:00:00', '-d2', '2016-01-22 00:00:00', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.bson'])
-        date_filter_bson.date_filter(args)
+        date_filter_bson.date_filter(args.output, args.input, args.dateone, args.datetwo)
         count = 0
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/output.bson', 'rb') as bsonfile_handle:
                 iterator = decode_file_iter(bsonfile_handle)
@@ -48,7 +48,7 @@ class TestDateFilter(unittest.TestCase):
     def test_date_filter_bson_date_filter_since(self):
         self.setUp()
         args = date_filter_bson.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.bson', '-d1', '2016-01-12 00:00:00', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.bson'])
-        date_filter_bson.date_filter(args)
+        date_filter_bson.date_filter(args.output, args.input, args.dateone, args.datetwo)
         count = 0
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/output.bson', 'rb') as bsonfile_handle:
                 iterator = decode_file_iter(bsonfile_handle)
@@ -62,7 +62,7 @@ class TestDateFilter(unittest.TestCase):
     def test_date_filter_bson_date_filter_until(self):
         self.setUp()
         args = date_filter_bson.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.bson', '-d2', '2016-01-18 00:00:00', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.bson'])
-        date_filter_bson.date_filter(args)
+        date_filter_bson.date_filter(args.output, args.input, args.dateone, args.datetwo)
         count = 0
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/output.bson', 'rb') as bsonfile_handle:
                 iterator = decode_file_iter(bsonfile_handle)
