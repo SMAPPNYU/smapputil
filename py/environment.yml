@@ -14,7 +14,7 @@ dependencies:
     - simplejson==3.8.2
     - six==1.10.0
     - smapp-toolkit==0.1.37
-    - smappPy==0.1.28
+    - smappPy==0.1.31
     - wheel==0.29.0
     - argparse==1.4.0
     - logging==0.4.9.6
