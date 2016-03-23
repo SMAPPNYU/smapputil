@@ -19,13 +19,6 @@ repository that contains utility scripts in python, bash or javascript. Javascri
     - [query_search_tweets](https://github.com/SMAPPNYU/smapputil#query_search_tweets)
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
-    - [smapp_collector]()
-        - [start_collector]()
-        - [remove_collector]()
-        - [freeze_collector]()
-        - [split_collector]()
-        - [make_oauth]()
-        - [make_filter]()
 - [js](https://github.com/SMAPPNYU/smapputil#js)
     - [mailtweetcounts](https://github.com/SMAPPNYU/smapputil#mailtweetcounts)
     - [adduserstomongo](https://github.com/SMAPPNYU/smapputil#adduserstomongo)
@@ -522,7 +515,7 @@ log "blah $c"
 [bash exit codes](http://www.tldp.org/LDP/abs/html/exitcodes.html)
 
 
-#[hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/hades_tunnels/hades_rotating_tunnel.sh)
+#[hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/ssh_tunnels/hades_rotating_tunnel.sh)
 
 a tunnel script that replaces our old tunnel scripts and eliminates the need to restart tunnels hourly usng autossh and an infinite loop. if a running tunnel dies 10x on one run of autossh it will rotate to the next login node on a new autossh tunnel. if a tunnel dies for any other reason and auto ssh exits it will rotate to the next tunnel.
 
@@ -550,7 +543,7 @@ cd smapputilities/sh/hades_tunnels/test
 echo 'YOUR_HPC_PWD' | bash test_tunnel_functions.sh
 ```
 
-#[kill_hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/hades_tunnels/kill_hades_rotating_tunnel.sh)
+#[kill_hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/ssh_tunnels/kill_hades_rotating_tunnel.sh)
 
 a script that kills a running [hades_rotating_tunnel.sh]() 
 

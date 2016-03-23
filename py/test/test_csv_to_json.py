@@ -28,7 +28,7 @@ class TestCsvToJson(unittest.TestCase):
     def test_csv_to_json(self):
         self.setUp()
         args = csv_to_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json', '-f', 'consumer_key', 'consumer_secret', 'access_token', 'access_token_secret'])
-        csv_to_json.csv_to_json(args)
+        csv_to_json.csv_to_json(args.output, args.inputs, args.fieldnames, args.skipheader)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv') as f:
             original_count = sum(1 for _ in f)
@@ -44,7 +44,7 @@ class TestCsvToJson(unittest.TestCase):
     def test_csv_to_json_list(self):
         self.setUp()
         args = csv_to_json.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv',  os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.json','-f', 'consumer_key', 'consumer_secret', 'access_token', 'access_token_secret', '--jsonlist'])
-        csv_to_json.csv_to_json_list(args)
+        csv_to_json.csv_to_json_list(args.output, args.inputs, args.fieldnames, args.skipheader)
         #gotta compare line counts and not sizes.
         with open(os.path.dirname(os.path.abspath(__file__))+'/../test/test.csv') as f:
             original_count = sum(1 for _ in f)
