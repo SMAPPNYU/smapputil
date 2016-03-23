@@ -17,6 +17,7 @@ then
     kill_hades_tunnels
 fi
 
-# tdd*
-# no* 'log' - keep out of this file.
-# c* http://stackoverflow.com/questions/12815774/importing-functions-from-a-shell-script
+: '
+no* 'log' - keep out of this file. 
+c* http://stackoverflow.com/questions/12815774/importing-functions-from-a-shell-script
+'

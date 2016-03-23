@@ -23,5 +23,7 @@ echo $res
 secres=$(kill_autossh $one)
 echo $secres
 
-# tdd*
-# no* 'log' - keep out of this file.
+: '
+tdd*
+no* 'log' - keep out of this file.
+'

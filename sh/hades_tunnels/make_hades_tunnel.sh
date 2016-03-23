@@ -10,5 +10,7 @@ then
     make_hades_tunnel $1 $2 $3
 fi
 
-# tdd*
-# c* http://stackoverflow.com/questions/12815774/importing-functions-from-a-shell-script
+:' 
+tdd*
+c* http://stackoverflow.com/questions/12815774/importing-functions-from-a-shell-script
+'

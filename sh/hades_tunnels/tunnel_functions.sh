@@ -32,4 +32,6 @@ kill_autossh () {
     echo $count
 }
 
-# no* 'log' - keep out of this file.
+:'
+no* 'log' - keep out of this file.
+'

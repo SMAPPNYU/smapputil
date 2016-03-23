@@ -75,9 +75,9 @@ while [  "$c" -lt "${#loginnodes[@]}" ]; do
 	c=$(handle_count $c ${#loginnodes[@]})
 done
 
-
-# tdd*
-# c* http://stackoverflow.com/questions/1405324/how-to-create-a-bash-script-to-check-the-ssh-connection
-# c* http://stackoverflow.com/questions/4316730/linux-scripting-hiding-user-input-on-terminal
-# c* http://stackoverflow.com/questions/22832933/what-does-stty-raw-echo-do-on-os-x
-# c* http://stackoverflow.com/questions/12815774/importing-functions-from-a-shell-script
+: '
+c* http://stackoverflow.com/questions/1405324/how-to-create-a-bash-script-to-check-the-ssh-connection
+c* http://stackoverflow.com/questions/4316730/linux-scripting-hiding-user-input-on-terminal
+c* http://stackoverflow.com/questions/22832933/what-does-stty-raw-echo-do-on-os-x
+c* http://stackoverflow.com/questions/12815774/importing-functions-from-a-shell-script
+'
