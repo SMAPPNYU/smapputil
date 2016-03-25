@@ -17,6 +17,7 @@ repository that contains utility scripts in python, bash or javascript. Javascri
     - [list_collections](https://github.com/SMAPPNYU/smapputil#list_collections)
     - [query_user_tweets](https://github.com/SMAPPNYU/smapputil#query_user_tweets)
     - [query_search_tweets](https://github.com/SMAPPNYU/smapputil#query_search_tweets)
+    - [query_user_objects]()
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
 - [js](https://github.com/SMAPPNYU/smapputil#js)
@@ -290,6 +291,24 @@ python query_search_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l
 *returns* a json file that writes to disk with the resulting tweet objects in JSON format
 
 note: fields `smapp_term` and `smapp_count` are added to each tweet object to tell you which term the tweet war queried for and what its count in the query was.
+
+note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list ['id_one', 'id_two']
+
+#[query_user_objects](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_objects.py)
+
+queries the twitter search api for any list of terms.
+
+abstract:
+```python
+/path/to/scriptsenv/bin/python query_user_objects.py -i /path/to/input.json -o /path/to/output.json -a /path/to/auth.json -l /path/to/log.log
+```
+
+practical:
+```python
+python query_user_objects.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
+```
+
+*returns* a json file that writes to disk with the resulting user objects in JSON format
 
 note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list ['id_one', 'id_two']
 
