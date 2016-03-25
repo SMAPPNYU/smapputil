@@ -23,8 +23,7 @@ def query_search_tweets(output, terms_list, auth_file):
 
     logger = logging.getLogger(__name__)
 
-    tweets_id_json = {}
-    num_users_queried = 0
+    num_inputs_queried = 0
 
     #create the api pool
     json_data = open(auth_file).read()
@@ -34,15 +33,13 @@ def query_search_tweets(output, terms_list, auth_file):
     write_fd = open(output, 'w+')
 
     for term in terms_list:
-        num_users_queried = num_users_queried + 1
+        num_inputs_queried = num_inputs_queried + 1
         count = 0
         if not term == '':
             try:
                 for item in Cursor(api_pool.search, q=urllib.quote(term)).items():
                     logger.debug('tweet text: %s', item.text) 
                     count = count + 1
-                    if not term in tweets_id_json:
-                        tweets_id_json[term] = {}
                     tweet_item = json.loads(json.dumps(item._json))
                     tweet_item['smapp_term'] = term
                     tweet_item['smapp_count'] = count
@@ -50,8 +47,8 @@ def query_search_tweets(output, terms_list, auth_file):
                     write_fd.write('\n')
             except TweepError as e:
                 logger.info('tweepy error: %s', e)
-            logger.info('counted %s tweets for term %s', count, term)
-        logger.info('number of users queried so far: %s', num_users_queried)
+            logger.info('counted %s objects for input %s', count, userid)
+        logger.info('number of inputs queried so far: %s', num_inputs_queried)
     write_fd.close()
 
 def get_terms_list(file_input):

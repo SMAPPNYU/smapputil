@@ -22,8 +22,7 @@ def query_user_tweets(output, id_list, auth_file):
 
     logger = logging.getLogger(__name__)
 
-    tweets_id_json = {}
-    num_users_queried = 0
+    num_inputs_queried = 0
 
     #create the api pool
     json_data = open(auth_file).read()
@@ -33,7 +32,7 @@ def query_user_tweets(output, id_list, auth_file):
     write_fd = open(output, 'w+')
 
     for userid in id_list:
-        num_users_queried = num_users_queried + 1
+        num_inputs_queried = num_inputs_queried + 1
         # even though the count is 200 we can cycle through 3200 items.
         # if you put a count variable in this cursor it will iterate up 
         # to about 3200
@@ -43,16 +42,14 @@ def query_user_tweets(output, id_list, auth_file):
                 for item in Cursor(api_pool.user_timeline, user_id=userid, count=200).items():
                     logger.debug('tweet text: %s', item.text) 
                     count = count + 1
-                    if not userid in tweets_id_json:
-                        tweets_id_json[userid] = {}
                     tweet_item = json.loads(json.dumps(item._json))
                     tweet_item['smapp_count'] = count
                     write_fd.write(json.dumps(tweet_item))
                     write_fd.write('\n')
             except TweepError as e:
                 logger.info('tweepy error: %s', e)
-            logger.info('counted %s tweets for userid %s', count, userid)
-        logger.info('number of users queried so far: %s', num_users_queried)
+            logger.info('counted %s objects for input %s', count, userid)
+        logger.info('number of inputs queried so far: %s', num_inputs_queried)
     write_fd.close()
 
 def get_id_list(file_input):
