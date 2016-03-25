@@ -17,7 +17,7 @@ repository that contains utility scripts in python, bash or javascript. Javascri
     - [list_collections](https://github.com/SMAPPNYU/smapputil#list_collections)
     - [query_user_tweets](https://github.com/SMAPPNYU/smapputil#query_user_tweets)
     - [query_search_tweets](https://github.com/SMAPPNYU/smapputil#query_search_tweets)
-    - [query_user_objects]()
+    - [query_user_objects](https://github.com/SMAPPNYU/smapputil#query_user_objects)
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
 - [js](https://github.com/SMAPPNYU/smapputil#js)
