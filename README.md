@@ -296,7 +296,7 @@ note: input is json or csv, csv must be a one column csv with `id_str` as the co
 
 #[query_user_objects](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_objects.py)
 
-queries the twitter search api for any list of terms.
+queries the twitter api for any list of user objects. takes a list of twitter user ids as input.
 
 abstract:
 ```python
