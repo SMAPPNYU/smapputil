@@ -2,8 +2,7 @@ import argparse
 import datetime
 import logging
 import urllib
-import time
-import json
+]import json
 import csv
 import sys
 import os
