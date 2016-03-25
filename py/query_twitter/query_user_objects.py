@@ -40,7 +40,7 @@ def query_user_tweets(output, id_list, auth_file):
         if not userid == '':
             try:
                 count = 0
-                for item in Cursor(api_pool.user_timeline, user_id=userid, count=200).items():
+                for item in Cursor(api.lookup_users, user_id=userid).items():
                     logger.debug('tweet text: %s', item.text) 
                     count = count + 1
                     if not userid in tweets_id_json:
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     twitter_query(args.output, args.input, args.auth)
 
 '''
-author @yvan
+@yvan
 http://tweepy.readthedocs.org/en/v3.5.0/api.html?highlight=user_timeline#API.user_timeline
 https://dev.twitter.com/rest/reference/get/statuses/user_timeline
 '''

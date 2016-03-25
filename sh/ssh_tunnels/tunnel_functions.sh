@@ -37,4 +37,5 @@ kill_autossh () {
     echo $count
 }
 
+# author @yvan
 # no* 'log' - keep out of this file.

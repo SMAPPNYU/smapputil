@@ -127,3 +127,7 @@ if __name__ == '__main__':
 		merge_json_unique(args.output, args.inputs, args.jsonlist, args.jsonload, args.uniquefield)
 	else:
 		merge_json(args.output, args.inputs, args.jsonlist, args.jsonload)
+
+'''
+author @yvan
+'''

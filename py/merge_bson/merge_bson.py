@@ -71,5 +71,8 @@ if __name__ == '__main__':
     else:
         merge_bson(args.output, args.inputs)
 
-# c* http://stackoverflow.com/questions/18160078/how-do-you-write-tests-for-the-argparse-portion-of-a-python-module
-# c* http://stackoverflow.com/questions/4028904/how-to-get-the-home-directory-in-python
+'''
+author @yvan
+c* http://stackoverflow.com/questions/18160078/how-do-you-write-tests-for-the-argparse-portion-of-a-python-module
+c* http://stackoverflow.com/questions/4028904/how-to-get-the-home-directory-in-python
+'''

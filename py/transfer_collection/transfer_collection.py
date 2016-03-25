@@ -203,3 +203,7 @@ if __name__ == "__main__":
         bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
 
     logger.info("Transfer of all collections from source complete")
+
+'''
+author @yvan
+'''

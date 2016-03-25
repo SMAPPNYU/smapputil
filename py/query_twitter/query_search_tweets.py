@@ -91,6 +91,7 @@ if __name__ == '__main__':
     twitter_query(args.output, args.input, args.auth)
 
 '''
+author @yvan
 http://tweepy.readthedocs.org/en/v3.5.0/api.html?highlight=search#API.search
 https://dev.twitter.com/rest/public/search
 https://dev.twitter.com/rest/reference/get/search/tweets

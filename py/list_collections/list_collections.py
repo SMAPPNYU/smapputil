@@ -81,6 +81,7 @@ if __name__ == '__main__':
     f.close()
     
 '''
+author @yvan
 http://docs.paramiko.org/en/1.16/
 http://jessenoller.com/blog/2009/02/05/ssh-programming-with-paramiko-completely-different
 '''

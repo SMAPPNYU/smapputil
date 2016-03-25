@@ -60,3 +60,7 @@ if __name__ == '__main__':
     logging.basicConfig(filename=args.log, level=logging.INFO)
     # actually merge the bson files
     date_filter(args.output, args.input, args.dateone, args.datetwo)
+
+'''
+author @yvan
+'''

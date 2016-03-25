@@ -75,3 +75,7 @@ if __name__ == '__main__':
         csv_to_json_list(args.output, args.inputs, args.fieldnames, args.skipheader)
     else:
         csv_to_json(args.output, args.inputs, args.fieldnames, args.skipheader)
+
+'''
+author @yvan
+'''

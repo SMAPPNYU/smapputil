@@ -23,5 +23,5 @@ echo $res
 secres=$(kill_autossh $one)
 echo $secres
 
-# tdd*
+# author @yvan
 # no* 'log' - keep out of this file.

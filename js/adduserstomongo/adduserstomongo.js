@@ -30,3 +30,7 @@ co(function * () {
     console.log(err)
     process.exit(1)
 })
+
+/*
+author @yvan
+*/
