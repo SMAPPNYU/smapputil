@@ -523,13 +523,11 @@ note: the input is the `LISTEN_PORT` for auto ssh. each colector box needs a dif
 
 abstract:
 ```sh
-bash /path/to/hades_rotating_tunnel.sh LISTEN_PORT NETID
+echo 'PASS' | bash /path/to/hades_rotating_tunnel.sh LISTEN_PORT NETID
 ```
 
 practical:
 ```sh
-bash ~/smapprepos/smapputilities/sh/hades_tunnels/hades_rotating_tunnel.sh 56899 gtp324
-# or with a pass
 echo 'crazycats' | bash ~/smapprepos/smapputilities/sh/hades_tunnels/hades_rotating_tunnel.sh 56899 gtp324
 ```
 
