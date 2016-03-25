@@ -1,9 +1,14 @@
 #!/bin/bash
 
+create_hades_tunnel () {
+    autossh -M $1 -N -L 27017:hades$2.es.its.nyu.edu:27017 $3@hpc.nyu.edu
+    echo "$?"
+}
+
 # creates a tunnel to hades given inputs
 # return the result
-create_hades_tunnel () {
-    sshpass -p $1 autossh -M $3 -N -L 27017:hades$2.es.its.nyu.edu:27017 yns207@hpc.nyu.edu
+create_hades_tunnel_pass () {
+    sshpass -p $1 autossh -M $2 -N -L 27017:hades$3.es.its.nyu.edu:27017 $4@hpc.nyu.edu
     echo "$?"
 }
 

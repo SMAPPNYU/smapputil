@@ -12,6 +12,7 @@ readonly zero=0
 readonly datetime=`date +"%a-%b-%d-%T-%Z-%Y"`
 readonly scriptname=`basename "$0"`
 readonly listenport=$1
+readonly netid=$2
 setlogpath ~/shlogs/$scriptname-$datetime 
 
 # set the autossh log to be a little chatty.
@@ -52,7 +53,7 @@ declare loginnodes=(0 1)
 while [  "$c" -lt "${#loginnodes[@]}" ]; do
     # try a first connect attempt
     log "trying autossh to hades$c.es.its.nyu.edu..."
-    result=$(create_hades_tunnel $pass $c $listenport)
+    result=$(create_hades_tunnel_pass $pass $listenport $c $netid)
 
 	# cleanup any old autossh processes
 	# and their ssh children that may have lingered
