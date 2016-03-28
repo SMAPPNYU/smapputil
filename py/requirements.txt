@@ -1,4 +1,6 @@
 smapputil
+psutil==4.1.0
+sshtunnel==0.0.8.1 
 decorator==4.0.9
 networkx==1.11
 numpy==1.10.4

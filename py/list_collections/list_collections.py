@@ -62,13 +62,13 @@ if __name__ == '__main__':
     collections_by_server = {}
 
     if args.input.endswith('.json'):
-        with open(expanduser(args.input), 'rb') as data:
+        with open(expanduser(args.input), 'r') as data:
             line_dict = json.load(data)
             for server, user in line_dict.items():
                 collections_by_server[server] = list_collections(server, user)
 
     elif args.input.endswith('.csv'):
-        with open(expanduser(args.input), 'rb') as data:
+        with open(expanduser(args.input), 'r') as data:
             reader = csv.reader(data)
             for row in reader:
                 collections_by_server[row[0]] = list_collections(row[0], row[1])

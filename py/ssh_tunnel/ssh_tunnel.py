@@ -1,7 +1,8 @@
 import sys
 import logging
-import sshtunnel
 import argparse
+import sshtunnel
+import subprocess
 
 from os.path import expanduser
 

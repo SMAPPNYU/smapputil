@@ -1,9 +1,11 @@
 import os
 import sys
+import json
 import unittest
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/../ssh_tunnel')
 
 import ssh_tunnel
+import rotating_tunnel
 
 class TestSshTunnel(unittest.TestCase):
     def __init__(self, testname, password, user):
@@ -25,5 +27,6 @@ if __name__ == '__main__':
     suite = unittest.TestSuite()
     suite.addTest(TestSshTunnel('test_control', password, user))
     suite.addTest(TestSshTunnel('test_ssh_tunnel', password, user))
+    suite.addTest(TestSshTunnel('test_rotating_tunnel', password, user))
     unittest.TextTestRunner().run(suite)
     

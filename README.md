@@ -20,6 +20,7 @@ repository that contains utility scripts in python, bash or javascript. Javascri
     - [query_user_objects](https://github.com/SMAPPNYU/smapputil#query_user_objects)
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
+    - [rotating_tunnel](https://github.com/SMAPPNYU/smapputil#rotating_tunnel)
 - [js](https://github.com/SMAPPNYU/smapputil#js)
     - [mailtweetcounts](https://github.com/SMAPPNYU/smapputil#mailtweetcounts)
     - [adduserstomongo](https://github.com/SMAPPNYU/smapputil#adduserstomongo)
@@ -131,6 +132,54 @@ ssh_tunnel.start_ssh_tunnel(args.loginhost, args.username, args.password, args.l
 *returns* a bson file that writes to disk in the output.
 
 test: `python test/test_ssh_tunnel LOGIN_USER LOGIN_PASSWORD`
+
+
+#[rotating_tunnel](https://github.com/SMAPPNYU/smapputil/tree/master/py/rotating_tunnel)
+
+creates a keyed login only rotating tunnel. less general than ssh_tunnel, rotates the tunnels among
+login nodes and remote ports provided in input.
+
+abstract:
+```python
+python py/ssh_tunnel/ssh_tunnel.py  -rh REMOTE_HOST -rp REMOTE_PORT -lh localhost -lp LOCAL_PORT
+```
+
+practical:
+```python
+
+```
+
+*returns* a tunnel that maps yous local ports to a rotating set of remote ports and hosts
+
+*input* a file that contains a set of login hosts and a set of remotehosts
+
+```
+{
+    "loginhosts":[
+        {
+            "host":"host1",
+            "user":"user1"
+        },
+        {
+            "host":"host2",
+            "user":"user2"
+        }
+    ],
+    "remotehosts":[
+        {
+            "host":"host3",
+            "user":"user3"
+        },
+        {
+            "host":"host4",
+            "user":"user4"
+        }
+    ]
+}
+```
+
+
+note: if using the tunnel to connect to nyu bastion host (HPC) contact the sys admin there to add your public keys to the authorized_hosts file for your account on that machine.
 
 #[merge_json](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_json)
 

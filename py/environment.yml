@@ -3,6 +3,8 @@ dependencies:
 - python=2.7.11
 - pylint=1.5.4
 - pip:
+    - psutil==4.1.0
+    - sshtunnel==0.0.8.1 
     - python-crontab==2.0.1
     - decorator==4.0.9
     - networkx==1.11
