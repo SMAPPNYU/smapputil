@@ -1,0 +1,8 @@
+name: tunnel_env
+dependencies:
+- python=2.7.11
+- pip:
+    - psutil==4.1.0
+    - sshtunnel==0.0.8.1 
+    - argparse==1.4.0
+    - logging==0.4.9.6
