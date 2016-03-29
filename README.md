@@ -7,7 +7,7 @@
                     |_|   |_|
 ```
 
-repository that contains utility scripts in python, bash or javascript. Javascript run here will be of the variety node.js 5.0.0. Python is generally python 2.7.11 moving to python 3. Shellscript/bash is expected to be in bash 3.2. A lot of the code here are refined, modularized, improved versions of scripts that used to be in Sandbox and smappPy.
+⚙ smapputil that contains utility scripts in python, bash or javascript. Javascript run here will be of the variety node.js 5.0.0. Python is generally python 2.7.11 moving to python 3. Shellscript/bash is expected to be in bash 3.2. A lot of the code here are refined, modularized, improved versions of scripts that used to be in Sandbox and smappPy.
 
 - [py](https://github.com/SMAPPNYU/smapputil#py)
     - [merge_bson](https://github.com/SMAPPNYU/smapputil#merge_bson)
