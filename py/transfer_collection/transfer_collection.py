@@ -127,7 +127,7 @@ if __name__ == "__main__":
         help="[None] Source data mongo server user")
     parser.add_argument("-w", "--password", default=None,
         help="[None] Source data mongo user password")
-    parser.add_argument("-d", "--db", required=True,
+    parser.add_argument("-d", "--db",
         help="[Required] Database to transfer on source server")
 
     parser.add_argument("-ts", "--targethost", default="localhost",
@@ -138,7 +138,7 @@ if __name__ == "__main__":
         help="[None] Target mongo server user")
     parser.add_argument("-tw", "--targetpassword", default=None,
         help="[None] Target mongo user password")
-    parser.add_argument("-td", "--targetdb", required=True,
+    parser.add_argument("-td", "--targetdb",
         help="[Required] Database to transfer source data in to")
 
     parser.add_argument("-au", "--ausr", required=True,
