@@ -2,6 +2,7 @@
 TODO: Preserve and merge all metadata (filter criteria, limits, deletes, post-filters, etc) 
 '''
 
+import json
 import pymongo
 import logging
 import argparse
