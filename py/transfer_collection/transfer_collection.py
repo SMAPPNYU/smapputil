@@ -212,7 +212,7 @@ if __name__ == "__main__":
             for db_pair in input_dict:
                 transfer_collection(args.host, args.port, db_pair['sourcedb'], args.username, args.password, args.targethost, args.targetport,  db_pair['targetdb'], args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded)
     else:
-        transfer_collection(args.host, args.port, args.db, args.username, args.password, args.targethost, args.targetport, args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded):
+        transfer_collection(args.host, args.port, args.db, args.username, args.password, args.targethost, args.targetport, args.targetdb, args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded)
 
 '''
 author @yvan @dpb
