@@ -16,6 +16,58 @@ currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 logger = logging.getLogger("TweetCollector.TransferCollection")
 logging.basicConfig(filename=expanduser('~/pylogs/transfer_tweet_data_'+currentdate+'.log'), level=logging.INFO)
 
+def transfer_collection(host, port, db, username, password, targethost, targetport, targetdb, targetuser, targetpassword, ausr, apwd, adb, targetsharded):
+    # connect to the db
+    # then get a list of collections
+    source_mongo = pymongo.MongoClient(host, int(port))
+    source_db = source_mongo[db]
+    source_metadata_collection = source_db['smapp_metadata']
+    if username and password:
+        source_db.authenticate(username, password)
+    source_metadata_document = source_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
+    source_collections_list = source_metadata_document['tweet_collections'][::-1]
+
+    target_mongo = pymongo.MongoClient(targethost, int(targetport))
+    if targetuser and targetpassword and ausr and apwd:
+        target_mongo[adb].authenticate(ausr, apwd)
+        target_db = target_mongo[targetdb]
+        target_db.authenticate(targetuser, targetpassword)
+    target_metadata_collection = target_db['smapp_metadata']
+    target_metadata_document = target_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
+    target_collections_list = target_metadata_document['tweet_collections']
+
+    logger.info("Source DB tweet collections: {0}".format(source_collections_list))
+    logger.info("Target DB tweet collections: {0}".format(target_collections_list))
+    logger.info("Reverse-ordered source collections to transfer: {0}".format(source_collections_list))
+
+    for source_collection_name in source_collections_list:
+        # Check if collection exists and is nonempty
+        if source_db[source_collection_name].count() <= 0:
+            logger.info("Collection {0} empty. Skipping".format(source_collection_name))
+            continue
+
+        if source_collection_name in target_db.collection_names():
+            logger.info("Collection of tweets exists on target db, inserting into: {0}".format(source_collection_name))
+            print('if ' + source_collection_name)
+        else:
+            logger.info("Creating new collection on target: {0}".format(source_collection_name))
+            print('else ' + source_collection_name)
+            target_db.create_collection(source_collection_name)
+            logger.info("Adding new collection to metadata and saving")
+            target_collections_list.insert(0, source_collection_name)
+            target_db['smapp_metadata'].update_one({'document': 'smapp-tweet-collection-metadata'}, {'$set': {'tweet_collections': target_collections_list}})
+        # Create indexes and enable sharding on new collection
+        logger.info("Creating indexes and enabling sharding on {0}".format(source_collection_name))
+
+        if targetsharded:
+            ensure_hashed_id_index(target_db[source_collection_name])
+            enable_collection_sharding(target_mongo, target_db, target_db[source_collection_name])
+        
+        # BULK (chunk-wise insert, to speed up)
+        bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
+
+    logger.info("Transfer of all collections from source complete")
+
 '''
     Run admin command to shard collection. 
     collection  - pymongo Collection object
@@ -119,6 +171,7 @@ def naive_transfer(source_collection, target_collection, logger=logger,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("-ls", "--list", help="give the script a file that contains a list of source/destintation databases to run transfers on")
     parser.add_argument("-s", "--host", default="smapp.politics.fas.nyu.edu",
         help=" [smapp.politics.fas.nyu.edu] Mongo server for source data (to transfer to Target)")
     parser.add_argument("-p", "--port", type=int, default=27011,
@@ -153,57 +206,14 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # connect to the db
-    # then get a list of collections
-    source_mongo = pymongo.MongoClient(args.host, int(args.port))
-    source_db = source_mongo[args.db]
-    source_metadata_collection = source_db['smapp_metadata']
-    if args.username and args.password:
-        source_db.authenticate(args.username, args.password)
-    source_metadata_document = source_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
-    source_collections_list = source_metadata_document['tweet_collections'][::-1]
-
-    target_mongo = pymongo.MongoClient(args.targethost, int(args.targetport))
-    if args.targetuser and args.targetpassword and args.ausr and args.apwd:
-        target_mongo[args.adb].authenticate(args.ausr, args.apwd)
-        target_db = target_mongo[args.targetdb]
-        target_db.authenticate(args.targetuser, args.targetpassword)
-    target_metadata_collection = target_db['smapp_metadata']
-    target_metadata_document = target_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
-    target_collections_list = target_metadata_document['tweet_collections']
-
-    logger.info("Source DB tweet collections: {0}".format(source_collections_list))
-    logger.info("Target DB tweet collections: {0}".format(target_collections_list))
-    logger.info("Reverse-ordered source collections to transfer: {0}".format(source_collections_list))
-
-    for source_collection_name in source_collections_list:
-        # Check if collection exists and is nonempty
-        if source_db[source_collection_name].count() <= 0:
-            logger.info("Collection {0} empty. Skipping".format(source_collection_name))
-            continue
-
-        if source_collection_name in target_db.collection_names():
-            logger.info("Collection of tweets exists on target db, inserting into: {0}".format(source_collection_name))
-            print('if ' + source_collection_name)
-        else:
-            logger.info("Creating new collection on target: {0}".format(source_collection_name))
-            print('else ' + source_collection_name)
-            target_db.create_collection(source_collection_name)
-            logger.info("Adding new collection to metadata and saving")
-            target_collections_list.insert(0, source_collection_name)
-            target_db['smapp_metadata'].update_one({'document': 'smapp-tweet-collection-metadata'}, {'$set': {'tweet_collections': target_collections_list}})
-        # Create indexes and enable sharding on new collection
-        logger.info("Creating indexes and enabling sharding on {0}".format(source_collection_name))
-
-        if args.targetsharded:
-            ensure_hashed_id_index(target_db[source_collection_name])
-            enable_collection_sharding(target_mongo, target_db, target_db[source_collection_name])
-        
-        # BULK (chunk-wise insert, to speed up)
-        bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
-
-    logger.info("Transfer of all collections from source complete")
+    if args.list:
+        with open(os.path.expanduser(args.list), 'r') as data:
+            input_dict = json.load(data)
+            for db_pair in input_dict:
+                transfer_collection(args.host, args.port, db_pair['sourcedb'], args.username, args.password, args.targethost, args.targetport,  db_pair['targetdb'], args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded)
+    else:
+        transfer_collection(args.host, args.port, args.db, args.username, args.password, args.targethost, args.targetport, args.targetdb, args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded)
 
 '''
-author @yvan
+author @yvan @dpb
 '''

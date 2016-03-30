@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import pipes
+import time
 import signal
 import psutil
 import logging
@@ -17,10 +18,11 @@ def rotating_tunnel(login_info, remote_info, localport, monitorport):
 				stop_autossh_tunnel(process.pid)
 				continue
 			else:
-				print('tunnel running')
+				print('tunnel running on port ' + str(localport))
 				print('to kill run, `kill ' + str(process.pid) + '`')
 				print('or run `python rotating_tunnel.py -op kill -i ' + str(process.pid) + '`')
-				break
+				while proc.status() == psutil.STATUS_RUNNING:
+					time.sleep(1)
 
 def start_autossh_tunnel(monitorport, loginhost, login_username, localport, remotehost, remoteport):
 	autossh_string = "autossh -M {0} -N -L {1}:{2}:{3} {4}@{5}".format(monitorport, localport, remotehost, remoteport, login_username, loginhost)
