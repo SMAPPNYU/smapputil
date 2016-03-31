@@ -94,19 +94,19 @@ def enable_collection_sharding(authed_mongo_target, target_db, collection):
 '''
 def ensure_hashed_id_index(collection):
     try:
-        collection.create_index([('_id', pymongo.HASHED)], name="_id_hashed", background=True)
+        collection.create_index([('_id', pymongo.HASHED)], name="_id_hashed")
     except pymongo.errors.OperationFailure as e:
         logger.info('opfailure in create hashed index indexes {}'.format(e))
     try:
-        collection.create_index('id', name="twitter_id", drop_dups=True, background=True)
+        collection.create_index('id', name="twitter_id", drop_dups=True)
     except pymongo.errors.OperationFailure as e:
         logger.info('opfailure in create index on twitter \'id\' field {}'.format(e))
     try:
-        collection.create_index('random_number', name="index_random", background=True)
+        collection.create_index('random_number', name="index_random")
     except pymongo.errors.OperationFailure as e:
         logger.info('opfailure in random number {}'.format(e))
     try:
-        collection.create_index('timestamp', name="index_timestamp", background=True)
+        collection.create_index('timestamp', name="index_timestamp")
     except pymongo.errors.OperationFailure as e:
         logger.info('opfailure in create index on random timestamp {}'.format(e))
 
