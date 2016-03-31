@@ -153,7 +153,8 @@ def bulk_transfer(source_collection, target_collection, batch_size=500,
                 logger.debug("Processed {0} / {1}".format(count, total))
                 logger.debug("Inserted {0} / {1}".format(inserted, count))
 
-    logger.info("Transfered {0} of {1}".format(count, total))
+            logger.info("Transfered {0} of {1}".format(count, total))
+            
         except pymongo.errors.BulkWriteError as e:
             logger.info('pymongo.errors.BulkWriteError {}'.format(e))
 
