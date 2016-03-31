@@ -147,15 +147,15 @@ def bulk_transfer(source_collection, target_collection, batch_size=500,
     for batch in grouper(batch_size, source_collection.find()):
         try:
             r = target_collection.insert_many(batch, ordered=False)
-        except pymongo.errors.BulkWriteError as e:
-            logger.info('pymongo.errors.BulkWriteError {}'.format(e))
-        count += len(batch)
-        inserted += len(r.inserted_ids)
-        if count % progress == 0:
-            logger.debug("Processed {0} / {1}".format(count, total))
-            logger.debug("Inserted {0} / {1}".format(inserted, count))
+            count += len(batch)
+            inserted += len(r.inserted_ids)
+            if count % progress == 0:
+                logger.debug("Processed {0} / {1}".format(count, total))
+                logger.debug("Inserted {0} / {1}".format(inserted, count))
 
     logger.info("Transfered {0} of {1}".format(count, total))
+        except pymongo.errors.BulkWriteError as e:
+            logger.info('pymongo.errors.BulkWriteError {}'.format(e))
 
 '''
     Does a naive (no bulk inserts) transfer, one-by-one, 
