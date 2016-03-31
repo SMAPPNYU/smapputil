@@ -50,10 +50,10 @@ def transfer_collection(host, port, db, username, password, targethost, targetpo
 
         if source_collection_name in target_db.collection_names():
             logger.info("Collection of tweets exists on target db, inserting into: {0}".format(source_collection_name))
-            print('if ' + source_collection_name)
+            print('source collection ' + source_collection_name + ' exists on target')
         else:
             logger.info("Creating new collection on target: {0}".format(source_collection_name))
-            print('else ' + source_collection_name)
+            print('source collection '  + source_collection_name + ' does not exist on target')
             target_db.create_collection(source_collection_name)
             logger.info("Adding new collection to metadata and saving")
             target_collections_list.insert(0, source_collection_name)
@@ -98,7 +98,7 @@ def ensure_hashed_id_index(collection):
     except pymongo.errors.OperationFailure as e:
         logger.info('opfailure in create hashed index indexes {}'.format(e))
     try:
-        collection.create_index('id', name="twitter_id", drop_dups=True)
+        collection.create_index('id', name="twitter_id")
     except pymongo.errors.OperationFailure as e:
         logger.info('opfailure in create index on twitter \'id\' field {}'.format(e))
     try:
