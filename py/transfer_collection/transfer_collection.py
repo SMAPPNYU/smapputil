@@ -40,6 +40,7 @@ def transfer_collection(host, port, db, username, password, targethost, targetpo
     logger.info("Target DB tweet collections: {0}".format(target_collections_list))
     logger.info("Reverse-ordered source collections to transfer: {0}".format(source_collections_list))
 
+    print('database: ' + db)
     for source_collection_name in source_collections_list:
         # Check if collection exists and is nonempty
         if source_db[source_collection_name].count() <= 0:
