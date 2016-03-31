@@ -17,7 +17,7 @@ currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 logger = logging.getLogger("TweetCollector.TransferCollection")
 logging.basicConfig(filename=expanduser('~/pylogs/transfer_tweet_data_'+currentdate+'.log'), level=logging.INFO)
 
-def transfer_collection(host, port, db, username, password, targethost, targetport, targetdb, targetuser, targetpassword, ausr, apwd, adb, targetsharded):
+def transfer_collection(host, port, db, username, password, targethost, targetport, targetdb, targetuser, targetpassword, ausr, apwd, adb, targetsharded, naive):
     # connect to the db
     # then get a list of collections
     source_mongo = pymongo.MongoClient(host, int(port))
@@ -65,8 +65,12 @@ def transfer_collection(host, port, db, username, password, targethost, targetpo
             ensure_hashed_id_index(target_db[source_collection_name])
             enable_collection_sharding(target_mongo, target_db, target_db[source_collection_name])
         
-        # BULK (chunk-wise insert, to speed up)
-        bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
+
+        if naive:
+            naive_transfer(ource_db[source_collection_name], target_db[source_collection_name])
+        else:
+            # BULK (chunk-wise insert, to speed up)
+            bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
 
     logger.info("Transfer of all collections from source complete")
 
@@ -210,8 +214,8 @@ if __name__ == "__main__":
     parser.add_argument('-tsh', '--targetsharded', action='store_true', default=False,
       help="Call this flag like so --targetsharded or -tsh if the target databases's collections are intended to be sharded.")
 
-    parser.add_argument('-tsh', '--targetsharded', action='store_true', default=False,
-      help="Call this flag like so --targetsharded or -tsh if the target databases's collections are intended to be sharded.")
+    parser.add_argument('--naive', action='store_true', default=False,
+      help="call this flag to do a non bulk insert, a naive insert")
 
     args = parser.parse_args()
 
@@ -219,9 +223,9 @@ if __name__ == "__main__":
         with open(expanduser(args.list), 'r') as data:
             input_dict = json.load(data)
             for db_pair in input_dict:
-                transfer_collection(args.host, args.port, db_pair['sourcedb'], args.username, args.password, args.targethost, args.targetport,  db_pair['targetdb'], args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded)
+                transfer_collection(args.host, args.port, db_pair['sourcedb'], args.username, args.password, args.targethost, args.targetport,  db_pair['targetdb'], args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded, args.naive)
     else:
-        transfer_collection(args.host, args.port, args.db, args.username, args.password, args.targethost, args.targetport, args.targetdb, args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded)
+        transfer_collection(args.host, args.port, args.db, args.username, args.password, args.targethost, args.targetport, args.targetdb, args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded, args.naive)
 
 '''
 author @yvan @dpb
