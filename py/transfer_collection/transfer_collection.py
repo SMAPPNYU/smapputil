@@ -141,7 +141,10 @@ def bulk_transfer(source_collection, target_collection, batch_size=500,
     logger.info("Total to transfer: {0}".format(total))
 
     for batch in grouper(batch_size, source_collection.find()):
-        r = target_collection.insert_many(batch, ordered=False)
+        try:
+            r = target_collection.insert_many(batch, ordered=False)
+        except pymongo.errors.BulkWriteError as e:
+            logger.info('pymongo.errors.BulkWriteError {}'.format(e))
         count += len(batch)
         inserted += len(r.inserted_ids)
         if count % progress == 0:
@@ -178,6 +181,7 @@ if __name__ == "__main__":
         help=" [smapp.politics.fas.nyu.edu] Mongo server for source data (to transfer to Target)")
     parser.add_argument("-p", "--port", type=int, default=27011,
         help="[27011] Source data mongo server port")
+
     parser.add_argument("-u", "--username", default=None,
         help="[None] Source data mongo server user")
     parser.add_argument("-w", "--password", default=None,
@@ -202,6 +206,9 @@ if __name__ == "__main__":
         help="[None] Source data mongo user password")
     parser.add_argument("-adb", "--adb", required=True,
         help="[Required] Database to transfer on source server")
+
+    parser.add_argument('-tsh', '--targetsharded', action='store_true', default=False,
+      help="Call this flag like so --targetsharded or -tsh if the target databases's collections are intended to be sharded.")
 
     parser.add_argument('-tsh', '--targetsharded', action='store_true', default=False,
       help="Call this flag like so --targetsharded or -tsh if the target databases's collections are intended to be sharded.")
