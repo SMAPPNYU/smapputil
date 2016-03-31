@@ -2,6 +2,7 @@
 TODO: Preserve and merge all metadata (filter criteria, limits, deletes, post-filters, etc) 
 '''
 
+import json
 import pymongo
 import logging
 import argparse
@@ -181,7 +182,7 @@ if __name__ == "__main__":
         help="[None] Source data mongo server user")
     parser.add_argument("-w", "--password", default=None,
         help="[None] Source data mongo user password")
-    parser.add_argument("-d", "--db", required=True,
+    parser.add_argument("-d", "--db",
         help="[Required] Database to transfer on source server")
 
     parser.add_argument("-ts", "--targethost", default="localhost",
@@ -192,7 +193,7 @@ if __name__ == "__main__":
         help="[None] Target mongo server user")
     parser.add_argument("-tw", "--targetpassword", default=None,
         help="[None] Target mongo user password")
-    parser.add_argument("-td", "--targetdb", required=True,
+    parser.add_argument("-td", "--targetdb",
         help="[Required] Database to transfer source data in to")
 
     parser.add_argument("-au", "--ausr", required=True,
@@ -208,7 +209,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.list:
-        with open(os.path.expanduser(args.list), 'r') as data:
+        with open(expanduser(args.list), 'r') as data:
             input_dict = json.load(data)
             for db_pair in input_dict:
                 transfer_collection(args.host, args.port, db_pair['sourcedb'], args.username, args.password, args.targethost, args.targetport,  db_pair['targetdb'], args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded)
