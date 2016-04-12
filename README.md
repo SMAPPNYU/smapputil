@@ -129,23 +129,26 @@ ssh_tunnel.start_ssh_tunnel(args.loginhost, args.username, args.password, args.l
 
 `-lh` is optional
 
-*returns* a bson file that writes to disk in the output.
+*returns* an ssh tunnel
 
 test: `python test/test_ssh_tunnel LOGIN_USER LOGIN_PASSWORD`
 
 
 #[rotating_tunnel](https://github.com/SMAPPNYU/smapputil/tree/master/py/rotating_tunnel)
 
+*not ready*
+
 creates a keyed login only rotating tunnel. less general than ssh_tunnel, rotates the tunnels among
 login nodes and remote ports provided in input.
 
 abstract:
 ```python
-python py/ssh_tunnel/ssh_tunnel.py  -rh REMOTE_HOST -rp REMOTE_PORT -lh localhost -lp LOCAL_PORT
+python py/ssh_tunnel/rotating_tunnel.py -rh REMOTE_HOST -rp REMOTE_PORT -lh localhost -lp LOCAL_PORT
 ```
 
 practical:
 ```python
+python py/ssh_tunnel/rotating_tunnel.py -rh REMOTE_HOST -rp REMOTE_PORT -lh localhost -lp LOCAL_PORT
 
 ```
 
