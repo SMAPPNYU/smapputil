@@ -17,7 +17,7 @@ currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 logger = logging.getLogger("TweetCollector.TransferCollection")
 logging.basicConfig(filename=expanduser('~/pylogs/transfer_tweet_data_'+currentdate+'.log'), level=logging.INFO)
 
-def transfer_collection(host, port, db, username, password, targethost, targetport, targetdb, targetuser, targetpassword, ausr, apwd, adb, targetsharded):
+def transfer_collection(host, port, db, username, password, targethost, targetport, targetdb, targetuser, targetpassword, ausr, apwd, adb, targetsharded, naive):
     # connect to the db
     # then get a list of collections
     source_mongo = pymongo.MongoClient(host, int(port))
@@ -41,6 +41,7 @@ def transfer_collection(host, port, db, username, password, targethost, targetpo
     logger.info("Target DB tweet collections: {0}".format(target_collections_list))
     logger.info("Reverse-ordered source collections to transfer: {0}".format(source_collections_list))
 
+    print('database: ' + db)
     for source_collection_name in source_collections_list:
         # Check if collection exists and is nonempty
         if source_db[source_collection_name].count() <= 0:
@@ -49,10 +50,10 @@ def transfer_collection(host, port, db, username, password, targethost, targetpo
 
         if source_collection_name in target_db.collection_names():
             logger.info("Collection of tweets exists on target db, inserting into: {0}".format(source_collection_name))
-            print('if ' + source_collection_name)
+            print('source collection ' + source_collection_name + ' exists on target')
         else:
             logger.info("Creating new collection on target: {0}".format(source_collection_name))
-            print('else ' + source_collection_name)
+            print('source collection '  + source_collection_name + ' does not exist on target')
             target_db.create_collection(source_collection_name)
             logger.info("Adding new collection to metadata and saving")
             target_collections_list.insert(0, source_collection_name)
@@ -64,8 +65,12 @@ def transfer_collection(host, port, db, username, password, targethost, targetpo
             ensure_hashed_id_index(target_db[source_collection_name])
             enable_collection_sharding(target_mongo, target_db, target_db[source_collection_name])
         
-        # BULK (chunk-wise insert, to speed up)
-        bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
+
+        if naive:
+            naive_transfer(ource_db[source_collection_name], target_db[source_collection_name])
+        else:
+            # BULK (chunk-wise insert, to speed up)
+            bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
 
     logger.info("Transfer of all collections from source complete")
 
@@ -93,19 +98,19 @@ def enable_collection_sharding(authed_mongo_target, target_db, collection):
 '''
 def ensure_hashed_id_index(collection):
     try:
-        collection.create_index([('_id', pymongo.HASHED)], name="_id_hashed", background=True)
+        collection.create_index([('_id', pymongo.HASHED)], name="_id_hashed")
     except pymongo.errors.OperationFailure as e:
         logger.info('opfailure in create hashed index indexes {}'.format(e))
     try:
-        collection.create_index('id', name="twitter_id", drop_dups=True, background=True)
+        collection.create_index('id', name="twitter_id")
     except pymongo.errors.OperationFailure as e:
         logger.info('opfailure in create index on twitter \'id\' field {}'.format(e))
     try:
-        collection.create_index('random_number', name="index_random", background=True)
+        collection.create_index('random_number', name="index_random")
     except pymongo.errors.OperationFailure as e:
         logger.info('opfailure in random number {}'.format(e))
     try:
-        collection.create_index('timestamp', name="index_timestamp", background=True)
+        collection.create_index('timestamp', name="index_timestamp")
     except pymongo.errors.OperationFailure as e:
         logger.info('opfailure in create index on random timestamp {}'.format(e))
 
@@ -140,14 +145,18 @@ def bulk_transfer(source_collection, target_collection, batch_size=500,
     logger.info("Total to transfer: {0}".format(total))
 
     for batch in grouper(batch_size, source_collection.find()):
-        r = target_collection.insert_many(batch, ordered=False)
-        count += len(batch)
-        inserted += len(r.inserted_ids)
-        if count % progress == 0:
-            logger.debug("Processed {0} / {1}".format(count, total))
-            logger.debug("Inserted {0} / {1}".format(inserted, count))
+        try:
+            r = target_collection.insert_many(batch, ordered=False)
+            count += len(batch)
+            inserted += len(r.inserted_ids)
+            if count % progress == 0:
+                logger.debug("Processed {0} / {1}".format(count, total))
+                logger.debug("Inserted {0} / {1}".format(inserted, count))
 
-    logger.info("Transfered {0} of {1}".format(count, total))
+            logger.info("Transfered {0} of {1}".format(count, total))
+            
+        except pymongo.errors.BulkWriteError as e:
+            logger.info('pymongo.errors.BulkWriteError {}'.format(e))
 
 '''
     Does a naive (no bulk inserts) transfer, one-by-one, 
@@ -208,15 +217,18 @@ if __name__ == "__main__":
     parser.add_argument('-tsh', '--targetsharded', action='store_true', default=False,
       help="Call this flag like so --targetsharded or -tsh if the target databases's collections are intended to be sharded.")
 
+    parser.add_argument('--naive', action='store_true', default=False,
+      help="call this flag to do a non bulk insert, a naive insert")
+
     args = parser.parse_args()
 
     if args.list:
         with open(expanduser(args.list), 'r') as data:
             input_dict = json.load(data)
             for db_pair in input_dict:
-                transfer_collection(args.host, args.port, db_pair['sourcedb'], args.username, args.password, args.targethost, args.targetport,  db_pair['targetdb'], args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded)
+                transfer_collection(args.host, args.port, db_pair['sourcedb'], args.username, args.password, args.targethost, args.targetport,  db_pair['targetdb'], args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded, args.naive)
     else:
-        transfer_collection(args.host, args.port, args.db, args.username, args.password, args.targethost, args.targetport, args.targetdb, args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded)
+        transfer_collection(args.host, args.port, args.db, args.username, args.password, args.targethost, args.targetport, args.targetdb, args.targetuser, args.targetpassword, args.ausr, args.apwd, args.adb, args.targetsharded, args.naive)
 
 '''
 author @yvan @dpb
