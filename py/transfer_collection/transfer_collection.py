@@ -173,10 +173,12 @@ def naive_transfer(source_collection, target_collection, logger=logger,
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-ls", "--list", help="give the script a file that contains a list of source/destintation databases to run transfers on")
+    
     parser.add_argument("-s", "--host", default="smapp.politics.fas.nyu.edu",
         help=" [smapp.politics.fas.nyu.edu] Mongo server for source data (to transfer to Target)")
     parser.add_argument("-p", "--port", type=int, default=27011,
         help="[27011] Source data mongo server port")
+
     parser.add_argument("-u", "--username", default=None,
         help="[None] Source data mongo server user")
     parser.add_argument("-w", "--password", default=None,
@@ -188,6 +190,7 @@ if __name__ == "__main__":
         help="[localhost] Target mongo server to transfer data to")
     parser.add_argument("-tp", "--targetport", type=int, default=27017,
         help="[49999] Target mongo server port")
+    
     parser.add_argument("-tu", "--targetuser", default=None,
         help="[None] Target mongo server user")
     parser.add_argument("-tw", "--targetpassword", default=None,
