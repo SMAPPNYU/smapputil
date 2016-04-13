@@ -398,6 +398,21 @@ python py/mail_tweet_counts/mail_tweet_counts.py -ho localhost -p 27017
 
 *returns* an email to the specified address with the tweet counts in the db.
 
+needs config.py that looks like so in mail_tweet_counts dir:
+
+```
+config = \
+{ \
+    'ignore_dbs': ['admin', 'config', 'test', 'EgyptToleranceUsersNetworks', 'OWSUsers', 'FilterCriteriaAdmin'], \
+    'ignore_collections':['tweets_limits', 'tweets_filter_criteria', 'system.indexes', 'smapp_metadata', 'tweets_deletes'], \
+    'mail': {
+        'toemail': 'email',
+        'gmailuser': 'smappmonitor@gmail.com', \
+        'gmailpass': 'PWD' \
+    } \
+}
+```
+
 #js
 
 javascript scripts that perform useful tasks that we can run. It was built for node v5.X.X. All js code should adhere to [js standard code style](https://github.com/feross/standard). so far i'm using js scripts fo mongo operations that need good async and are difficult to replicate in python 
