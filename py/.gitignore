@@ -74,4 +74,4 @@ target/
 # thing that turns on our env
 .env
 
-py/mail_tweet_counts/config.py
+config.py
