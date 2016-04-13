@@ -21,6 +21,7 @@
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
     - [rotating_tunnel](https://github.com/SMAPPNYU/smapputil#rotating_tunnel)
+    - [mail_tweet_counts](https://github.com/SMAPPNYU/smapputil#mail_tweet_counts)
 - [js](https://github.com/SMAPPNYU/smapputil#js)
     - [mailtweetcounts](https://github.com/SMAPPNYU/smapputil#mailtweetcounts)
     - [adduserstomongo](https://github.com/SMAPPNYU/smapputil#adduserstomongo)
@@ -381,6 +382,22 @@ practical:
 *returns* nothing but instead transfers data fro one running mongo instance to another
 
 note: requires at least mongo 3.0
+
+#[mail_tweet_counts](https://github.com/SMAPPNYU/smapputilities/tree/master/py/mail_tweet_counts)
+
+mails tweet counts daily from our db
+
+abstract:
+```python
+python py/mail_tweet_counts/mail_tweet_counts.py -ho HOSTNAME -p PORT
+```
+
+practical:
+```python
+python py/mail_tweet_counts/mail_tweet_counts.py -ho localhost -p 27017
+```
+
+*returns* an email to the specified address with the tweet counts in the db.
 
 #js
 
