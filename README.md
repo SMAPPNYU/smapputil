@@ -22,6 +22,7 @@
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
     - [rotating_tunnel](https://github.com/SMAPPNYU/smapputil#rotating_tunnel)
     - [mail_tweet_counts](https://github.com/SMAPPNYU/smapputil#mail_tweet_counts)
+    - [username_id_convert](https://github.com/SMAPPNYU/smapputil#username_id_convert)
 - [js](https://github.com/SMAPPNYU/smapputil#js)
     - [adduserstomongo](https://github.com/SMAPPNYU/smapputil#adduserstomongo)
 - [sh](https://github.com/SMAPPNYU/smapputil#sh)
@@ -52,7 +53,7 @@ That said you can specify whatever log path  you want. Just know that you must h
 
 #tests
 
-You must write tests for every function in every script. Whenever you add a new script you need to run your unit tests. Scripts with no tests will not be allowed into the repository.
+You must write tests for every function in every script. Whenever you add a new script you need to run your unit tests. Scripts with no tests will not be allowed into the repository. 
 
 [Python Testing Framework (unittest)](http://docs.python-guide.org/en/latest/writing/tests/)
 
@@ -412,6 +413,53 @@ config = \
     } \
 }
 ```
+
+#[username_id_convert](https://github.com/SMAPPNYU/smapputilities/tree/master/py/username_id_convert)
+
+convert twitter ids to usernames and vice versa.
+
+abstract:
+```python
+python py/username_id_convert/username_id_convert.py -op OPERATION -i PATH/TO/INPUT.JSON -o PATH/TO/OUTPUT.json -a PATH/TO/OAUTH.json
+```
+
+practical:
+```python
+python py/username_id_convert/username_id_convert.py -op users_ids -i py/test/test_handles.csv -o ~/pylogs/username_id_convert_output_2.json -a ~/misc/oauthpools/pool.json
+```
+
+OPERATION - ids_users, users_ids
+
+*returns* a json file with a json object on each line.
+
+takes a json 
+```
+[
+22997097, 14281853, 20686582, 19977542
+]
+```
+
+
+or csv input:
+
+```
+screen_name
+mcdonald4avalon
+jeannie4avalon
+lbarnettavalon
+ScottAndrewsNL
+Jenn_McCreath
+judyfootemp
+teejohnny
+Scott_Simms
+ClaudetteNDP
+YvonneJJones
+EdwardNDP
+PeterPenashue
+Gudie
+```
+
+
 
 #js
 
