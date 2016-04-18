@@ -23,3 +23,4 @@ dependencies:
     - logging==0.4.9.6
     - tweepy==3.4.0
     - paramiko==1.16.0
+    - envelopes==0.4

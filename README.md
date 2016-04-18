@@ -21,8 +21,9 @@
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
     - [rotating_tunnel](https://github.com/SMAPPNYU/smapputil#rotating_tunnel)
+    - [mail_tweet_counts](https://github.com/SMAPPNYU/smapputil#mail_tweet_counts)
+    - [username_id_convert](https://github.com/SMAPPNYU/smapputil#username_id_convert)
 - [js](https://github.com/SMAPPNYU/smapputil#js)
-    - [mailtweetcounts](https://github.com/SMAPPNYU/smapputil#mailtweetcounts)
     - [adduserstomongo](https://github.com/SMAPPNYU/smapputil#adduserstomongo)
 - [sh](https://github.com/SMAPPNYU/smapputil#sh)
     - [hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputil#hades_rotating_tunnel)
@@ -52,7 +53,7 @@ That said you can specify whatever log path  you want. Just know that you must h
 
 #tests
 
-You must write tests for every function in every script. Whenever you add a new script you need to run your unit tests. Scripts with no tests will not be allowed into the repository.
+You must write tests for every function in every script. Whenever you add a new script you need to run your unit tests. Scripts with no tests will not be allowed into the repository. 
 
 [Python Testing Framework (unittest)](http://docs.python-guide.org/en/latest/writing/tests/)
 
@@ -382,6 +383,84 @@ practical:
 
 note: requires at least mongo 3.0
 
+#[mail_tweet_counts](https://github.com/SMAPPNYU/smapputilities/tree/master/py/mail_tweet_counts)
+
+mails tweet counts daily from our db
+
+abstract:
+```python
+python py/mail_tweet_counts/mail_tweet_counts.py -ho HOSTNAME -p PORT
+```
+
+practical:
+```python
+python py/mail_tweet_counts/mail_tweet_counts.py -ho localhost -p 27017
+```
+
+*returns* an email to the specified address with the tweet counts in the db.
+
+needs config.py that looks like so in mail_tweet_counts dir:
+
+```
+config = \
+{ \
+    'ignore_dbs': ['admin', 'config', 'test', 'EgyptToleranceUsersNetworks', 'OWSUsers', 'FilterCriteriaAdmin'], \
+    'ignore_collections':['tweets_limits', 'tweets_filter_criteria', 'system.indexes', 'smapp_metadata', 'tweets_deletes'], \
+    'mail': {
+        'toemail': 'email',
+        'gmailuser': 'smappmonitor@gmail.com', \
+        'gmailpass': 'PWD' \
+    } \
+}
+```
+
+#[username_id_convert](https://github.com/SMAPPNYU/smapputilities/tree/master/py/username_id_convert)
+
+convert twitter ids to usernames and vice versa.
+
+abstract:
+```python
+python py/username_id_convert/username_id_convert.py -op OPERATION -i PATH/TO/INPUT.JSON -o PATH/TO/OUTPUT.json -a PATH/TO/OAUTH.json
+```
+
+practical:
+```python
+python py/username_id_convert/username_id_convert.py -op users_ids -i py/test/test_handles.csv -o ~/pylogs/username_id_convert_output_2.json -a ~/misc/oauthpools/pool.json
+```
+
+OPERATION - ids_users, users_ids
+
+*returns* a json file with a json object on each line.
+
+takes a json 
+```
+[
+22997097, 14281853, 20686582, 19977542
+]
+```
+
+
+or csv input:
+
+```
+screen_name
+mcdonald4avalon
+jeannie4avalon
+lbarnettavalon
+ScottAndrewsNL
+Jenn_McCreath
+judyfootemp
+teejohnny
+Scott_Simms
+ClaudetteNDP
+YvonneJJones
+EdwardNDP
+PeterPenashue
+Gudie
+```
+
+
+
 #js
 
 javascript scripts that perform useful tasks that we can run. It was built for node v5.X.X. All js code should adhere to [js standard code style](https://github.com/feross/standard). so far i'm using js scripts fo mongo operations that need good async and are difficult to replicate in python 
@@ -425,69 +504,6 @@ Generators / Pormises / Co Resources:
 [js generators tutorial](http://www.sitepoint.com/javascript-generators-preventing-callback-hell/)
 
 [js promises chaetsheet](http://ricostacruz.com/cheatsheets/bluebird.html)
-
-#[mailtweetcounts](https://github.com/SMAPPNYU/smapputilities/tree/master/js/mailtweetcounts)
-
-Sends an email with the daily tweet counts from all databases, aggregating tweet counts from collections that have tweets in that database. It needs to be run daily via cron.
-
-First go into the `smapputilities/js/mailtweetcounts` directory and run:
-```
-npm install
-```
-
-This will check the package.json and install all dependencies.
-
-Abstract:
-```javascript
-node /path/to/mailtweetcounts.js
-```
-
-Practical:
-```javascript
-node ~/smapp-repositories/smapputilities/js/mailtweetcounts/mailtweetcounts.js
-```
-
-The script requires a ssh tunnel to hades on the appropriate port:
-```bash
-ssh -fN -L LOCAL_PORT:localhost:REMOTE_PORT USERNAME@SERVER
-```
-
-the structure of the config file `smapputilities/js/mailtweetcounts/mailtweetconfig.js` is:
-
-```
-{
-    mongo: {
-        mongoadmin: 'mongodb://READANY_DB_USER:READANY_DB_PASS@SERVER:PORT/admin',
-        mongoanydb: 'mongodb://READONLY_SINGLEDB_USER:READONLY_SINGLEDB_PASS@SERVER:PORT/'
-    },
-    mail: {
-        gmailuser: 'YOUR_SMTP_EMAIL@GMAIL.COM',
-        gmaiipass: 'YOUR_SMTP_EMAIL_PASSWORD',
-        toemails: 'COMMA_SEPERATED_EMAIL_LIST'
-    }
-}
-```
-
-the config file gets imported as `var config = require('./mailtweetconfig')`.
-
-*Returns* a list of collections for each database in the db with tweet counts. This list gets emailed out to a list specified in the `toemails` of the config file.
-
-Test: 
-
-`npm install -g mocha`
-
-then
-
-run `mocha` in `smapputilities/js/mailtweetcounts`
-
-*Notes:* If your mongodb password has special chars they need to be substituted with their [percent encoded values](http://stackoverflow.com/questions/7486623/mongodb-password-with-in-it) or alternate chars.
-
-Do not use your admin password to log into the admin db of mongo db, use your read any database user. 
-
-I thought about doing this with just naked promises via bluebird, the issue is that looping with pure promises (and no co/coroutnes) is some crazy funtional programming and visually co + bluebird promises are easier to understand.
-
-This script is *assez* complicated. So to start we query the database, get all the dbs, then for each db we get all collections, then for each collection, we query the date range of today v yesterday (inputs to the script). Then based on what's returned we check to make sure each collection has at least one collection whose change from yesterday is greater than 0. If there are none wf flag that one. We track all this in a json object. Then we build an email string based on the info in this json object and send it to the list of emails. The scripts dates are already modular, it's just the script isn't setup to take command line args. This code is not magic. It's only going to aggregate tweets on collections that meet at least our current standard for organization. Also I do not recommend running this script on a collection with a non indexed timestamp field, it's going to take like a day to run.
-
 
 #[adduserstomongo](https://github.com/SMAPPNYU/smapputilities/tree/master/js/adduserstomongo)
 

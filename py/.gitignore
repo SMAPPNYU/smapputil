@@ -73,3 +73,5 @@ target/
 
 # thing that turns on our env
 .env
+
+config.py
