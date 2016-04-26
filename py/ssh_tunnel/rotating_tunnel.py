@@ -9,12 +9,6 @@ import logging
 import argparse
 import subprocess
 
-# replicate a double tunnel for potential login hosts.
-# use autossh on both tunnels, client hosts should have keys for
-# all login hosts. login hosts should have hades keys.
-# ssh -N -L 49999:localhost:22222 yvan@bluewizard.bio.nyu.edu &
-# ssh -N -L 22222:localhost:27017 yns207@hades0.es.its.nyu.edu &
-
 def rotating_tunnel(login_info, remote_info, localport, monitorport):
 	while True:
 		for login_host in login_info:
