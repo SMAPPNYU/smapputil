@@ -9,20 +9,27 @@ import logging
 import argparse
 import subprocess
 
+# replicate a double tunnel for potential login hosts.
+# use autossh on both tunnels, client hosts should have keys for
+# all login hosts. login hosts should have hades keys.
+# ssh -N -L 49999:localhost:22222 yvan@bluewizard.bio.nyu.edu &
+# ssh -N -L 22222:localhost:27017 yns207@hades0.es.its.nyu.edu &
+
 def rotating_tunnel(login_info, remote_info, localport, monitorport):
-	for login_host in login_info:
-		for remote_host in remote_info:
-			process = start_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['host'], remote_host['port'])
-			proc = psutil.Process(process.pid)
-			if proc.status() != psutil.STATUS_RUNNING:
-				stop_autossh_tunnel(process.pid)
-				continue
-			else:
-				print('tunnel running on port ' + str(localport))
-				print('to kill run, `kill ' + str(process.pid) + '`')
-				print('or run `python rotating_tunnel.py -op kill -i ' + str(process.pid) + '`')
-				while proc.status() == psutil.STATUS_RUNNING:
-					time.sleep(1)
+	while True:
+		for login_host in login_info:
+			for remote_host in remote_info:
+				process = start_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['host'], remote_host['port'])
+				proc = psutil.Process(process.pid)
+				if proc.status() != psutil.STATUS_RUNNING:
+					stop_autossh_tunnel(process.pid)
+					continue
+				else:
+					print('tunnel running on port ' + str(localport))
+					print('to kill run, `kill ' + str(process.pid) + '`')
+					print('or run `python rotating_tunnel.py -op kill -i ' + str(process.pid) + '`')
+					while proc.status() == psutil.STATUS_RUNNING:
+						time.sleep(1)
 
 def start_autossh_tunnel(monitorport, loginhost, login_username, localport, remotehost, remoteport):
 	autossh_string = "autossh -M {0} -N -L {1}:{2}:{3} {4}@{5}".format(monitorport, localport, remotehost, remoteport, login_username, loginhost)
