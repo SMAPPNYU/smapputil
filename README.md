@@ -159,6 +159,7 @@ python py/ssh_tunnel/rotating_tunnel.py -rh REMOTE_HOST -rp REMOTE_PORT -lh loca
 *input* a file that contains a set of login hosts and a set of remotehosts
 
 ```
+
 {
     "loginhosts":[
         {
@@ -180,15 +181,38 @@ python py/ssh_tunnel/rotating_tunnel.py -rh REMOTE_HOST -rp REMOTE_PORT -lh loca
             "user":"user4"
         }
     ],
-    "altport": ALT_PORT
+    "altloginhosts":[
+        {
+            "host":"althost2",
+            "user":"usr"
+        },
+        {
+            "host":"althost1",
+            "user":"usr"
+        }
+    ],
+    "altremotehosts":[
+        {
+            "host":"localhost",
+            "port":altport
+        },
+        {
+            "host":"localhost",
+            "port":altport
+        }
+    ]
 }
 ```
 
-`login hosts` are the set of hosts you want your script to treat as logins
+`loginhosts` are the set of hosts you want your script to treat as logins
 
-`remote_hosts` is only 
+`remotehosts` is only the set of hosts you want login hosts to look at
 
-`altport` is the port that tries to create a tunnel based on a different set of inputs, this attempts to tunnel to a server that is already tunneled into hades using a preset port called "altport." altport essentially exists to simplify our life, we put all our login hosts (main and alternate) in 'loginhosts', we put the hosts we want to connect to directly from whichever login hosts are bastion hosts in remote hosts, and we put the remote -> localhost:altport our alternate double tunnel hosts will use in altport.
+`altloginhosts` is optional, are the set of hosts you want to try to login to after exhausting all loginhosts
+
+`altremotehosts` is optional, is the set of alternate remote hosts you want to map to on the alt login hosts.
+
+basically alt login and remote hosts are for making "double tunnels" to get where you need to go. you setup a tunnel on the login host, then you connect directly to the login host tunnel. this was the cleanest and easiest way to get a tunnel maker that alternated between different kinds of tunnels. the other ways make it very awkward to setup double tunnels.
 
 note: if using the tunnel to connect to nyu bastion host contact the sys admin there to add your public keys to the authorized_hosts file for your account on that machine.
 
