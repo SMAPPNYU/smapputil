@@ -10,6 +10,7 @@ import argparse
 import subprocess
 
 def rotating_tunnel(login_info, remote_info, localport, monitorport):
+	logger = logging.getLogger(__name__)
 	while True:
 		for login_host in login_info:
 			for remote_host in remote_info:
@@ -17,9 +18,13 @@ def rotating_tunnel(login_info, remote_info, localport, monitorport):
 					process = start_hpc_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['host'], remote_host['port'])
 				else:
 					process = start_alt_login_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['port'])
-
+				
+				logger.info('process should be: {}'.format(process.pid))
 				proc = psutil.Process(process.pid)
-				if proc.status() != psutil.STATUS_RUNNING:
+				logger.info('proc.status is {}'.format(proc.status()))
+				logger.info('ps.util is {}'.format(psutil.STATUS_SLEEPING))
+				if proc.status() != psutil.STATUS_RUNNING and proc.status() != psutil.STATUS_SLEEPING:
+					logger.info('things are not right, trying to kill {}'.format(process.pid))
 					stop_autossh_tunnel(process.pid)
 					continue
 				else:
@@ -30,24 +35,24 @@ def rotating_tunnel(login_info, remote_info, localport, monitorport):
 						time.sleep(1)
 
 def start_hpc_autossh_tunnel(monitorport, loginhost, login_username, localport, remotehost, remoteport):
+	logger = logging.getLogger(__name__)
 	autossh_string = "autossh -M {0} -N -L {1}:{2}:{3} {4}@{5}".format(monitorport, localport, remotehost, remoteport, login_username, loginhost)
+	logger.info('trying to start: {}'.format(autossh_string))
 	process = subprocess.Popen([autossh_string], shell=True)
 	return process
-
-def stop_hpc_autossh_tunnel(tunnel_pid):
-	# kill the passed in tunnel by group id
-	# so as to kill its children too
-	print('stopping autossh tunnel...')
-	os.killpg(os.getpgid(int(tunnel_pid)), signal.SIGTERM)
 
 def start_alt_login_autossh_tunnel(monitorport, loginhost, login_username, localport, remoteport):
+	logger = logging.getLogger(__name__)
 	autossh_string = "autossh -M {0} -N -L {1}:localhost:{2} {3}@{4}".format(monitorport, localport, remoteport, login_username, loginhost)
+	logger.info('trying to start: {}'.format(autossh_string))
 	process = subprocess.Popen([autossh_string], shell=True)
 	return process
 
-def stop_alt_login_autossh_tunnel(tunnel_pid):
+def stop_autossh_tunnel(tunnel_pid):
+	logger = logging.getLogger(__name__)
+	logger.info('killing autossh tunnel: {}'.format(tunnel_pid))
 	print('stopping autossh tunnel...')
-	or.killpg(os.getpgid(int(tunnel_pid)), signal.SIGTERM)
+	os.killpg(os.getpgid(int(tunnel_pid)), signal.SIGTERM)
 
 def parse_args(args):
 	parser = argparse.ArgumentParser()
