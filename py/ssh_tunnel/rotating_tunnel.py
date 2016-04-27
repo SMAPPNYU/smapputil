@@ -9,7 +9,7 @@ import logging
 import argparse
 import subprocess
 
-def rotating_tunnel(login_info, remote_info, localport, monitorport):
+def rotating_tunnel(login_info, remote_info, localport, monitorport, altport):
 	logger = logging.getLogger(__name__)
 	while True:
 		for login_host in login_info:
@@ -17,7 +17,10 @@ def rotating_tunnel(login_info, remote_info, localport, monitorport):
 				if login_host['host'] == 'hpc.nyu.edu':
 					process = start_hpc_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['host'], remote_host['port'])
 				else:
-					process = start_alt_login_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['port'])
+					if altport:
+						process = start_alt_login_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, altport)
+					else:
+						process = start_alt_login_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['port'])
 				
 				logger.info('process should be: {}'.format(process.pid))
 				proc = psutil.Process(process.pid)
@@ -72,7 +75,7 @@ if __name__ == '__main__':
 	if args.operation == 'start':
 		with open(os.path.expanduser(args.input), 'r') as data:
 			input_dict = json.load(data)
-			rotating_tunnel(input_dict['loginhosts'], input_dict['remotehosts'], args.localport, args.monitor)
+			rotating_tunnel(input_dict['loginhosts'], input_dict['remotehosts'], args.localport, args.monitor, input_dict.get('altport'))
 	else:
 		stop_hpc_autossh_tunnel(args.input)
 

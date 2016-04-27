@@ -139,10 +139,9 @@ test: `python test/test_ssh_tunnel LOGIN_USER LOGIN_PASSWORD`
 
 #[rotating_tunnel](https://github.com/SMAPPNYU/smapputil/tree/master/py/rotating_tunnel)
 
-*not ready*
-
 creates a keyed login only rotating tunnel. less general than ssh_tunnel, rotates the tunnels among
-login nodes and remote ports provided in input.
+login nodes and remote ports provided in input. basically therer are two modes of use. 1. to create a single tunnel that 
+goes through a bastion host to hades. 2. to create tunnels to hades on alternate login nodes, and then run a separate scripts that connect to those tunnels.
 
 abstract:
 ```python
@@ -180,9 +179,16 @@ python py/ssh_tunnel/rotating_tunnel.py -rh REMOTE_HOST -rp REMOTE_PORT -lh loca
             "host":"host4",
             "user":"user4"
         }
-    ]
+    ],
+    "altport": ALT_PORT
 }
 ```
+
+`login hosts` are the set of hosts you want your script to treat as logins
+
+`remote_hosts` is only 
+
+`altport` is the port that tries to create a tunnel based on a different set of inputs, this attempts to tunnel to a server that is already tunneled into hades using a preset port called "altport." altport essentially exists to simplify our life, we put all our login hosts (main and alternate) in 'loginhosts', we put the hosts we want to connect to directly from whichever login hosts are bastion hosts in remote hosts, and we put the remote -> localhost:altport our alternate double tunnel hosts will use in altport.
 
 note: if using the tunnel to connect to nyu bastion host contact the sys admin there to add your public keys to the authorized_hosts file for your account on that machine.
 
