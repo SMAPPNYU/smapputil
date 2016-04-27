@@ -145,12 +145,12 @@ goes through a bastion host to hades. 2. to create tunnels to hades on alternate
 
 abstract:
 ```python
-python py/ssh_tunnel/rotating_tunnel.py -rh REMOTE_HOST -rp REMOTE_PORT -lh localhost -lp LOCAL_PORT
+python py/ssh_tunnel/rotating_tunnel.py -op OPERATION -i /PATH/TO/TUNNEL/CONFIG.JSON -m MONITOR_PORT -p REMOTE_BIND_PORT
 ```
 
 practical:
 ```python
-python py/ssh_tunnel/rotating_tunnel.py -rh REMOTE_HOST -rp REMOTE_PORT -lh localhost -lp LOCAL_PORT
+python py/ssh_tunnel/rotating_tunnel.py -op start -i ~/tunnel_config.json -m 5111 -p 43564
 
 ```
 
