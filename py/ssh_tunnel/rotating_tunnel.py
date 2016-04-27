@@ -32,6 +32,7 @@ def rotating_tunnel(login_info, remote_info, localport, monitorport):
 				logger.info('proc.status is {}'.format(proc.status()))
 				logger.info('ps.util is {}'.format(psutil.STATUS_SLEEPING))
 				if proc.status() != psutil.STATUS_RUNNING or proc.status() != psutil.STATUS_SLEEPING:
+					logger.info('things are not right, trying to kill {}'.format(process.pid))
 					stop_autossh_tunnel(process.pid)
 					continue
 				else:
