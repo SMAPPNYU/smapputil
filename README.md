@@ -139,19 +139,18 @@ test: `python test/test_ssh_tunnel LOGIN_USER LOGIN_PASSWORD`
 
 #[rotating_tunnel](https://github.com/SMAPPNYU/smapputil/tree/master/py/rotating_tunnel)
 
-*not ready*
-
 creates a keyed login only rotating tunnel. less general than ssh_tunnel, rotates the tunnels among
-login nodes and remote ports provided in input.
+login nodes and remote ports provided in input. basically therer are two modes of use. 1. to create a single tunnel that 
+goes through a bastion host to hades. 2. to create tunnels to hades on alternate login nodes, and then run a separate scripts that connect to those tunnels.
 
 abstract:
 ```python
-python py/ssh_tunnel/rotating_tunnel.py -rh REMOTE_HOST -rp REMOTE_PORT -lh localhost -lp LOCAL_PORT
+python py/ssh_tunnel/rotating_tunnel.py -op OPERATION -i /PATH/TO/TUNNEL/CONFIG.JSON -m MONITOR_PORT -p REMOTE_BIND_PORT
 ```
 
 practical:
 ```python
-python py/ssh_tunnel/rotating_tunnel.py -rh REMOTE_HOST -rp REMOTE_PORT -lh localhost -lp LOCAL_PORT
+python py/ssh_tunnel/rotating_tunnel.py -op start -i ~/tunnel_config.json -m 5111 -p 43564
 
 ```
 
@@ -160,6 +159,7 @@ python py/ssh_tunnel/rotating_tunnel.py -rh REMOTE_HOST -rp REMOTE_PORT -lh loca
 *input* a file that contains a set of login hosts and a set of remotehosts
 
 ```
+
 {
     "loginhosts":[
         {
@@ -180,9 +180,39 @@ python py/ssh_tunnel/rotating_tunnel.py -rh REMOTE_HOST -rp REMOTE_PORT -lh loca
             "host":"host4",
             "user":"user4"
         }
+    ],
+    "altloginhosts":[
+        {
+            "host":"althost2",
+            "user":"usr"
+        },
+        {
+            "host":"althost1",
+            "user":"usr"
+        }
+    ],
+    "altremotehosts":[
+        {
+            "host":"localhost",
+            "port":altport
+        },
+        {
+            "host":"localhost",
+            "port":altport
+        }
     ]
 }
 ```
+
+`loginhosts` are the set of hosts you want your script to treat as logins
+
+`remotehosts` is only the set of hosts you want login hosts to look at
+
+`altloginhosts` is optional, are the set of hosts you want to try to login to after exhausting all loginhosts
+
+`altremotehosts` is optional, is the set of alternate remote hosts you want to map to on the alt login hosts.
+
+basically alt login and remote hosts are for making "double tunnels" to get where you need to go. you setup a tunnel on the login host, then you connect directly to the login host tunnel. this was the cleanest and easiest way to get a tunnel maker that alternated between different kinds of tunnels. the other ways make it very awkward to setup double tunnels.
 
 note: if using the tunnel to connect to nyu bastion host contact the sys admin there to add your public keys to the authorized_hosts file for your account on that machine.
 

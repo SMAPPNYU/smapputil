@@ -9,15 +9,12 @@ import logging
 import argparse
 import subprocess
 
-def rotating_tunnel(login_info, remote_info, localport, monitorport):
+def rotating_tunnel(login_info, remote_info, alt_hosts, alt_remotes, localport, monitorport):
 	logger = logging.getLogger(__name__)
 	while True:
 		for login_host in login_info:
 			for remote_host in remote_info:
-				if login_host['host'] == 'hpc.nyu.edu':
-					process = start_hpc_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['host'], remote_host['port'])
-				else:
-					process = start_alt_login_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['port'])
+				process = start_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['host'], remote_host['port'])
 
 				logger.info('process should be: {}'.format(process.pid))
 				proc = psutil.Process(process.pid)
@@ -31,19 +28,31 @@ def rotating_tunnel(login_info, remote_info, localport, monitorport):
 					print('tunnel running on port ' + str(localport))
 					print('to kill run, `kill ' + str(process.pid) + '`')
 					print('or run `python rotating_tunnel.py -op kill -i ' + str(process.pid) + '`')
-					while proc.status() == psutil.STATUS_RUNNING:
+					while proc.status() == psutil.STATUS_RUNNING or proc.status() == psutil.STATUS_SLEEPING:
 						time.sleep(1)
 
-def start_hpc_autossh_tunnel(monitorport, loginhost, login_username, localport, remotehost, remoteport):
+		for alt_host in alt_hosts:
+			for alt_remote in alt_remotes:
+				process = start_autossh_tunnel(monitorport, alt_host['host'], alt_host['user'], localport, alt_remote['host'], alt_remote['port'])
+
+				logger.info('process should be: {}'.format(process.pid))
+				proc = psutil.Process(process.pid)
+				logger.info('proc.status is {}'.format(proc.status()))
+				logger.info('ps.util is {}'.format(psutil.STATUS_SLEEPING))
+				if proc.status() != psutil.STATUS_RUNNING and proc.status() != psutil.STATUS_SLEEPING:
+					logger.info('things are not right, trying to kill {}'.format(process.pid))
+					stop_autossh_tunnel(process.pid)
+					continue
+				else:
+					print('tunnel running on port ' + str(localport))
+					print('to kill run, `kill ' + str(process.pid) + '`')
+					print('or run `python rotating_tunnel.py -op kill -i ' + str(process.pid) + '`')
+					while proc.status() == psutil.STATUS_RUNNING or proc.status() == psutil.STATUS_SLEEPING:
+						time.sleep(1)
+
+def start_autossh_tunnel(monitorport, loginhost, login_username, localport, remotehost, remoteport):
 	logger = logging.getLogger(__name__)
 	autossh_string = "autossh -M {0} -N -L {1}:{2}:{3} {4}@{5}".format(monitorport, localport, remotehost, remoteport, login_username, loginhost)
-	logger.info('trying to start: {}'.format(autossh_string))
-	process = subprocess.Popen([autossh_string], shell=True)
-	return process
-
-def start_alt_login_autossh_tunnel(monitorport, loginhost, login_username, localport, remoteport):
-	logger = logging.getLogger(__name__)
-	autossh_string = "autossh -M {0} -N -L {1}:localhost:{2} {3}@{4}".format(monitorport, localport, remoteport, login_username, loginhost)
 	logger.info('trying to start: {}'.format(autossh_string))
 	process = subprocess.Popen([autossh_string], shell=True)
 	return process
@@ -72,9 +81,9 @@ if __name__ == '__main__':
 	if args.operation == 'start':
 		with open(os.path.expanduser(args.input), 'r') as data:
 			input_dict = json.load(data)
-			rotating_tunnel(input_dict['loginhosts'], input_dict['remotehosts'], args.localport, args.monitor)
+			rotating_tunnel(input_dict['loginhosts'], input_dict['remotehosts'], input_dict.get('altloginhosts'), input_dict.get('altremotehosts'), args.localport, args.monitor)
 	else:
-		stop_hpc_autossh_tunnel(args.input)
+		stop_autossh_tunnel(args.input)
 
 '''
 author @yvan
