@@ -9,15 +9,6 @@ import logging
 import argparse
 import subprocess
 
-'''
-the best thing at this point is to have 2 options
-1 - preffered to connect to the bastion host through HPC
-OTHERSWISE we keep a perma tunnel running with the bash scripts
-on alt login nodes that just maps one of their ports to hades, then we hit 
-that port on the alt login hode when we need to send to hades.
-autossh -M 5111 -N -L 27017:localhost:27017 yvan@clevergirl.bio.nyu.edu
-'''
-
 def rotating_tunnel(login_info, remote_info, localport, monitorport):
 	while True:
 		for login_host in login_info:
