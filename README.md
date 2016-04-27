@@ -122,6 +122,8 @@ python py/ssh_tunnel/ssh_tunnel.py -lo LOGIN_HOST -u LOGIN_USERNAME -p LOGIN_PAS
 practical:
 ```python
 python py/ssh_tunnel/ssh_tunnel.py -lo hpc.nyu.edu -u LOGIN_USERNAME -p LOGIN_PASSWORD -rh REMOTE_HOST -rp 27017 -lp 27017
+# or w/ a keyed login
+python py/ssh_tunnel/ssh_tunnel.py -lo hpc.nyu.edu -u LOGIN_USERNAME -rh REMOTE_HOST -rp 27017 -lp 27017
 # or in a script
 from ssh_tunnel import start_ssh_tunnel, stop_ssh_tunnel
 
@@ -182,8 +184,9 @@ python py/ssh_tunnel/rotating_tunnel.py -rh REMOTE_HOST -rp REMOTE_PORT -lh loca
 }
 ```
 
-
 note: if using the tunnel to connect to nyu bastion host (HPC) contact the sys admin there to add your public keys to the authorized_hosts file for your account on that machine.
+
+note: for making double tunnels [read this tutorial](https://10mi2.wordpress.com/2015/01/14/using-ssh-through-a-bastion-host-transparently/) and [this one](ssh proxy bastion host)
 
 #[merge_json](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_json)
 
