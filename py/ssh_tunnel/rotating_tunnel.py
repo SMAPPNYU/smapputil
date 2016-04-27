@@ -15,13 +15,18 @@ the best thing at this point is to have 2 options
 OTHERSWISE we keep a perma tunnel running with the bash scripts
 on alt login nodes that just maps one of their ports to hades, then we hit 
 that port on the alt login hode when we need to send to hades.
+autossh -M 5111 -N -L 27017:localhost:27017 yvan@clevergirl.bio.nyu.edu
 '''
 
 def rotating_tunnel(login_info, remote_info, localport, monitorport):
 	while True:
 		for login_host in login_info:
 			for remote_host in remote_info:
-				process = start_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['host'], remote_host['port'])
+				if login_host['host'] == 'hpc.nyu.edu':
+					process = start_hpc_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['host'], remote_host['port'])
+				else:
+					process = start_alt_login_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['port'])
+
 				proc = psutil.Process(process.pid)
 				if proc.status() != psutil.STATUS_RUNNING:
 					stop_autossh_tunnel(process.pid)
@@ -33,16 +38,25 @@ def rotating_tunnel(login_info, remote_info, localport, monitorport):
 					while proc.status() == psutil.STATUS_RUNNING:
 						time.sleep(1)
 
-def start_autossh_tunnel(monitorport, loginhost, login_username, localport, remotehost, remoteport):
+def start_hpc_autossh_tunnel(monitorport, loginhost, login_username, localport, remotehost, remoteport):
 	logger = logging.getLogger(__name__)
 	logger.info('trying to start: {}'.format(autossh_string))
 	autossh_string = "autossh -M {0} -N -L {1}:{2}:{3} {4}@{5}".format(monitorport, localport, remotehost, remoteport, login_username, loginhost)
 	process = subprocess.Popen([autossh_string], shell=True)
 	return process
 
-def stop_autossh_tunnel(tunnel_pid):
+def stop_hpc_autossh_tunnel(tunnel_pid):
 	# kill the passed in tunnel by group id
 	# so as to kill its children too
+	print('stopping autossh tunnel...')
+	os.killpg(os.getpgid(int(tunnel_pid)), signal.SIGTERM)
+
+def start_alt_login_autossh_tunnel(monitorport, loginhost, login_username, localport, remoteport):
+	autossh_string = "autossh -M {0} -N -L {1}:localhost:{2} {3}@{4}".format(monitorport, localport, remoteport, login_username, loginhost)
+	process = subprocess.Popen([autossh_string], shell=True)
+	return process
+
+def stop_alt_login_autossh_tunnel(tunnel_pid):
 	print('stopping autossh tunnel...')
 	os.killpg(os.getpgid(int(tunnel_pid)), signal.SIGTERM)
 
@@ -66,7 +80,7 @@ if __name__ == '__main__':
 			input_dict = json.load(data)
 			rotating_tunnel(input_dict['loginhosts'], input_dict['remotehosts'], args.localport, args.monitor)
 	else:
-		stop_autossh_tunnel(args.input)
+		stop_hpc_autossh_tunnel(args.input)
 
 '''
 author @yvan
