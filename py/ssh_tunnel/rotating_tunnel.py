@@ -9,14 +9,6 @@ import logging
 import argparse
 import subprocess
 
-'''
-if the host is hpc then login ad put the tunnel
-in one command, if the host is something other than HPC
-expect that host to have its own port hooking up the db 
-with its localhost 49999, so we just hook up to 49999
-on that host
-'''
-
 def rotating_tunnel(login_info, remote_info, localport, monitorport):
 	logger = logging.getLogger(__name__)
 	while True:
@@ -26,7 +18,7 @@ def rotating_tunnel(login_info, remote_info, localport, monitorport):
 					process = start_hpc_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['host'], remote_host['port'])
 				else:
 					process = start_alt_login_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['port'])
-				
+
 				logger.info('process should be: {}'.format(process.pid))
 				proc = psutil.Process(process.pid)
 				logger.info('proc.status is {}'.format(proc.status()))
