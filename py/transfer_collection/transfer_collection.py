@@ -67,7 +67,7 @@ def transfer_collection(host, port, db, username, password, targethost, targetpo
         
 
         if naive:
-            naive_transfer(ource_db[source_collection_name], target_db[source_collection_name])
+            naive_transfer(source_db[source_collection_name], target_db[source_collection_name])
         else:
             # BULK (chunk-wise insert, to speed up)
             bulk_transfer(source_db[source_collection_name], target_db[source_collection_name])
