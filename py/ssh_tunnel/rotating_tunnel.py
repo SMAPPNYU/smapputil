@@ -83,7 +83,7 @@ if __name__ == '__main__':
 			input_dict = json.load(data)
 			rotating_tunnel(input_dict['loginhosts'], input_dict['remotehosts'], input_dict.get('altloginhosts'), input_dict.get('altremotehosts'), args.localport, args.monitor)
 	else:
-		stop_hpc_autossh_tunnel(args.input)
+		stop_autossh_tunnel(args.input)
 
 '''
 author @yvan
