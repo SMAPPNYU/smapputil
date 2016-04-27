@@ -26,7 +26,7 @@ def rotating_tunnel(login_info, remote_info, localport, monitorport):
 					process = start_hpc_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['host'], remote_host['port'])
 				else:
 					process = start_alt_login_autossh_tunnel(monitorport, login_host['host'], login_host['user'], localport, remote_host['port'])
-
+				
 				logger.info('process should be: {}'.format(process.pid))
 				proc = psutil.Process(process.pid)
 				logger.info('proc.status is {}'.format(proc.status()))
