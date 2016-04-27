@@ -55,7 +55,7 @@ def start_alt_login_autossh_tunnel(monitorport, loginhost, login_username, local
 
 def stop_autossh_tunnel(tunnel_pid):
 	logger = logging.getLogger(__name__)
-	logger.info('trying to start: {}'.format(tunnel_pid))
+	logger.info('killing autossh tunnel: {}'.format(tunnel_pid))
 	print('stopping autossh tunnel...')
 	os.killpg(os.getpgid(int(tunnel_pid)), signal.SIGTERM)
 
