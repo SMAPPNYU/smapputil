@@ -81,7 +81,7 @@ if __name__ == '__main__':
 	if args.operation == 'start':
 		with open(os.path.expanduser(args.input), 'r') as data:
 			input_dict = json.load(data)
-			rotating_tunnel(input_dict['loginhosts'], input_dict['remotehosts'], input_dict['altloginhosts'], input_dict['altremotehosts'] args.localport, args.monitor)
+			rotating_tunnel(input_dict['loginhosts'], input_dict['remotehosts'], input_dict['altloginhosts'], input_dict['altremotehosts'], args.localport, args.monitor)
 	else:
 		stop_hpc_autossh_tunnel(args.input)
 
