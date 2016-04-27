@@ -38,16 +38,29 @@ def rotating_tunnel(login_info, remote_info, localport, monitorport):
 					while proc.status() == psutil.STATUS_RUNNING:
 						time.sleep(1)
 
-def start_autossh_tunnel(monitorport, loginhost, login_username, localport, remotehost, remoteport):
+def start_hpc_autossh_tunnel(monitorport, loginhost, login_username, localport, remotehost, remoteport):
 	logger = logging.getLogger(__name__)
-	logger.info('trying to start: {}'.format(autossh_string))
 	autossh_string = "autossh -M {0} -N -L {1}:{2}:{3} {4}@{5}".format(monitorport, localport, remotehost, remoteport, login_username, loginhost)
+	logger.info('trying to start: {}'.format(autossh_string))
 	process = subprocess.Popen([autossh_string], shell=True)
 	return process
 
-def stop_autossh_tunnel(tunnel_pid):
+def stop_hpc_autossh_tunnel(tunnel_pid):
 	logger = logging.getLogger(__name__)
-	logger.info('killing tunnel with pid: {}'.format(tunnel_pid))
+	logger.info('trying to start: {}'.format(tunnel_pid))
+	print('stopping autossh tunnel...')
+	os.killpg(os.getpgid(int(tunnel_pid)), signal.SIGTERM)
+
+def start_alt_login_autossh_tunnel(monitorport, loginhost, login_username, localport, remoteport):
+	logger = logging.getLogger(__name__)
+	autossh_string = "autossh -M {0} -N -L {1}:localhost:{2} {3}@{4}".format(monitorport, localport, remoteport, login_username, loginhost)
+	logger.info('trying to start: {}'.format(autossh_string))
+	process = subprocess.Popen([autossh_string], shell=True)
+	return process
+
+def stop_alt_login_autossh_tunnel(tunnel_pid):
+	logger = logging.getLogger(__name__)
+	logger.info('trying to start: {}'.format(tunnel_pid))
 	print('stopping autossh tunnel...')
 	os.killpg(os.getpgid(int(tunnel_pid)), signal.SIGTERM)
 
