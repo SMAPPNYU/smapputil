@@ -45,12 +45,6 @@ def start_hpc_autossh_tunnel(monitorport, loginhost, login_username, localport, 
 	process = subprocess.Popen([autossh_string], shell=True)
 	return process
 
-def stop_hpc_autossh_tunnel(tunnel_pid):
-	logger = logging.getLogger(__name__)
-	logger.info('trying to start: {}'.format(tunnel_pid))
-	print('stopping autossh tunnel...')
-	os.killpg(os.getpgid(int(tunnel_pid)), signal.SIGTERM)
-
 def start_alt_login_autossh_tunnel(monitorport, loginhost, login_username, localport, remoteport):
 	logger = logging.getLogger(__name__)
 	autossh_string = "autossh -M {0} -N -L {1}:localhost:{2} {3}@{4}".format(monitorport, localport, remoteport, login_username, loginhost)
@@ -58,7 +52,7 @@ def start_alt_login_autossh_tunnel(monitorport, loginhost, login_username, local
 	process = subprocess.Popen([autossh_string], shell=True)
 	return process
 
-def stop_alt_login_autossh_tunnel(tunnel_pid):
+def stop_autossh_tunnel(tunnel_pid):
 	logger = logging.getLogger(__name__)
 	logger.info('trying to start: {}'.format(tunnel_pid))
 	print('stopping autossh tunnel...')
