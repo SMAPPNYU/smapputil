@@ -34,6 +34,8 @@ def rotating_tunnel(login_info, remote_info, localport, monitorport):
 						time.sleep(1)
 
 def start_autossh_tunnel(monitorport, loginhost, login_username, localport, remotehost, remoteport):
+	logger = logging.getLogger(__name__)
+	logger.info('trying to start: {}'.format(autossh_string))
 	autossh_string = "autossh -M {0} -N -L {1}:{2}:{3} {4}@{5}".format(monitorport, localport, remotehost, remoteport, login_username, loginhost)
 	process = subprocess.Popen([autossh_string], shell=True)
 	return process
