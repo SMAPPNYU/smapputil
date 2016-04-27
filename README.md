@@ -137,7 +137,7 @@ ssh_tunnel.start_ssh_tunnel(args.loginhost, args.username, args.password, args.l
 test: `python test/test_ssh_tunnel LOGIN_USER LOGIN_PASSWORD`
 
 
-#[rotating_tunnel](https://github.com/SMAPPNYU/smapputil/tree/master/py/rotating_tunnel)
+#[rotating_tunnel](https://github.com/SMAPPNYU/smapputil/tree/master/py/ssh_tunnel)
 
 creates a keyed login only rotating tunnel. less general than ssh_tunnel, rotates the tunnels among
 login nodes and remote ports provided in input. basically therer are two modes of use. 1. to create a single tunnel that 

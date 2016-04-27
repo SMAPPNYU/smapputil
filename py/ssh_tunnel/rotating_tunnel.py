@@ -1,8 +1,8 @@
 import os
 import sys
 import json
-import pipes
 import time
+import pipes
 import signal
 import psutil
 import logging
