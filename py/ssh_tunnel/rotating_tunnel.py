@@ -31,7 +31,7 @@ def rotating_tunnel(login_info, remote_info, localport, monitorport):
 					print('tunnel running on port ' + str(localport))
 					print('to kill run, `kill ' + str(process.pid) + '`')
 					print('or run `python rotating_tunnel.py -op kill -i ' + str(process.pid) + '`')
-					while proc.status() == psutil.STATUS_RUNNING:
+					while proc.status() == psutil.STATUS_RUNNING or proc.status() == psutil.STATUS_SLEEPING:
 						time.sleep(1)
 
 def start_hpc_autossh_tunnel(monitorport, loginhost, login_username, localport, remotehost, remoteport):
