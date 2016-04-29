@@ -216,8 +216,6 @@ basically alt login and remote hosts are for making "double tunnels" to get wher
 
 note: if using the tunnel to connect to nyu bastion host contact the sys admin there to add your public keys to the authorized_hosts file for your account on that machine.
 
-note: for making double tunnels [read this tutorial](https://10mi2.wordpress.com/2015/01/14/using-ssh-through-a-bastion-host-transparently/) and [this one](ssh proxy bastion host)
-
 #[merge_json](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_json)
 
 merges two files where each file has a json object on each line, or each file i a list of json objects
