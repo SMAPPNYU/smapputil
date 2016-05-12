@@ -52,20 +52,18 @@ def transfer_collection(host, port, db, username, password, targethost, targetpo
             logger.info("Collection of tweets exists on target db, inserting into: {0}".format(source_collection_name))
             print('source collection ' + source_collection_name + ' exists on target')
         else:
-            logger.info("Creating new collection on target: {0}".format(source_collection_name))
             print('source collection '  + source_collection_name + ' does not exist on target')
+            logger.info("Creating new collection on target: {0}".format(source_collection_name))
             target_db.create_collection(source_collection_name)
             logger.info("Adding new collection to metadata and saving")
             target_collections_list.insert(0, source_collection_name)
             target_db['smapp_metadata'].update_one({'document': 'smapp-tweet-collection-metadata'}, {'$set': {'tweet_collections': target_collections_list}})
-        # Create indexes and enable sharding on new collection
         logger.info("Creating indexes and enabling sharding on {0}".format(source_collection_name))
 
         if targetsharded:
             ensure_hashed_id_index(target_db[source_collection_name])
             enable_collection_sharding(target_mongo, target_db, target_db[source_collection_name])
         
-
         if naive:
             naive_transfer(source_db[source_collection_name], target_db[source_collection_name])
         else:
