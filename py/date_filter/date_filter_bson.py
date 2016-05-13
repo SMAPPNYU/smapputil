@@ -3,20 +3,24 @@ import logging
 import argparse
 import datetime
 import warnings
-from os.path import expanduser
+
+from os.path import expanduser, splitext
 
 #ignore warnings about matplotlib
 with warnings.catch_warnings():
     warnings.simplefilter("ignore", "Error importing plotting libraries (seaborn and matplotlib). Plotting functionality will not work.")
 
-from smapp_toolkit.twitter import BSONTweetCollection
+from pysmap import SmappCollection
 
 # c* http://stackoverflow.com/questions/466345/converting-string-into-datetime
 
-def date_filter(output, input, dateone, datetwo):
+def date_filter(output, input_file, dateone, datetwo):
     #configure logging
     logger = logging.getLogger(__name__)
     logger.info('Iterating through your file : %s', output)
+
+    _, file_extension = splitext(input_file)
+    file_extension = file_extension[1:]
 
     #if dateone input exists make a datetime object with it
     if dateone:
@@ -27,15 +31,20 @@ def date_filter(output, input, dateone, datetwo):
 
     #user gave 2 dates and wants a range
     if dateone and datetwo:
-        BSONTweetCollection(input).since(startdate).until(enddate).dump_bson_to_path(output)
+        collection = SmappCollection(file_extension, input_file)
+        collection.get_date_range(startdate, enddate).dump_to_bson(output)
 
     #user gave date once and wants objects since
     elif dateone:
-        BSONTweetCollection(input).since(startdate).dump_bson_to_path(output)
+        enddate = datetime.datetime.now()
+        collection = SmappCollection(file_extension, input_file)
+        collection.get_date_range(startdate, enddate).dump_to_bson(output)
 
     #user gave date two and wants objects up to that point
     elif datetwo:
-        BSONTweetCollection(input).until(enddate).dump_bson_to_path(output)
+        startdate = datetime.datetime.min
+        collection = SmappCollection(file_extension, input_file)
+        collection.get_date_range(startdate, enddate).dump_to_bson(output)
 
     else:
         logger.info('Couldn\'t find a date, exiting at %s!', datetime.datetime.now().strftime('%Y-%m-%d %H:%M'))
@@ -46,7 +55,7 @@ def date_filter(output, input, dateone, datetwo):
 def parse_args(args):
     currentdate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', dest='input', required=True, help='These inputs are paths to your bson files. Required.')
+    parser.add_argument('-i', '--input', dest='input', required=True, help='These inputs are paths to your bson files. They must have a .json, .bson, or .csv extension')
     parser.add_argument('-d1', '--dateone', dest='dateone', default="", help='Date to start the filter at.')
     parser.add_argument('-d2', '--datetwo', dest='datetwo', default="", help='Date to end the filter at.')
     parser.add_argument('-o', '--output', dest='output', required=True, help='This will be your outputted single bson file. Required')
