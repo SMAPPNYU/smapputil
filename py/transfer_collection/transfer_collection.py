@@ -34,8 +34,12 @@ def transfer_collection(host, port, db, username, password, targethost, targetpo
         target_db = target_mongo[targetdb]
         target_db.authenticate(targetuser, targetpassword)
     target_metadata_collection = target_db['smapp_metadata']
-    target_metadata_document = target_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
-    target_collections_list = target_metadata_document['tweet_collections']
+    if target_metadata_collection.count() <= 0:
+        logger.info('target collection totally empty/just created')
+        target_collections_list = []
+    else:     
+        target_metadata_document = target_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
+        target_collections_list = target_metadata_document['tweet_collections']
 
     logger.info("Source DB tweet collections: {0}".format(source_collections_list))
     logger.info("Target DB tweet collections: {0}".format(target_collections_list))
@@ -52,20 +56,18 @@ def transfer_collection(host, port, db, username, password, targethost, targetpo
             logger.info("Collection of tweets exists on target db, inserting into: {0}".format(source_collection_name))
             print('source collection ' + source_collection_name + ' exists on target')
         else:
-            logger.info("Creating new collection on target: {0}".format(source_collection_name))
             print('source collection '  + source_collection_name + ' does not exist on target')
+            logger.info("Creating new collection on target: {0}".format(source_collection_name))
             target_db.create_collection(source_collection_name)
             logger.info("Adding new collection to metadata and saving")
             target_collections_list.insert(0, source_collection_name)
             target_db['smapp_metadata'].update_one({'document': 'smapp-tweet-collection-metadata'}, {'$set': {'tweet_collections': target_collections_list}})
-        # Create indexes and enable sharding on new collection
         logger.info("Creating indexes and enabling sharding on {0}".format(source_collection_name))
 
         if targetsharded:
             ensure_hashed_id_index(target_db[source_collection_name])
             enable_collection_sharding(target_mongo, target_db, target_db[source_collection_name])
         
-
         if naive:
             naive_transfer(source_db[source_collection_name], target_db[source_collection_name])
         else:
