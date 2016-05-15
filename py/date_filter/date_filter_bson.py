@@ -59,7 +59,7 @@ def parse_args(args):
     parser.add_argument('-d1', '--dateone', dest='dateone', default="", help='Date to start the filter at.')
     parser.add_argument('-d2', '--datetwo', dest='datetwo', default="", help='Date to end the filter at.')
     parser.add_argument('-o', '--output', dest='output', required=True, help='This will be your outputted single bson file. Required')
-    parser.add_argument('-l', '--log', dest='log', default=expanduser('~/pylogs/merge_bson_'+currentdate+'.log'), help='This is the path to where your output log should be. Required')
+    parser.add_argument('-l', '--log', dest='log', default=expanduser('~/pylogs/date_filter_'+currentdate+'.log'), help='This is the path to where your output log should be. Required')
     return parser.parse_args(args)
 
 if __name__ == '__main__':
