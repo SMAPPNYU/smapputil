@@ -1,4 +1,4 @@
-name: smapputil
+name: smapputil-py2
 dependencies:
 - python=2.7.11
 - pylint=1.5.4

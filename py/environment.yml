@@ -1,4 +1,4 @@
-name: smapputil-py3
+name: smapputil
 dependencies:
 - python=3.5.1
 - pylint=1.5.4
@@ -18,7 +18,6 @@ dependencies:
     - six==1.10.0
     - wheel==0.29.0
     - argparse==1.4.0
-    - logging==0.4.9.6
     - tweepy==3.4.0
     - paramiko==1.16.0
     - envelopes==0.4

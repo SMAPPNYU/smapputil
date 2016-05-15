@@ -31,18 +31,21 @@ def date_filter(output, input_file, dateone, datetwo):
 
     #user gave 2 dates and wants a range
     if dateone and datetwo:
+        logger.info('creating smapp collection and query for dates {} and {}'.format(startdate, enddate))
         collection = SmappCollection(file_extension, input_file)
         collection.get_date_range(startdate, enddate).dump_to_bson(output)
 
     #user gave date once and wants objects since
     elif dateone:
         enddate = datetime.datetime.now()
+        logger.info('creating smapp collection and query for dates {} and {}'.format(startdate, enddate))
         collection = SmappCollection(file_extension, input_file)
         collection.get_date_range(startdate, enddate).dump_to_bson(output)
 
     #user gave date two and wants objects up to that point
     elif datetwo:
         startdate = datetime.datetime.min
+        logger.info('creating smapp collection and query for dates {} and {}'.format(startdate, enddate))
         collection = SmappCollection(file_extension, input_file)
         collection.get_date_range(startdate, enddate).dump_to_bson(output)
 
