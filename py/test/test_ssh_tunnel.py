@@ -27,6 +27,5 @@ if __name__ == '__main__':
     suite = unittest.TestSuite()
     suite.addTest(TestSshTunnel('test_control', password, user))
     suite.addTest(TestSshTunnel('test_ssh_tunnel', password, user))
-    suite.addTest(TestSshTunnel('test_rotating_tunnel', password, user))
     unittest.TextTestRunner().run(suite)
     
