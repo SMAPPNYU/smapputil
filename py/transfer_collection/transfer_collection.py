@@ -32,14 +32,14 @@ def transfer_collection(host, port, db, username, password, targethost, targetpo
     if targetuser and targetpassword and ausr and apwd:
         target_mongo[adb].authenticate(ausr, apwd)
         target_db = target_mongo[targetdb]
-        target_db.authenticate(targetuser, targetpassword)
-    target_metadata_collection = target_db['smapp_metadata']
-    if target_metadata_collection.count() <= 0:
-        logger.info('target collection totally empty/just created')
-        target_collections_list = []
-    else:     
-        target_metadata_document = target_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
-        target_collections_list = target_metadata_document['tweet_collections']
+        try:
+            target_db.authenticate(targetuser, targetpassword)
+            target_metadata_collection = target_db['smapp_metadata']
+            target_metadata_document = target_metadata_collection.find_one({'document': 'smapp-tweet-collection-metadata'})
+            target_collections_list = target_metadata_document['tweet_collections']
+        except pymongo.errors.OperationFailure:
+            logger.info('failed to auth on db, must not exist or wrong password')
+            target_collections_list = []
 
     logger.info("Source DB tweet collections: {0}".format(source_collections_list))
     logger.info("Target DB tweet collections: {0}".format(target_collections_list))
