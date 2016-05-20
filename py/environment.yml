@@ -16,3 +16,4 @@ dependencies:
     - tweepy==3.4.0
     - paramiko==1.16.0
     - envelopes==0.4
+    - smappPy==0.1.31

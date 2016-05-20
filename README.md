@@ -354,7 +354,7 @@ python query_user_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~
 
 *returns* a json file that writes to disk, with the 3200 (or less) of a user's most recent tweets.
 
-note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list ['id_one', 'id_two']
+note: input is json or csv, csv must be a one column csv with `id` as the column, json is just a json list ['id_one', 'id_two']
 
 note: `smapp_count` term added to each tweet object to tell you which count of a particular user's tweets you are looking at.
 
@@ -376,7 +376,7 @@ python query_search_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l
 
 note: fields `smapp_term` and `smapp_count` are added to each tweet object to tell you which term the tweet war queried for and what its count in the query was.
 
-note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list ['id_one', 'id_two']
+note: input is json or csv, csv must be a one column csv with `id` as the column, json is just a json list ['id_one', 'id_two']
 
 #[query_user_objects](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_objects.py)
 
@@ -394,7 +394,7 @@ python query_user_objects.py -i ~/input.json -o ~/output.json -a ~/auth.json -l 
 
 *returns* a json file that writes to disk with the resulting user objects in JSON format
 
-note: input is json or csv, csv must be a one column csv with `id_str` as the column, json is just a json list ['id_one', 'id_two']
+note: input is json or csv, csv must be a one column csv with `id` as the column, json is just a json list ['id_one', 'id_two']
 
 #[transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
 
