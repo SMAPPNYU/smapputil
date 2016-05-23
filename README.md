@@ -418,7 +418,7 @@ or a json list:
      .
 ]
 
-#query_user_friends
+#query_user_friends(https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_friends.py)
 
 queries the twitter api for  the 'friends' (users a userid follows) of a particular twitter user id 
 
