@@ -417,6 +417,7 @@ or a json list:
      .
      .
 ]
+```
 
 #query_user_friends(https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_friends.py)
 
@@ -460,6 +461,7 @@ or a json list:
      .
      .
 ]
+```
 
 #[transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
 
