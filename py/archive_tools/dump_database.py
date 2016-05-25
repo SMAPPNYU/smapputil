@@ -39,7 +39,7 @@ if __name__ == '__main__':
     logging.basicConfig(filename=args.log, level=logging.INFO)
     logger = logging.getLogger(__name__)
 
-    with open(expanduser(args.input), 'r') as data:
+    with open(os.path.expanduser(args.input), 'r') as data:
             input_dict = json.load(data)
             for db in input_dict:
                     dump_database(args.hostname, args.port, db['name'], args.username, args.password, )
