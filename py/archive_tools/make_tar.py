@@ -21,7 +21,7 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
     
     for source_path in args.input:
-        make_tarfile('{}.tar.gz'.format(os.path.basename(os.path.normpath(source_path))), source_path)
+        make_tarfile(os.path.join(args.output, '{}.tar.gz'.format(os.path.basename(os.path.normpath(source_path)))), source_path)
 
 '''
 author @ yvan

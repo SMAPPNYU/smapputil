@@ -583,13 +583,15 @@ makes multiple tar file from a list of input files and makes a separate tar for 
 
 abstract:
 ```python
-python py/archive_tools/make_tar.py -i INPUT_FILES_LIST
+python py/archive_tools/make_tar.py -i INPUT_FILES_LIST -o PATH_TO_OUTPUT_DIRECTORY
 ```
 
 practical:
 ```python
-python py/archive_tools/make_tar.py -i file1.bson germany_election_2013/ tweets_3.bson
+python py/archive_tools/make_tar.py -i file1.bson germany_election_2013/ tweets_3.bson -o ~/archives/
 ```
+
+`PATH_TO_OUTPUT_DIRECTORY` - is a directory where all the archives will go to.
 
 *returns* a .tar.gz file on disk for each input file or folder
 
