@@ -579,19 +579,19 @@ python py/archive_tools/dump_database.py -i ~/pylogs/dump_dbs_input.json -ho sma
 
 #[make_tar](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
 
-makes multiple tar file from a list of input files
+makes multiple tar file from a list of input files and makes a separate tar for each file
 
 abstract:
 ```python
-python py/archive_tools/make_tar.py
+python py/archive_tools/make_tar.py -i INPUT_FILES_LIST
 ```
 
 practical:
 ```python
-python py/archive_tools/make_tar.py
+python py/archive_tools/make_tar.py -i 
 ```
 
-*returns* a series of running mongodump processes that dump the specified databases
+*returns* a .tar.gz file on disk for each input file or folder
 
 #js
 
