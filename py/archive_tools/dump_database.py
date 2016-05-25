@@ -28,7 +28,7 @@ def parse_args(args):
     parser.add_argument('-ho', '--hostname', dest='hostname', help='')
     parser.add_argument('-u', '--username', dest='username', help='the username for this database to read/write on')
     parser.add_argument('-w', '--password', dest='password', help='password for this user on this db')
-    parser.add_argument('-p', '--port', dest='localport', default='49999', help='local port to map to the remoteport')
+    parser.add_argument('-p', '--port', dest='port', default='49999', help='local port to map to the remoteport')
     parser.add_argument('-o', '--outputpath', dest='outputpath', help='the path to the folder where you\'d like the mongodump to go')
     parser.add_argument('-l', '--log', dest='log', default=os.path.expanduser('~/pylogs/archive_database.log'), help='This is the path to where your output log should be.')
     return parser.parse_args(args)
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     with open(os.path.expanduser(args.input), 'r') as data:
             input_dict = json.load(data)
             for db in input_dict:
-                    dump_database(args.hostname, args.port, db['name'], args.username, args.password, )
+                    dump_database(args.hostname, args.port, db['name'], args.username, args.password, args.outputpath)
 
 '''
 author @yvan
