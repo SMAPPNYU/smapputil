@@ -40,9 +40,9 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
 
     with open(os.path.expanduser(args.input), 'r') as data:
-            input_dict = json.load(data)
-            for db in input_dict:
-                    dump_database(args.hostname, args.port, db['name'], args.username, args.password, args.outputpath)
+            input_list = json.load(data)
+            for db in input_list:
+                    dump_database(args.hostname, args.port, db, args.username, args.password, args.outputpath)
 
 '''
 author @yvan
