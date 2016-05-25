@@ -24,6 +24,7 @@
     - [rotating_tunnel](https://github.com/SMAPPNYU/smapputil#rotating_tunnel)
     - [mail_tweet_counts](https://github.com/SMAPPNYU/smapputil#mail_tweet_counts)
     - [username_id_convert](https://github.com/SMAPPNYU/smapputil#username_id_convert)
+    - [archive_database](#archive_database)
 - [js](https://github.com/SMAPPNYU/smapputil#js)
     - [adduserstomongo](https://github.com/SMAPPNYU/smapputil#adduserstomongo)
 - [sh](https://github.com/SMAPPNYU/smapputil#sh)
@@ -558,6 +559,21 @@ Gudie
 ```
 
 
+#archive_database
+
+mongodumps a list of dbs fo a specified place a
+
+abstract:
+```python
+python py/archive_tools/archive_database.py -i 
+```
+
+practical:
+```python
+python py/
+```
+
+*returns* a series of running mongodump processes that dump the specified databases
 
 #js
 
