@@ -24,7 +24,8 @@
     - [rotating_tunnel](https://github.com/SMAPPNYU/smapputil#rotating_tunnel)
     - [mail_tweet_counts](https://github.com/SMAPPNYU/smapputil#mail_tweet_counts)
     - [username_id_convert](https://github.com/SMAPPNYU/smapputil#username_id_convert)
-    - [archive_database](#archive_database)
+    - [dump_database](#dump_database)
+    - [make_tar](#make_tar)
 - [js](https://github.com/SMAPPNYU/smapputil#js)
     - [adduserstomongo](https://github.com/SMAPPNYU/smapputil#adduserstomongo)
 - [sh](https://github.com/SMAPPNYU/smapputil#sh)
@@ -559,18 +560,34 @@ Gudie
 ```
 
 
-#archive_database
+#dump_database
 
-mongodumps a list of dbs fo a specified place a
+mongodumps a list of dbs fo a specified place
 
 abstract:
 ```python
-python py/archive_tools/archive_database.py -i 
+python py/archive_tools/dump_database.py 
 ```
 
 practical:
 ```python
-python py/
+python py/archive_tools/dump_database.py
+```
+
+*returns* a series of running mongodump processes that dump the specified databases
+
+#make_tar
+
+makes multiple tar file from a list of input files
+
+abstract:
+```python
+python py/archive_tools/make_tar.py
+```
+
+practical:
+```python
+python py/archive_tools/make_tar.py
 ```
 
 *returns* a series of running mongodump processes that dump the specified databases
