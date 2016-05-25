@@ -559,8 +559,7 @@ PeterPenashue
 Gudie
 ```
 
-
-#dump_database
+#[dump_database](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
 
 mongodumps a list of dbs fo a specified place
 
@@ -578,7 +577,7 @@ python py/archive_tools/dump_database.py -i ~/pylogs/dump_dbs_input.json -ho sma
 
 *returns* a series of running mongodump processes that dump the specified databases
 
-#make_tar
+#[make_tar](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
 
 makes multiple tar file from a list of input files
 
