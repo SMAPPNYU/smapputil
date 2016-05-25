@@ -566,13 +566,15 @@ mongodumps a list of dbs fo a specified place
 
 abstract:
 ```python
-python py/archive_tools/dump_database.py 
+python py/archive_tools/dump_database.py -i PATH_TO_INPUT_JSON -ho DB_HOSTNAME_OR_IP -p DB_HOST_PORT -u DB_USERNAME -w DB_PASSWORD -o PATH_TO_OUTPUT_DIR
 ```
 
 practical:
 ```python
-python py/archive_tools/dump_database.py
+python py/archive_tools/dump_database.py -i ~/pylogs/dump_dbs_input.json -ho smapp.politics.fas.nyu.edu -p 27011 -u smapp_readOnly -w smapp_nyu -o ~/dump/
 ```
+
+`PATH_TO_OUTPUT_DIR` - is a path to a directory that wll contain a directory named after the database that will contain the dump
 
 *returns* a series of running mongodump processes that dump the specified databases
 
