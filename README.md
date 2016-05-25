@@ -588,7 +588,7 @@ python py/archive_tools/make_tar.py -i INPUT_FILES_LIST
 
 practical:
 ```python
-python py/archive_tools/make_tar.py -i 
+python py/archive_tools/make_tar.py -i file1.bson germany_election_2013/ tweets_3.bson
 ```
 
 *returns* a .tar.gz file on disk for each input file or folder
