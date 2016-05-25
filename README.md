@@ -544,19 +544,10 @@ or csv input:
 
 ```
 screen_name
-mcdonald4avalon
-jeannie4avalon
-lbarnettavalon
-ScottAndrewsNL
-Jenn_McCreath
-judyfootemp
-teejohnny
-Scott_Simms
-ClaudetteNDP
-YvonneJJones
-EdwardNDP
-PeterPenashue
-Gudie
+yvanscher
+Jonathan_Nagler
+j_a_tucker
+RichBonneauNYU
 ```
 
 #[dump_database](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
