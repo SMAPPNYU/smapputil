@@ -9,7 +9,7 @@ def make_tarfile(output_filename, source_path):
 
 def parse_args(args):
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', dest='input', required=True, help='a list of folders and files to archive')
+    parser.add_argument('-i', '--input', dest='input', nargs='+', required=True, help='a list of folders and files to archive')
     parser.add_argument('-o', '--output', dest='output', help='the path to the folder where you\'d like the mongodump to go')
     parser.add_argument('-l', '--log', dest='log', default=os.path.expanduser('~/pylogs/archive_database.log'), help='This is the path to where your output log should be.')
     return parser.parse_args(args)
