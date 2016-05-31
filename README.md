@@ -561,10 +561,12 @@ python py/archive_tools/dump_database.py -i PATH_TO_INPUT_JSON -ho DB_HOSTNAME_O
 
 practical:
 ```python
-python py/archive_tools/dump_database.py -i ~/pylogs/dump_dbs_input.json -ho smapp.politics.fas.nyu.edu -p 27011 -u smapp_readOnly -w smapp_nyu -o ~/dump/
+python py/archive_tools/dump_database.py -i ~/pylogs/dump_dbs_input.json -ho smapp.politics.fas.nyu.edu -p 27011 -u smapp_readOnly -w smapp_nyu -o ~/dump/ &>/dev/null
 ```
 
 `PATH_TO_OUTPUT_DIR` - is a path to a directory that wll contain a directory named after the database that will contain the dump
+
+`&>/dev/null` - runs the script quietly instaed of printing mongodumps output
 
 *returns* a series of running mongodump processes that dump the specified databases
 

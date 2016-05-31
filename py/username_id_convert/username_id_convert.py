@@ -33,20 +33,25 @@ def usernames_to_ids(usernames_list, output, api):
     #configure logging
     logger = logging.getLogger(__name__)
     logger.info('Creating your output file : %s', output)
+    refuse_fd = open(expanduser('~/pylogs/username_id_convert_failed_inputs.log'), 'w')
     write_fd = open(args.output, 'w')
 
     for a_user_screen_name in usernames_list:
         try:
             name_json = {}
             res = api.get_user(screen_name=a_user_screen_name)
+            print(res)
             name_json['id'] = res.id
             write_fd.write(json.dumps(name_json))
             write_fd.write('\n')
             logger.info("{} , {}".format(a_user_screen_name, res.id))
         except tweepy.TweepError as e:
+            refuse_fd.write(a_user_screen_name)
+            refuse_fd.write('\n')
             logger.info('excepted tweepy error: {}'.format(e))
 
     write_fd.close()
+    refuse_fd.close()
 
 def parse_args(args):
     currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
