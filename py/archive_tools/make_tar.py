@@ -6,7 +6,7 @@ import argparse
 
 def make_tarfile(output_filename, source_path):
     with tarfile.open(output_filename, "w:gz") as tar:
-        tar.add(source_dir, arcname=os.path.basename(source_path))
+        tar.add(source_path, arcname=os.path.basename(source_path))
 
 def parse_args(args):
     parser = argparse.ArgumentParser()
