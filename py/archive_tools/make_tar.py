@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+import tarfile
 import argparse
 
 def make_tarfile(output_filename, source_path):
