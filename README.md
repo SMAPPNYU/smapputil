@@ -570,6 +570,13 @@ python py/archive_tools/dump_database.py -i ~/pylogs/dump_dbs_input.json -ho sma
 
 *returns* a series of running mongodump processes that dump the specified databases
 
+takes a json input
+```
+[
+22997097, 14281853, 20686582, 19977542
+]
+```
+
 #[make_tar](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
 
 makes multiple tar file from a list of input files and makes a separate tar for each file

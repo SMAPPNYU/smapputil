@@ -8,9 +8,12 @@ import subprocess
 def dump_database(hostname, port, dbname, username, password, output_path):
     mongodump_string = "mongodump --host {}:{} -u {} -p {} -o {} -d {}".format(hostname, port, username, password, output_path, dbname)
     logger.info('trying to start: {}'.format(mongodump_string))
-    #check_output is like popen but blocks to w8 for output
-    process = subprocess.check_output([mongodump_string], shell=True)
-    logger.info('finished: {}'.format(mongodump_string))
+    try:
+        #check_output is like popen but blocks to w8 for output
+        process = subprocess.check_output([mongodump_string], shell=True)
+        logger.info('finished: {}'.format(mongodump_string))
+    except subprocess.CalledProcessError as e:
+        logger.info('failed for reason: {} on data set: {}'.format(e, dbname))
 
 def parse_args(args):
     parser = argparse.ArgumentParser()
@@ -20,7 +23,7 @@ def parse_args(args):
     parser.add_argument('-w', '--password', dest='password', help='password for this user on this db')
     parser.add_argument('-p', '--port', dest='port', default='49999', help='local port to map to the remoteport')
     parser.add_argument('-o', '--outputpath', dest='outputpath', help='the path to the folder where you\'d like the mongodump to go')
-    parser.add_argument('-l', '--log', dest='log', default=os.path.expanduser('~/pylogs/archive_database.log'), help='This is the path to where your output log should be.')
+    parser.add_argument('-l', '--log', dest='log', default=os.path.expanduser('~/pylogs/dump_database.log'), help='This is the path to where your output log should be.')
     return parser.parse_args(args)
 
 if __name__ == '__main__':
