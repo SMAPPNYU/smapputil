@@ -42,7 +42,7 @@ def list_collections(collector_machine, username):
     # read the crontab from stdout
     crontab = paramiko_cron_output.read()
     # parse the crontab for the names of the collections
-    crontab_entries = crontab.split('\n')
+    crontab_entries = crontab.decode().split('\n')
 
     return build_collection_list(crontab_entries)
 
