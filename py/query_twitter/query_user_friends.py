@@ -36,7 +36,7 @@ def query_user_friends(output, id_list, auth_file):
         if not userid == '':
             try:
                 count = 0
-                for item in Cursor(api_pool.friends, id=userid).pages():
+                for item in Cursor(api_pool.friends, id=userid).items():
                     logger.debug('user id: {},  and screen_name {}'.format(item.id, item.screen_name)) 
                     count = count + 1
                     tweet_item = json.loads(json.dumps(item._json))
