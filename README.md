@@ -512,6 +512,8 @@ or a json list:
 
 #[transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
 
+*warning* bulk inserts will create a surge of pending deletes on a sharded mongo cluster. this will stop shards from rebalancing properly and they will have to be stepped down or reset.
+
 transfers a smapp tweet collection from one db to another. updating all necessary metadata documents.
 
 abstract:
