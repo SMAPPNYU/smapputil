@@ -10,8 +10,9 @@ def dump_database(hostname, port, dbname, username, password, authdb, output_pat
     logger.info('trying to start: {}'.format(mongodump_string))
     try:
         #check_output is like popen but blocks to w8 for output
-        process = subprocess.check_output([mongodump_string], shell=True)
+        process_out = subprocess.check_output([mongodump_string], shell=True)
         logger.info('finished: {}'.format(mongodump_string))
+        logger.info('output: {}'.format(process_out))
     except subprocess.CalledProcessError as e:
         logger.info('failed for reason: {} on data set: {}'.format(e, dbname))
 
