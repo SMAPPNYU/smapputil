@@ -620,7 +620,7 @@ python py/archive_tools/dump_database.py -i ~/pylogs/dump_dbs_input.json -ho sma
 takes a json input
 ```
 [
-"germany_election", "mike_brown", "blah", 
+"germany_election", "mike_brown", "blah" 
 ]
 ```
 
