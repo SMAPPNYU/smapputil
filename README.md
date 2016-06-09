@@ -19,6 +19,7 @@
     - [query_search_tweets](#query_search_tweets)
     - [query_user_objects](#query_user_objects)
     - [query_user_friends](#query_user_friends)
+    - [query_user_friends_ids](#query_user_friends_ids)
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
     - [rotating_tunnel](https://github.com/SMAPPNYU/smapputil#rotating_tunnel)
@@ -481,6 +482,50 @@ python query_user_friends.py -i ~/input.json -o ~/output.json -a ~/auth.json -l 
 ```
 
 *returns* a json file that writes to disk with the resulting user objects in JSON format
+
+note:
+
+a field `smapp_original_user_id` gets added to the user object that tells us what the original user used to query for that friend was.
+
+note: 
+
+input is json or csv, csv must be a one column csv with `id` as the column:\
+```
+id
+12321323
+12321312321
+23232323
+.
+.
+.
+```
+
+or a json list:
+```
+[
+    'id_one',
+    'id_two'
+     .
+     .
+     .
+]
+```
+
+#query_user_friends_ids(https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_friends_ids.py)
+
+queries the twitter api for the ids of 'friends' (users a userid follows) of a particular twitter user id 
+
+abstract:
+```python
+/path/to/scriptsenv/bin/python query_user_friends_ids.py -i /path/to/input.json -o /path/to/output.json -a /path/to/auth.json -l /path/to/log.log
+```
+
+practical:
+```python
+python query_user_friends_ids.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
+```
+
+*returns* a json file that writes to disk with the resulting user id objects in JSON format
 
 note:
 
