@@ -16,9 +16,9 @@ def twitter_query(output, input_file, auth_file):
     logger.info('creating oauth pool...')
 
     #query the tweets
-    query_user_friends(output, id_list, auth_file)
+    query_user_friends_ids(output, id_list, auth_file)
 
-def query_user_friends(output, id_list, auth_file):
+def query_user_friends_ids(output, id_list, auth_file):
 
     logger = logging.getLogger(__name__)
 
@@ -77,7 +77,7 @@ def parse_args(args):
     parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input.json, a [] list of twitter ids.')
     parser.add_argument('-o', '--output', dest='output', required=True, help='This will be your output file, a {} json object showing original ids and twitter screen names.')
     parser.add_argument('-a', '--auth', dest='auth', required=True, help='This is the path to your oauth.json file for twitter')
-    parser.add_argument('-l', '--log', dest='log', default=os.path.expanduser('~/pylogs/query_user_friends_'+currentdate+'.log'), help='This is the path to where your output log should be. Required')
+    parser.add_argument('-l', '--log', dest='log', default=os.path.expanduser('~/pylogs/query_user_friends_ids_'+currentdate+'.log'), help='This is the path to where your output log should be. Required')
     return parser.parse_args()
 
 if __name__ == '__main__':
