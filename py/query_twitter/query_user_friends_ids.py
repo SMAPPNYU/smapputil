@@ -40,9 +40,9 @@ def query_user_friends_ids(output, id_list, auth_file):
             try:
                 count = 0
                 for item in Cursor(api_pool.friends_ids).items():
-                    logger.debug('user id: {},  and screen_name {}'.format(item.id, item.screen_name)) 
+                    logger.debug('user id: {}'.format(item)) 
                     count = count + 1
-                    tweet_item = json.loads(json.dumps(item._json))
+                    tweet_item = {'id': item}
                     tweet_item['smapp_original_user_id'] = userid
                     write_fd.write(json.dumps(tweet_item))
                     write_fd.write('\n')
