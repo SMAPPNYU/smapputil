@@ -33,13 +33,10 @@ def query_user_friends_ids(output, id_list, auth_file):
 
     for userid in id_list:
         num_inputs_queried = num_inputs_queried + 1
-        # even though the count is 200 we can cycle through 3200 items.
-        # if you put a count variable in this cursor it will iterate up 
-        # to about 3200
         if not userid == '':
             try:
                 count = 0
-                for item in Cursor(api_pool.friends_ids).items():
+                for item in Cursor(api_pool.friends_ids, id=userid).items():
                     logger.debug('user id: {}'.format(item)) 
                     count = count + 1
                     tweet_item = {'id': item}
