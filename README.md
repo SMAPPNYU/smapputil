@@ -26,6 +26,7 @@
     - [mail_tweet_counts](https://github.com/SMAPPNYU/smapputil#mail_tweet_counts)
     - [username_id_convert](https://github.com/SMAPPNYU/smapputil#username_id_convert)
     - [dump_database](#dump_database)
+    - [check_dump_integrity](#check_dump_integrity)
     - [make_tar](#make_tar)
 - [js](https://github.com/SMAPPNYU/smapputil#js)
     - [adduserstomongo](https://github.com/SMAPPNYU/smapputil#adduserstomongo)
@@ -668,6 +669,37 @@ takes a json input
 "germany_election", "mike_brown", "blah" 
 ]
 ```
+
+#[check_dump_integrity](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
+
+Checks whether one or more mongo databases from [dump_database](#dump_database) were dumped successfully.
+
+abstract:
+```python
+python check_dump_integrity.py -i @"DATABASE_NAME" -d PATH_TO_DUMP_DIRECTORY -ho DB_HOSTNAME_OR_IP -p DB_HOST_PORT -u DB_USERNAME -w DB_PASSWORD 
+
+python check_dump_integrity.py -i PATH_TO_INPUT_JSON ...
+```
+
+practical:
+```python
+python check_dump_integrity.py -i @"USElection2016_DTrumps Iran_Deal_2015" -d ~/dump/ -ho smapp.politics.fas.nyu.edu -p 27011 -u smapp_readOnly -w smapp_nyu
+
+python check_dump_integrity.py -i ~/smappconfig/dump_dbs_input.json -d ~/dump/ -ho localhost -p 27017
+```
+
+`PATH_TO_DUMP_DIRECTORY` is the path to the directory containing the dump, not the entire path to the dump itself.
+
+*returns* reports to standard output whether or not the dumps are missing any collections or tweets.
+
+-i can take a json input file containing:
+```
+[
+"USElection2016_DTrumps", "Iran_Deal_2015", "blah" 
+]
+```
+
+pass in -h for a comprehensive list of options
 
 #[make_tar](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
 
