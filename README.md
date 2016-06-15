@@ -685,7 +685,7 @@ practical:
 ```python
 python check_dump_integrity.py -i ~/smappconfig/dump_dbs_input.json -d ~/dump/ -ho smapp.politics.fas.nyu.edu -p 27011 -u smapp_readOnly -w smapp_nyu
 
-python check_dump_integrity.py -i US_Mass_Protests Iran_Deal_2015 -d ~/dump/ -ho localhost -p 27017
+python check_dump_integrity.py -i US_Mass_Protests Iran_Deal_2015 -d ~/dump/ -ho localhost -p 49999
 
 ```
 
