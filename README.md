@@ -676,30 +676,55 @@ Checks whether one or more mongo databases from [dump_database](#dump_database) 
 
 abstract:
 ```python
-python check_dump_integrity.py -i @"DATABASE_NAME" -d PATH_TO_DUMP_DIRECTORY -ho DB_HOSTNAME_OR_IP -p DB_HOST_PORT -u DB_USERNAME -w DB_PASSWORD 
+python check_dump_integrity.py -i PATH_TO_INPUT_JSON -d PATH_TO_DUMP_DIRECTORY -ho DB_HOSTNAME_OR_IP -p DB_HOST_PORT -u DB_USERNAME -w DB_PASSWORD 
 
-python check_dump_integrity.py -i PATH_TO_INPUT_JSON ...
+python check_dump_integrity.py -i DATABASE_NAME1 DATABASE_NAME2 ...
 ```
 
 practical:
 ```python
-python check_dump_integrity.py -i @"USElection2016_DTrumps Iran_Deal_2015" -d ~/dump/ -ho smapp.politics.fas.nyu.edu -p 27011 -u smapp_readOnly -w smapp_nyu
+python check_dump_integrity.py -i ~/smappconfig/dump_dbs_input.json -d ~/dump/ -ho smapp.politics.fas.nyu.edu -p 27011 -u smapp_readOnly -w smapp_nyu
 
-python check_dump_integrity.py -i ~/smappconfig/dump_dbs_input.json -d ~/dump/ -ho localhost -p 27017
+python check_dump_integrity.py -i US_Mass_Protests Iran_Deal_2015 -d ~/dump/ -ho localhost -p 27017
+
 ```
 
-`PATH_TO_DUMP_DIRECTORY` is the path to the directory containing the dump, not the entire path to the dump itself.
+-d `PATH_TO_DUMP_DIRECTORY` is the path to the directory containing the dump, not the entire path to the dump itself.
 
-*returns* reports to standard output whether or not the dumps are missing any collections or tweets.
-
--i can take a json input file containing:
+-i `PATH_TO_INPUT_JSON` can take a json input file of the form:
 ```
 [
-"USElection2016_DTrumps", "Iran_Deal_2015", "blah" 
+"US_Mass_Protests", "Iran_Deal_2015", "blah" 
 ]
 ```
 
 pass in -h for a comprehensive list of options
+
+*returns* 
+
+Reports to terminal and log file whether or not the dumps are missing any collections or documents.
+Report provides separate sections for each dump input.
+
+Report sections are of the form:
+
+```
+*******************************
+*   USElection2016_DTrumps   *
+*******************************
+
+DUMP FOR USElection2016_DTrumps IS OK ON COLLECTIONS. Number of collections in database: 1, Number of collections dumped: 1
+
+Counting number of documents in USElection2016_DTrumps database
+Database USElection2016_DTrumps tweets_1 document count: 6417976
+
+Counting number of documents in USElection2016_DTrumps dump
+Dump USElection2016_DTrumps tweets_1.bson document count: 5
+
+DUMP FOR USElection2016_DTrumps IS MISSING DOCUMENTS. Total documents in database: 6417976, Total documents dumped: 5
+
+Collections Missing Documents: ['tweets_1']
+
+```
 
 #[make_tar](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
 
