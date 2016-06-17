@@ -654,10 +654,12 @@ python py/archive_tools/dump_database.py -i PATH_TO_INPUT_JSON -ho DB_HOSTNAME_O
 
 practical:
 ```python
-python py/archive_tools/dump_database.py -i ~/pylogs/dump_dbs_input.json -ho smapp.politics.fas.nyu.edu -p 27011 -u smapp_readOnly -w smapp_nyu -o ~/dump/ &>/dev/null
+python py/archive_tools/dump_database.py -i ~/pylogs/dump_dbs_input.json -ho 100.100.100.100 -p 27017 -u some_db_user -w some_db_password -o ~/dump/ &>/dev/null
 ```
 
-`PATH_TO_OUTPUT_DIR` - is a path to a directory that wll contain a directory named after the database that will contain the dump
+-ho `DB_HOSTNAME_OR_IP` and -p `DB_HOST_PORT` is the hostname or ip of the remote host running the mongodb instance, and the remote port that mongodb is running on. Otherwise, if using a tunnel to the remote host, localhost and the local port that is mapped to the remote host's mongodb port.
+
+-o `PATH_TO_OUTPUT_DIR` - is a path to a directory that wll contain a directory named after the database that will contain the dump
 
 `&>/dev/null` - runs the script quietly instaed of printing mongodumps output
 
@@ -672,33 +674,38 @@ takes a json input
 
 #[check_dump_integrity](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
 
-Checks whether one or more mongo databases from [dump_database](#dump_database) were dumped successfully.
+Checks whether one or more mongo databases from [dump_database](#dump_database) were dumped successfully at a specified location.
 
 abstract:
 ```python
-python check_dump_integrity.py -i PATH_TO_INPUT_JSON -d PATH_TO_DUMP_DIRECTORY -ho DB_HOSTNAME_OR_IP -p DB_HOST_PORT -u DB_USERNAME -w DB_PASSWORD 
+python check_dump_integrity.py -i PATH_TO_DUMPS_INPUT_JSON -d PATH_TO_DUMPS_DIRECTORY -ho DB_HOSTNAME_OR_IP -p DB_HOST_PORT -u DB_USERNAME -w DB_PASSWORD 
 
-python check_dump_integrity.py -i DATABASE_NAME1 DATABASE_NAME2 ...
+python check_dump_integrity.py -i DUMP_NAME1 DUMP_NAME2 ... -d PATH_TO_DUMPS_DIRECTORY -ho DB_HOSTNAME_OR_IP -p DB_HOST_PORT -u DB_USERNAME -w DB_PASSWORD
 ```
 
 practical:
 ```python
-python check_dump_integrity.py -i ~/smappconfig/dump_dbs_input.json -d ~/dump/ -ho smapp.politics.fas.nyu.edu -p 27011 -u smapp_readOnly -w smapp_nyu
+python check_dump_integrity.py -i ~/smappconfig/dump_dbs_input.json -d ~/dumps/ -ho 100.100.100.100 -p 27017 -u some_db_user -w some_db_password
 
-python check_dump_integrity.py -i US_Mass_Protests Iran_Deal_2015 -d ~/dump/ -ho localhost -p 49999
-
+python check_dump_integrity.py -i US_Mass_Protests Iran_Deal_2015 -d ~/dumps/ -ho localhost -p 49999 -u some_db_user -w some_db_password
 ```
 
--d `PATH_TO_DUMP_DIRECTORY` is the path to the directory containing the dump, not the entire path to the dump itself.
+-i should provide names of dumps that have corresponding mongo databases of the same name
 
--i `PATH_TO_INPUT_JSON` can take a json input file of the form:
+-i with `DUMP_NAME1 DUMP_NAME2 ...` directly takes the names of the dumps separated by spaces
+
+-i with `PATH_TO_DUMPS_INPUT_JSON` takes a path to json file with a list of dump names:
 ```
 [
 "US_Mass_Protests", "Iran_Deal_2015", "blah" 
 ]
 ```
 
-pass in -h for a comprehensive list of options
+-d `PATH_TO_DUMPS_DIRECTORY` is the path to the directory containing the dumps, not the path to a dump itself. If you want to check the integrity of a dump located at ~/dumps/US_Mass_Protests, then you would pass in `-d ~/dumps/`. Likewise, if you want to check the integrity of multiple dumps like ~/dumps/US_Mass_Protests and ~/dumps/Iran_Deal_2015, you would also pass in `-d ~/dumps/`.
+
+-ho `DB_HOSTNAME_OR_IP` and -p `DB_HOST_PORT` is the hostname or ip of the remote host running the mongodb instance, and the remote port that mongodb is running on. Otherwise, if using a tunnel to the remote host, localhost and the local port that is mapped to the remote host's mongodb port.
+
+-u `DB_USERNAME` and -w `DB_PASSWORD`. If checking one dump, these must be the user credentials for the mongo database corresponding to that dump. E.g. If checking the ~/dumps/US_Mass_Protests dump, the user credentials must be for the US_Mass_Protests mongo database. If checking more than one dump, they must be credentials for an admin user with readall permissions for all mongo databases.
 
 *returns* 
 
