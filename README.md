@@ -725,9 +725,9 @@ Counting number of documents in USElection2016_DTrumps database
 Database USElection2016_DTrumps tweets_1 document count: 6417976
 
 Counting number of documents in USElection2016_DTrumps dump
-Dump USElection2016_DTrumps tweets_1.bson document count: 5
+Dump USElection2016_DTrumps tweets_1.bson document count: 5 (Missing 5, 0.00%)
 
-DUMP FOR USElection2016_DTrumps IS MISSING DOCUMENTS. Total documents in database: 6417976, Total documents dumped: 5
+DUMP FOR USElection2016_DTrumps IS MISSING DOCUMENTS. Total documents in database: 6417976, Total documents dumped: 5 (Missing 5, 0.00%)
 
 Collections Missing Documents: ['tweets_1']
 
