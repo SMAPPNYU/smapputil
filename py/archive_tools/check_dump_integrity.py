@@ -112,8 +112,22 @@ def check_dump_integrity(hostname, port, dbname, username, password, authdb, dum
 			#Save document count for dump collection
 			dump_collection_doc_counts[coll.split('.bson', 1)[0]] = num_docs_in_coll
 
+			#Calculate # and % missing documents for collection
+			num_docs_in_db_coll = db_collection_doc_counts[coll.split('.bson', 1)[0]]
+			num_docs_missing = num_docs_in_db_coll - num_docs_in_coll
+			percentage_docs_missing = 0
+			if num_docs_in_db_coll != 0:
+				percentage_docs_missing = (num_docs_missing/num_docs_in_db_coll) * 100
+
 			logging.info("Dump {} {} document count: {}".format(dbname, coll, num_docs_in_coll))
-			print("Dump {} {} document count: {}".format(dbname, coll, num_docs_in_coll))
+			print("Dump {0} {1} document count: {2} (Missing {3}, {4:.2f}%)".format(dbname, coll, num_docs_in_coll, num_docs_missing, percentage_docs_missing))
+			# print("".format())
+
+		#Calculate # and % missing documents overall
+		total_docs_missing = total_documents_in_db - total_documents_dumped
+		percentage_total_docs_missing = 0
+		if total_documents_in_db != 0:
+			percentage_total_docs_missing = (total_docs_missing/total_documents_in_db) * 100
 
 		#Print integrity of number of documents in dump
 		log_output = 'DUMP FOR {} '.format(dbname)
@@ -125,7 +139,7 @@ def check_dump_integrity(hostname, port, dbname, username, password, authdb, dum
 			log_output += 'HAS TOO MANY DOCUMENTS. '
 		else:
 			log_output += 'IS OK ON DOCUMENTS. '
-		log_output += 'Total documents in database: {}, Total documents dumped: {}'.format(total_documents_in_db, total_documents_dumped)
+		log_output += 'Total documents in database: {0}, Total documents dumped: {1} (Missing {2}, {3:.2f}%)'.format(total_documents_in_db, total_documents_dumped, total_docs_missing, percentage_total_docs_missing)
 		logging.info('\n' + log_output)
 		print('\n' + log_output)
 
