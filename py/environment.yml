@@ -3,7 +3,7 @@ dependencies:
 - python=3.5.1
 - pylint=1.5.4
 - pip:
-    - pysmap==0.0.7
+    - pysmap
     - psutil==4.1.0
     - sshtunnel==0.0.8.1 
     - python-crontab==2.0.1

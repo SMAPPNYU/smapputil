@@ -1,4 +1,4 @@
-pysmap==0.0.7
+pysmap
 pylint==1.5.4
 psutil==4.1.0
 sshtunnel==0.0.8.1 
