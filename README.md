@@ -150,16 +150,20 @@ goes through a bastion host to hades. 2. to create tunnels to hades on alternate
 
 abstract:
 ```python
-python py/ssh_tunnel/rotating_tunnel.py -op OPERATION -i /PATH/TO/TUNNEL/CONFIG.JSON -m MONITOR_PORT -p REMOTE_BIND_PORT
+python py/ssh_tunnel/rotating_tunnel.py -op OPERATION -i /PATH/TO/TUNNEL/CONFIG.JSON -p REMOTE_BIND_PORT
 ```
 
 practical:
 ```python
-python py/ssh_tunnel/rotating_tunnel.py -op start -i ~/tunnel_config.json -m 5111 -p 43564
-
+python py/ssh_tunnel/rotating_tunnel.py -op start -i ~/tunnel_config.json -p 49999
 ```
 
-*returns* a tunnel that maps yous local ports to a rotating set of remote ports and hosts
+Use a screen daemon to start persistant rotating tunnels on smapp hosts:
+```bash
+screen -dmS rotating_tunnel ~/miniconda/envs/tunnel_env/bin/python ~/smapprepos/smapputil/py/ssh_tunnel/rotating_tunnel.py -op start -i ~/smappconfig/tunnel_config_alt.json -p 49999
+```
+
+*returns* a tunnel that maps your local port to a rotating set of remote ports and hosts
 
 *input* a file that contains a set of login hosts and a set of remotehosts
 
