@@ -183,9 +183,9 @@ if __name__ == '__main__':
 	for db in input_list:
 		intro_string = textwrap.dedent(
 		"""\n
-		****{}*****
+		****{}****
 		*   {}   *
-		****{}*****
+		****{}****
 		""".format('*' * len(db),db,'*' * len(db)))
 		logging.info(intro_string)
 		print(intro_string)

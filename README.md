@@ -719,9 +719,9 @@ Report provides separate sections for each dump input.
 Report sections are of the form:
 
 ```
-*******************************
+******************************
 *   USElection2016_DTrumps   *
-*******************************
+******************************
 
 DUMP FOR USElection2016_DTrumps IS OK ON COLLECTIONS. Number of collections in database: 1, Number of collections dumped: 1
 
