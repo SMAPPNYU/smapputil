@@ -726,14 +726,16 @@ Report sections are of the form:
 DUMP FOR USElection2016_DTrumps IS OK ON COLLECTIONS. Number of collections in database: 1, Number of collections dumped: 1
 
 Counting number of documents in USElection2016_DTrumps database
-Database USElection2016_DTrumps tweets_1 document count: 6417976
+Database USElection2016_DTrumps tweets_1 document count: 6000000
+Database USElection2016_DTrumps tweets_2 document count: 3000000
 
 Counting number of documents in USElection2016_DTrumps dump
-Dump USElection2016_DTrumps tweets_1.bson document count: 5 (Missing 5, 0.00%)
+Dump USElection2016_DTrumps tweets_1.bson document count: 6000000 (Missing 0, 0.00%)
+Dump USElection2016_DTrumps tweets_2.bson document count: 2800000 (Missing 200000, 6.67%)
 
-DUMP FOR USElection2016_DTrumps IS MISSING DOCUMENTS. Total documents in database: 6417976, Total documents dumped: 5 (Missing 5, 0.00%)
+DUMP FOR USElection2016_DTrumps IS MISSING DOCUMENTS. Total documents in database: 9000000, Total documents dumped: 8800000 (Missing 200000, 2.27%)
 
-Collections Missing Documents: ['tweets_1']
+Collections Missing Documents: ['tweets_2']
 
 ```
 
