@@ -723,7 +723,7 @@ Report sections are of the form:
 *   USElection2016_DTrumps   *
 ******************************
 
-DUMP FOR USElection2016_DTrumps IS OK ON COLLECTIONS. Number of collections in database: 1, Number of collections dumped: 1
+DUMP FOR USElection2016_DTrumps IS OK ON COLLECTIONS. Number of collections in database: 2, Number of collections dumped: 2
 
 Counting number of documents in USElection2016_DTrumps database
 Database USElection2016_DTrumps tweets_1 document count: 6000000
