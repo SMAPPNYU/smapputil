@@ -16,7 +16,7 @@ COUNT_COLLECTIONS = 0
 COUNT_DOCUMENTS = 1
 
 DB_RELEVANT_COLLECTIONS_REGEX = re.compile('(^tweets$|^tweets_\d+$)') # 'tweets' or 'tweets_#'
-DUMP_RELEVANT_COLLECTIONS_REGEX = re.compile('(^tweets.bson$|^tweets_\d+.bson$)') # tweets.bson or tweets_#.bson
+DUMP_RELEVANT_COLLECTIONS_REGEX = re.compile('(^tweets.bson$|^tweets_\d+.bson$|^tweets.json$|^tweets_\d+.json$)') # tweets.bson/tweets_#.bson or tweets.json/tweets_#.json
 
 def check_dump_integrity(hostname, port, dbname, username, password, authdb, dump_dir, check_type = COUNT_COLLECTIONS):
 
@@ -50,6 +50,11 @@ def check_dump_integrity(hostname, port, dbname, username, password, authdb, dum
 	dump_relevant_collections.sort()
 	dump_relevant_collections.sort(key=len)
 
+	#Find out format of dump (.json or .bson)
+	dump_format = 'bson'
+	if dump_relevant_collections[0].split('.', 1)[1] == 'json':
+		dump_format = 'json'
+
 	#CHECK NUMBER OF COLLECTIONS
 	if check_type == COUNT_COLLECTIONS:
 		num_collections_in_db = len(db_relevant_collections)
@@ -71,7 +76,7 @@ def check_dump_integrity(hostname, port, dbname, username, password, authdb, dum
 
 		#Print list of any collections missing from dump
 		if dump_exists and (num_collections_dumped < num_collections_in_db):
-			dump_relevant_collections_split = [dump_coll.split('.bson', 1)[0] for dump_coll in dump_relevant_collections]
+			dump_relevant_collections_split = [dump_coll.split('.' + dump_format, 1)[0] for dump_coll in dump_relevant_collections]
 			missing_collections = [coll for coll in db_relevant_collections if coll not in dump_relevant_collections_split]
 			missing_collections.sort()
 			missing_collections.sort(key=len)
@@ -105,15 +110,15 @@ def check_dump_integrity(hostname, port, dbname, username, password, authdb, dum
 
 		#Sum up total number of documents in dump
 		for coll in dump_relevant_collections:
-			collection = SmappCollection('bson', dump_path + '/' + coll)
+			collection = SmappCollection(dump_format, dump_path + '/' + coll)
 			num_docs_in_coll = collection.count_tweets()
 			total_documents_dumped += num_docs_in_coll
 
 			#Save document count for dump collection
-			dump_collection_doc_counts[coll.split('.bson', 1)[0]] = num_docs_in_coll
+			dump_collection_doc_counts[coll.split('.' + dump_format, 1)[0]] = num_docs_in_coll
 
 			#Calculate # and % missing documents for collection
-			num_docs_in_db_coll = db_collection_doc_counts[coll.split('.bson', 1)[0]]
+			num_docs_in_db_coll = db_collection_doc_counts[coll.split('.' + dump_format, 1)[0]]
 			num_docs_missing = num_docs_in_db_coll - num_docs_in_coll
 			percentage_docs_missing = 0
 			if num_docs_in_db_coll != 0:

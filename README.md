@@ -654,16 +654,33 @@ mongodumps a list of dbs fo a specified place
 abstract:
 ```python
 python py/archive_tools/dump_database.py -i PATH_TO_INPUT_JSON -ho DB_HOSTNAME_OR_IP -p DB_HOST_PORT -u DB_USERNAME -w DB_PASSWORD -o PATH_TO_OUTPUT_DIR
+
+python py/archive_tools/dump_database.py -i DB_NAME1 DB_NAME2 ... -ho DB_HOSTNAME_OR_IP -p DB_HOST_PORT -u DB_USERNAME -w DB_PASSWORD -o PATH_TO_OUTPUT_DIR
 ```
 
 practical:
 ```python
-python py/archive_tools/dump_database.py -i ~/pylogs/dump_dbs_input.json -ho 100.100.100.100 -p 27017 -u some_db_user -w some_db_password -o ~/dump/ &>/dev/null
+python py/archive_tools/dump_database.py -i ~/pylogs/dump_dbs_input.json -ho 100.100.100.100 -p 27017 -u some_db_user -w some_db_password -o ~/dumps/ &>/dev/null
+
+python py/archive_tools/dump_database.py -i germany_election mike_brown -ho localhost -p 49999 -u some_db_user -w some_db_password -o ~/dumps/ --querydump
+```
+
+-i should provide names corresponding to mongo databases
+
+-i with `DB_NAME1 DB_NAME2 ...` directly takes the db names separated by spaces
+
+-i with `PATH_TO_DUMPS_INPUT_JSON` takes a path to json file with a list of db names:
+```
+[
+"germany_election", "mike_brown", "blah" 
+]
 ```
 
 -ho `DB_HOSTNAME_OR_IP` and -p `DB_HOST_PORT` is the hostname or ip of the remote host running the mongodb instance, and the remote port that mongodb is running on. Otherwise, if using a tunnel to the remote host, localhost and the local port that is mapped to the remote host's mongodb port.
 
 -o `PATH_TO_OUTPUT_DIR` - is a path to a directory that wll contain a directory named after the database that will contain the dump
+
+-q `--querydump` dumps the database collections to json by querying mongodb using smappdragon's MongoCollection and dump_to_json tools
 
 `&>/dev/null` - runs the script quietly instaed of printing mongodumps output
 
@@ -678,7 +695,7 @@ takes a json input
 
 #[check_dump_integrity](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
 
-Checks whether one or more mongo databases from [dump_database](#dump_database) were dumped successfully at a specified location.
+Checks whether one or more mongo databases from [dump_database](#dump_database) were dumped successfully at a specified location. Dumps can be in .bson or .json format.
 
 abstract:
 ```python
@@ -696,7 +713,7 @@ python check_dump_integrity.py -i US_Mass_Protests Iran_Deal_2015 -d ~/dumps/ -h
 
 -i should provide names of dumps that have corresponding mongo databases of the same name
 
--i with `DUMP_NAME1 DUMP_NAME2 ...` directly takes the names of the dumps separated by spaces
+-i with `DUMP_NAME1 DUMP_NAME2 ...` directly takes the dump names separated by spaces
 
 -i with `PATH_TO_DUMPS_INPUT_JSON` takes a path to json file with a list of dump names:
 ```
