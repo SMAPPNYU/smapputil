@@ -561,7 +561,7 @@ or a json list:
 ]
 ```
 
-#[query_tweets_distribution](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_tweets_distribution.py)
+#[query_tweets_distribution](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_tweet_distribution.py)
 
 checks a dumped file with a tweet json object on each line to and returns a count file the count file tells us how many tweets there are for each user id in the tweet file. (if all 0 or all the same the query should probably be investigated, logs checked, rerun)
 
