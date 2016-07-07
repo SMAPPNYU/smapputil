@@ -7,10 +7,15 @@ import logging
 
 def query_distribution(output_file, input_file):
     count_struct = {}
+    logger = logging.getLogger(__name__)
 
     with open(input_file) as f:
         for line in f:
-            json_line = json.loads(line)
+            try:
+                json_line = json.loads(line)
+            except ValueError as err:
+                logger.info('failed to read a json line : %s', err)
+
             if 'user' in json_line and 'id_str' in json_line['user'] and json_line['user']['id_str'] not in count_struct:
                 count_struct[json_line['user']['id_str']] = 1
             elif 'user' in json_line and 'id_str' in json_line['user']:
