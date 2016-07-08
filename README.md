@@ -21,6 +21,7 @@
     - [query_user_friends](#query_user_friends)
     - [query_user_friends_ids](#query_user_friends_ids)
     - [query_tweets_distribution](#query_tweets_distribution)
+    - [query_user_follower_ids](#query_user_follower_ids)
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
     - [rotating_tunnel](https://github.com/SMAPPNYU/smapputil#rotating_tunnel)
@@ -539,7 +540,7 @@ a field `smapp_original_user_id` gets added to the user object that tells us wha
 
 note: 
 
-input is json or csv, csv must be a one column csv with `id` as the column:\
+input is json or csv, csv must be a one column csv with `id` as the column:
 ```
 id
 12321323
@@ -578,6 +579,51 @@ python py/query_twitter/query_distribution.py -i ~/smappwork/temp/joanna-user-tw
 *input* a file with a tweet object on each line (AKA a [JsonCollection](https://github.com/SMAPPNYU/smappdragon#json_collection))
 
 *output* a count file with the user id and the number of tweets by that user id in the jsoncollection/tweetfile
+
+#[query_user_follower_ids](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_follower_ids.py)
+
+takes a list of user ids and returns a file with the followers of each id listed in the file.
+
+abstract:
+```
+/path/to/scriptsenv/bin/python query_user_follower_ids.py -i PATH_TO_INPUT -o PATH_TO_OUTPUT -a PATH_TO_AUTH_POOL
+```
+
+practical:
+```
+python ~/smapprepos/smapputil/py/query_twitter/query_user_follower_ids.py -i ~/smappwork/data/egypt_secular_elites.csv -o ~/smappwork/data/egypt_secular_elites_follower_ids_output.json -a ~/pool.json
+```
+
+*input* a json or csv (one colmun) list with id as the column name 
+
+*output* a json file where each lin etakes the form `{"id": 750640012102864896, "smapp_original_user_id": "443789042"}`
+
+note:
+
+a field `smapp_original_user_id` gets added to the id object that tells us what the original user used to query for that follower was.
+
+note: 
+
+input is json or csv, csv must be a one column csv with `id` as the column:
+```
+id
+12321323
+12321312321
+23232323
+.
+.
+.
+```
+
+or a json list:
+```
+[
+    'id_one',
+    'id_two'
+     .
+     .
+     .
+]
 
 #[transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
 
