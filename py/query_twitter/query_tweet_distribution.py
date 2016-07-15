@@ -36,7 +36,7 @@ def parse_args(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input.json, a [] list of twitter ids.')
     parser.add_argument('-o', '--output', dest='output', required=True, help='This will be your output file, a {} json object showing original ids and twitter screen names.')
-    parser.add_argument('-l', '--log', dest='log', default=os.path.expanduser('~/pylogs/query_search_tweets'+currentdate+'.log'), help='This is the path to where your output log should be. Required')
+    parser.add_argument('-l', '--log', dest='log', default=os.path.expanduser('~/pylogs/query_tweet_distribution'+currentdate+'.log'), help='This is the path to where your output log should be. Required')
     return parser.parse_args(args)
 
 if __name__ == '__main__':
