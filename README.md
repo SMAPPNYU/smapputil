@@ -20,7 +20,7 @@
     - [query_user_objects](#query_user_objects)
     - [query_user_friends](#query_user_friends)
     - [query_user_friends_ids](#query_user_friends_ids)
-    - [query_tweets_distribution](#query_tweets_distribution)
+    - [query_tweet_distribution](#query_tweet_distribution)
     - [query_user_follower_ids](#query_user_follower_ids)
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
@@ -562,18 +562,18 @@ or a json list:
 ]
 ```
 
-#[query_tweets_distribution](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_tweet_distribution.py)
+#[query_tweet_distribution](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_tweet_distribution.py)
 
 checks a dumped file with a tweet json object on each line to and returns a count file the count file tells us how many tweets there are for each user id in the tweet file. (if all 0 or all the same the query should probably be investigated, logs checked, rerun)
 
 abstract:
 ```bash
-/path/to/scriptsenv/bin/python query_distribution.py -i INPUT_TWEETS_FILE -o OUTPUT_COUNTS_FILE
+/path/to/scriptsenv/bin/python query_tweet_distribution.py -i INPUT_TWEETS_FILE -o OUTPUT_COUNTS_FILE
 ```
 
 practical:
 ```bash
-python py/query_twitter/query_distribution.py -i ~/smappwork/temp/joanna-user-tweets-1st-10k.json -o ~/smappwork/temp/joanna_dist_test.csv
+python py/query_twitter/query_tweet_distribution.py -i ~/smappwork/temp/joanna-user-tweets-1st-10k.json -o ~/smappwork/temp/joanna_dist_test.csv
 ```
 
 *input* a file with a tweet object on each line (AKA a [JsonCollection](https://github.com/SMAPPNYU/smappdragon#json_collection))
