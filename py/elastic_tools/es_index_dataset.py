@@ -43,7 +43,6 @@ def genereate_actions(dataset, dataset_name, doc_type):
 		del doc['random_number']
 		# Create action object for bulk indexing
 		yield {
-			'_op_type': 'create',
 			"_index": dataset_name.lower(),
 			"_type": doc_type,
 			"_id": doc['id_str'],
