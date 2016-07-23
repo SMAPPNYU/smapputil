@@ -41,6 +41,7 @@ def genereate_actions(dataset, dataset_name, doc_type):
 		# Delete conflicting mongo ID & Irrelevant fields
 		del doc['_id']
 		del doc['random_number']
+		del doc['timestamp']
 		# Create action object for bulk indexing
 		yield {
 			"_index": dataset_name.lower(),
