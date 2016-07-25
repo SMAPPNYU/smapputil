@@ -30,19 +30,21 @@ def index_dataset(dataset_name, doc_type, db_host, db_port, db_user, db_pass, es
 	dataset = SmappDataset(['mongo', db_host, db_port, db_user, db_pass], collection_regex='(^data$|^tweets$|^tweets_\d+$)', database_regex='(^' + dataset_name + '$|^' + dataset_name + '_\d+$)')
 
 	print("Indexing dataset {}...".format(dataset_name))
-	logging.info("Indexing dataset...")
+	logging.info("Indexing dataset {}...".format(dataset_name))
 	for success, info in helpers.parallel_bulk(es, genereate_actions(dataset, dataset_name, doc_type), thread_count=4, chunk_size=5000):
 		if not success:
 			print('A document failed to index:', info)
 			logging.info('A document failed to index:', info)
+	print("Done.")
+	logging.info("Done.")
 
 def genereate_actions(dataset, dataset_name, doc_type):
 	for doc in dataset.get_collection_iterators():
 		# Delete conflicting mongo ID & Irrelevant fields
-		del doc['_id']
-		del doc['random_number']
-		del doc['timestamp']
-		del doc['smapp_date']
+		doc.pop("_id", None)
+		doc.pop("random_number", None)
+		doc.pop("timestamp", None)
+		doc.pop("smapp_date", None)
 		# Create action object for bulk indexing
 		yield {
 			"_index": dataset_name.lower(),
