@@ -47,7 +47,6 @@ def index_dataset_stream(dataset_name, doc_type, db_host, db_port, db_user, db_p
 		}
 		latest_doc = es_instance.search(index=dataset_name.lower(), doc_type=doc_type, body=query)
 		latest_timestamp = latest_doc['hits']['hits'][0]['_source']['timestamp_ms']
-		print(latest_timestamp)
 		
 		#Apply filter to dataset to get only documents at or after the latest timestamp
 		dataset = get_smapp_mongo_dataset(dataset_name, db_host, db_port, db_user, db_pass)
