@@ -60,39 +60,33 @@ def index_dataset_preliminary_import(dataset_name, doc_type, db_host, db_port, d
 			print("Repeating date range batch {} for dataset {}.".format(current_date_range_batch, dataset_name))
 			logger.info("Repeating date range batch {} for dataset {}.".format(current_date_range_batch, dataset_name))
 
-def index_dataset_stream(dataset_name, doc_type, db_host, db_port, db_user, db_pass, es_instance):
-	dataset = get_smapp_mongo_dataset(args.dataset_name, args.db_host, args.db_port, args.db_user, args.db_pass)
+def index_dataset_stream(dataset_name, doc_type, db_host, db_port, db_user, db_pass, es_instance, should_stream_now):
+	print("Starting indexing stream for dataset {}...".format(dataset_name))
+	logger.info("Starting indexing stream for dataset {}...".format(dataset_name))
 
-	print_date_info(dataset, dataset_name, doc_type, es_instance)
-	
-	# Need to do a preliminary import first until we're caught up for streaming
-	prelim_start_date = None
+	dataset = get_smapp_mongo_dataset(dataset_name, db_host, db_port, db_user, db_pass)
+
 	num_docs = es_instance.count(index=dataset_name.lower(), doc_type=doc_type)
-	# If index is empty, start from oldest date in mongo
-	if num_docs['count'] == 0:
-		print("ES Index is empty, starting off from beginning of mongo dataset.")
-		logger.info("ES Index is empty, starting off from beginning of mongo dataset.")
-		prelim_start_date = get_oldest_date_in_dataset(dataset, indexed_date_field)
-	# Otherwise, start from batch before last indexed doc in elasticsearch
+	latest_es_date = None
+	if num_docs['count'] != 0:
+		print("ES Index {} is not empty. Starting stream using latest date in es index.".format(dataset_name.lower()))
+		logger.info("ES Index {} is not empty. Starting stream using latest date in es index.".format(dataset_name.lower()))
+		latest_es_date = es_get_latest_date(es_instance, dataset_name, doc_type)
+	elif should_stream_now:
+		print("ES Index {} is empty and --stream-now was specified. Starting stream using latest date in mongo dataset.".format(dataset_name.lower()))
+		logger.info("ES Index {} is empty and --stream-now was specified. Starting stream using latest date in mongo dataset.".format(dataset_name.lower()))
+		latest_es_date = get_latest_date_in_dataset(dataset, indexed_date_field)
 	else:
-		print("ES Index is not empty, starting off from latest indexed date.")
-		logger.info("ES Index is not empty, starting off from latest indexed date.")
-		prelim_start_date = es_get_latest_date(es_instance, dataset_name, doc_type) - datetime.timedelta(hours=PRELIM_IMPORT_BATCH_HOURS)
-		
-	index_dataset_preliminary_import(dataset_name, doc_type, db_host, db_port, db_user, db_pass, es_instance, prelim_start_date)
+		print("Unable to start stream. ES Index {} is empty, and --stream-now was not specified.".format(dataset_name.lower()))
+		logger.info("Unable to start stream. ES Index {} is empty, and --stream-now was not specified.".format(dataset_name.lower()))
+		sys.exit(1)
 
 	# Clean up dataset
 	dataset = None
 
-	print("Starting indexing stream for dataset {}...".format(dataset_name))
-	logger.info("Starting indexing stream for dataset {}...".format(dataset_name))
-
 	needs_prelim_check = False
 	while True:
 		try:
-			# Query for date of the latest indexed document in elasticsearch
-			latest_es_date = es_get_latest_date(es_instance, dataset_name, doc_type)
-
 			# If its been too long since we were last streaming, do another preliminary import
 			if needs_prelim_check:
 				latest_mongo_date = get_latest_date_in_dataset(dataset, indexed_date_field)
@@ -113,6 +107,9 @@ def index_dataset_stream(dataset_name, doc_type, db_host, db_port, db_user, db_p
 			apply_filter_to_dataset(dataset, {indexed_date_field:{'$gte':latest_es_date}})
 
 			start_bulk_indexing(es_instance, dataset, dataset_name, doc_type)
+
+			# Query for date of the latest indexed document in elasticsearch
+			latest_es_date = es_get_latest_date(es_instance, dataset_name, doc_type)
 		except Exception as e:
 			print(e)
 			logger.info(e)
@@ -198,7 +195,6 @@ def print_date_info(dataset, dataset_name, doc_type, es_instance):
 	latest_date = get_latest_date_in_dataset(dataset, indexed_date_field)
 
 	num_docs = es_instance.count(index=dataset_name.lower(), doc_type=doc_type)
-	# If index is empty, start from oldest   date in mongo
 	latest_es_date = None
 	if num_docs['count'] != 0:
 		latest_es_date = es_get_latest_date(es_instance, dataset_name, doc_type)
@@ -219,6 +215,7 @@ def parse_args(args):
 	parser.add_argument('-u', '--db-user', dest='db_user', required=True, help='the username for the database to read from')
 	parser.add_argument('-w', '--db-pass', dest='db_pass', required=True, help='password for this user')
 	parser.add_argument('-eh', '--es-host', dest='es_host', default='localhost', help='the hostname/IP of a host that is a part of the elasticsearch cluster.')
+	parser.add_argument('-sn', '--stream-now', dest='should_stream_now', action='store_true', default=False, help='pass this argument in to skip the preliminary import of existing data and go straight to streaming.')
 	parser.add_argument('-l', '--log', dest='log', default=os.path.expanduser('~/pylogs/es_index_dataset_' + parser.parse_args().dataset_name + '.log'), help='This is the path to where your output log should be.')
 	return parser.parse_args(args)
 
@@ -253,8 +250,6 @@ if __name__ == '__main__':
 			print("Can't stream dataset {}. Couldn't find recognized indexed date field.".format(args.dataset_name))
 			logger.info("Can't stream dataset {}. Couldn't find recognized indexed date field.".format(args.dataset_name))
 		break
-	# Clean up dataset
-	dataset = None
 
 	# Connect to Elasticsearch, gather list of hosts 
 	es_instance = Elasticsearch([args.es_host],
@@ -263,7 +258,30 @@ if __name__ == '__main__':
 						# refresh nodes after a node fails to respond
 						sniff_on_connection_fail=True)
 
-	index_dataset_stream(args.dataset_name, args.doc_type, args.db_host, args.db_port, args.db_user, args.db_pass, es_instance)
+	print_date_info(dataset, args.dataset_name, args.doc_type, es_instance)
+	
+	# Need to do a preliminary import first until we're caught up for streaming
+	prelim_start_date = None
+	num_docs = es_instance.count(index=args.dataset_name.lower(), doc_type=args.doc_type)
+	# If index is empty, start from oldest date in mongo
+	if num_docs['count'] == 0:
+		# If should_stream_now specified, skip preliminary import and go straight to streaming
+		if not args.should_stream_now:
+			print("ES Index {} is empty, starting preliminary import from beginning of mongo dataset.".format(args.dataset_name.lower()))
+			logger.info("ES Index {} is empty, starting preliminary import from beginning of mongo dataset.".format(args.dataset_name.lower()))
+			prelim_start_date = get_oldest_date_in_dataset(dataset, indexed_date_field)
+			index_dataset_preliminary_import(args.dataset_name, args.doc_type, args.db_host, args.db_port, args.db_user, args.db_pass, es_instance, prelim_start_date)
+	# Otherwise, start from batch before last indexed doc in elasticsearch
+	else:
+		print("ES Index {} is not empty, starting preliminary import from latest date in es index.".format(args.dataset_name.lower()))
+		logger.info("ES Index {} is not empty, starting preliminary import from latest date in es index.".format(args.dataset_name.lower()))
+		prelim_start_date = es_get_latest_date(es_instance, args.dataset_name, args.doc_type) - datetime.timedelta(hours=PRELIM_IMPORT_BATCH_HOURS)
+		index_dataset_preliminary_import(args.dataset_name, args.doc_type, args.db_host, args.db_port, args.db_user, args.db_pass, es_instance, prelim_start_date)
+
+	# Clean up dataset
+	dataset = None
+
+	index_dataset_stream(args.dataset_name, args.doc_type, args.db_host, args.db_port, args.db_user, args.db_pass, es_instance, args.should_stream_now)
 
 '''
 author @Roman
