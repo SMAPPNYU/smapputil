@@ -10,15 +10,19 @@ from pysmap import SmappDataset
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 
-PRELIM_IMPORT_CHECK_MINUTES = 5
-PRELIM_IMPORT_BATCH_HOURS = 24
-
 MONGO_FIELD_OBJ_ID = "_id"
+
 SMAPP_FIELD_RANDOM_NUMBER = "random_number"
 SMAPP_FIELD_TIMESTAMP = "timestamp"
 SMAPP_FIELD_SMAPP_TIMESTAMP = "smapp_timestamp"
 
+ES_FIELD_IS_RETWEET_STATUS = "es_is_retweet_status"
+
 TWITTER_FIELD_CREATED_AT = "created_at"
+TWITTER_FIELD_RETWEETED_STATUS = "retweeted_status"
+
+PRELIM_IMPORT_CHECK_MINUTES = 5
+PRELIM_IMPORT_BATCH_HOURS = 24
 
 indexed_date_field = None
 currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -132,6 +136,12 @@ def generate_actions(dataset, dataset_name, doc_type):
 		doc.pop(SMAPP_FIELD_RANDOM_NUMBER, None)
 		doc.pop(SMAPP_FIELD_TIMESTAMP, None)
 		doc.pop(SMAPP_FIELD_SMAPP_TIMESTAMP, None)
+		# Add new is_retweet_status bool field to support quick retweet vs non-retweet visualizations
+		if TWITTER_FIELD_RETWEETED_STATUS in doc:
+			doc[ES_FIELD_IS_RETWEET_STATUS] = True
+		else:
+			doc[ES_FIELD_IS_RETWEET_STATUS] = False
+
 		# Create action object for bulk indexing
 		yield {
 			"_index": dataset_name.lower(),
@@ -215,7 +225,7 @@ def parse_args(args):
 	parser.add_argument('-u', '--db-user', dest='db_user', required=True, help='the username for the database to read from')
 	parser.add_argument('-w', '--db-pass', dest='db_pass', required=True, help='password for this user')
 	parser.add_argument('-eh', '--es-host', dest='es_host', default='localhost', help='the hostname/IP of a host that is a part of the elasticsearch cluster.')
-	parser.add_argument('-sn', '--stream-now', dest='should_stream_now', action='store_true', default=False, help='pass this argument in to skip the preliminary import of existing data and go straight to streaming.')
+	parser.add_argument('-sn', '--stream-now', dest='should_stream_now', action='store_true', default=False, help='pass in this argument to skip the preliminary import of existing data and go straight to streaming.')
 	parser.add_argument('-l', '--log', dest='log', default=os.path.expanduser('~/pylogs/es_index_dataset_' + parser.parse_args().dataset_name + '.log'), help='This is the path to where your output log should be.')
 	return parser.parse_args(args)
 
