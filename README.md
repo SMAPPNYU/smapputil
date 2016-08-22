@@ -559,7 +559,7 @@ or a json list:
 
 *output* a json file that writes to disk with the resulting user id objects in JSON format, fields on output are:
 
-`smapp_original_user_id` - the id sent to twitter to get this id, from the origianl list of ids
+`smapp_original_user_id` - the id from the original list of input ids
 
 `id` - the twitter id returned by twitter, the id of a follower or friend of the original id
 
@@ -648,7 +648,7 @@ all_users_total,80606331
 
 fields on output are:
 
-`id` - a twitter id from the list of ids originally queried (this is figuring out how many returned ids per original user id)
+`id` - the twitter id for a user whose tweets were queried
 
 #[query_user_follower_ids](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_follower_ids.py)
 
