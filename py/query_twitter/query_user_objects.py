@@ -42,6 +42,7 @@ def query_user_tweets(output, id_list, auth_file):
                 count = count + 1
                 tweet_item = json.loads(json.dumps(item._json))
                 tweet_item['smapp_count'] = count
+                tweet_item['smapp_timestamp'] = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S +0000')
                 write_fd.write(json.dumps(tweet_item))
                 write_fd.write('\n')
         except TweepError as e:

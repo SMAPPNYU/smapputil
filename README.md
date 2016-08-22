@@ -416,10 +416,10 @@ python query_search_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l
 *input* input is json or csv, csv must be a one column csv with `id` as the column:
 
 ```
-id
-12321323
-12321312321
-23232323
+term
+dog
+cat
+germany
 .
 .
 .
@@ -428,8 +428,9 @@ id
 or a json list:
 ```
 [
-    'id_one',
-    'id_two'
+    'dog',
+    'cat',
+    'germany'
      .
      .
      .

@@ -43,6 +43,7 @@ def query_search_tweets(output, terms_list, auth_file):
                     tweet_item = json.loads(json.dumps(item._json))
                     tweet_item['smapp_term'] = term
                     tweet_item['smapp_count'] = count
+                    tweet_item['smapp_timestamp'] = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S +0000')
                     write_fd.write(json.dumps(tweet_item))
                     write_fd.write('\n')
             except TweepError as e:
