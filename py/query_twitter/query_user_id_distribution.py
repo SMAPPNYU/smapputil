@@ -23,12 +23,16 @@ def query_distribution(output_file, input_file):
 
     with open(output_file, 'w') as filehandle:
         val = 0
+        items = 0
         filehandle.write('{},{}'.format('id', 'smapp_tweet_count'))
         filehandle.write('\n')
         for key, value in count_struct.items():
             val = val + value
+            items = items + 1
             filehandle.write('{},{}'.format(key, value))
             filehandle.write('\n')
+        filehandle.write('average_per_user,{}'.format(val / items))
+        filehandle.write('\n')
         filehandle.write('all_users_total,{}'.format(val))
 
 def parse_args(args):
