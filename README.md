@@ -21,7 +21,7 @@
     - [query_user_friends](#query_user_friends)
     - [query_user_friends_ids](#query_user_friends_ids)
     - [query_tweet_distribution](#query_tweet_distribution)
-    - [query_tweet_distribution](#query_tweet_distribution)
+    - [query_user_id_distribution](#query_user_id_distribution)
     - [query_user_follower_ids](#query_user_follower_ids)
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
