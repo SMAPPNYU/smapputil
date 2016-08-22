@@ -559,9 +559,9 @@ or a json list:
 
 *output* a json file that writes to disk with the resulting user id objects in JSON format, fields on output are:
 
-`id` - the twitter id from the list of ids
+`smapp_original_user_id` - the id sent to twitter to get this id, from the origianl list of ids
 
-`smapp_original_user_id` - the id sent to twitter to get this id
+`id` - the twitter id returned by twitter, the id of a follower or friend of the original id
 
 note:
 
