@@ -414,13 +414,8 @@ practical:
 python query_search_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
 ```
 
-*returns* a json file that writes to disk with the resulting tweet objects in JSON format
+*input* input is json or csv, csv must be a one column csv with `id` as the column:
 
-note: fields `smapp_term` and `smapp_count` are added to each tweet object to tell you which term the tweet war queried for and what its count in the query was.
-
-note: 
-
-input is json or csv, csv must be a one column csv with `id` as the column:
 ```
 id
 12321323
@@ -441,6 +436,11 @@ or a json list:
      .
 ]
 ```
+
+*output* a json file that writes to disk with the resulting tweet objects in JSON format
+
+note: fields `smapp_term` and `smapp_count` are added to each tweet object to tell you which term the tweet war queried for and what its count in the query was.
+
 #[query_user_objects](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_objects.py)
 
 queries the twitter api for any list of user objects. takes a list of twitter user ids as input.
@@ -455,10 +455,6 @@ practical:
 python query_user_objects.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
 ```
 
-*returns* a json file that writes to disk with the resulting user objects in JSON format
-
-note: 
-
 input is json or csv, csv must be a one column csv with `id` as the column:
 ```
 id
@@ -480,6 +476,7 @@ or a json list:
      .
 ]
 ```
+*output* a json file that writes to disk with the resulting user objects in JSON format
 
 #[query_user_friends](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_friends.py)
 
@@ -495,7 +492,30 @@ practical:
 python query_user_friends.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
 ```
 
-*returns* a json file that writes to disk with the resulting user objects in JSON format
+*input* a one column csv with `id` as the coulmn name or a json list:
+
+```
+id
+12321323
+12321312321
+23232323
+.
+.
+.
+```
+
+or a json list:
+```
+[
+    'id_one',
+    'id_two'
+     .
+     .
+     .
+]
+```
+
+*output* a json file that writes to disk with the resulting user objects in JSON format
 
 note:
 
@@ -503,7 +523,8 @@ a field `smapp_original_user_id` gets added to the user object that tells us wha
 
 note: 
 
-input is json or csv, csv must be a one column csv with `id` as the column:\
+input is json or csv, csv must be a one column csv with `id` as the column:
+
 ```
 id
 12321323
@@ -539,15 +560,8 @@ practical:
 python query_user_friends_ids.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
 ```
 
-*returns* a json file that writes to disk with the resulting user id objects in JSON format
+*input* input is json or csv, csv must be a one column csv with `id` as the column:
 
-note:
-
-a field `smapp_original_user_id` gets added to the user object that tells us what the original user used to query for that friend was.
-
-note: 
-
-input is json or csv, csv must be a one column csv with `id` as the column:
 ```
 id
 12321323
@@ -569,6 +583,16 @@ or a json list:
 ]
 ```
 
+*output* a json file that writes to disk with the resulting user id objects in JSON format, fields on output are:
+
+`id` - the twitter id from the list of ids
+
+`smapp_original_user_id` - the id sent to twitter to get this id
+
+note:
+
+a field `smapp_original_user_id` gets added to the user object that tells us what the original user used to query for that friend was.
+
 #[query_tweet_distribution](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_tweet_distribution.py)
 
 checks a dumped file with a tweet json object on each line to and returns a count file the count file tells us how many tweets there are for each user id in the tweet file. (if all 0 or all the same the query should probably be investigated, logs checked, rerun)
@@ -583,9 +607,29 @@ practical:
 python py/query_twitter/query_tweet_distribution.py -i ~/smappwork/temp/joanna-user-tweets-1st-10k.json -o ~/smappwork/temp/joanna_dist_test.csv
 ```
 
-*input* a file with a tweet object on each line (AKA a [JsonCollection](https://github.com/SMAPPNYU/smappdragon#json_collection))
+*input* a file with a tweet object on each line (AKA a [JsonCollection](https://github.com/SMAPPNYU/smappdragon#json_collection)) like so:
 
-*output* a count file with the user id and the number of tweets by that user id in the jsoncollection/tweetfile
+```
+{"text": "blah", "user":{"id_str":"44343432"}, etc, more fields}
+{"text": "doggy", "user":{"id_str":"5332277"}, etc, more fields}
+```
+
+*output* a count file with the user id and the number of tweets by that user id in the jsoncollection/tweetfile:
+
+```
+id,smapp_queried_tweet_count
+593292175,391
+287235831,549
+218820163,232
+575384734,2958
+368743969,908
+1669189994,216
+.
+.
+.
+average_per_user,1342.0117647058823
+all_users_total,80606331
+```
 
 #[query_user_id_distribution](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_id_distribution.py)
 
@@ -608,7 +652,26 @@ python py/query_twitter/query_user_id_distribution.py -i ~/smappwork/temp/EgyptG
 {"id": 19923144, "smapp_original_user_id": "2655698902"}
 ```
 
-*output* a count file with the user id and the number of ids for eahc original id (`smapp_original_user_id`) in the file
+*output* a count file with the user id and the number of ids for each original id in the file:
+
+```
+id,smapp_queried_id_count
+593292175,391
+287235831,549
+218820163,232
+575384734,2958
+368743969,908
+1669189994,216
+.
+.
+.
+average_per_user,1342.0117647058823
+all_users_total,80606331
+```
+
+fields on output are:
+
+`id` - the twitter id from the list of ids
 
 #[query_user_follower_ids](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_follower_ids.py)
 
@@ -624,17 +687,8 @@ practical:
 python ~/smapprepos/smapputil/py/query_twitter/query_user_follower_ids.py -i ~/smappwork/data/egypt_secular_elites.csv -o ~/smappwork/data/egypt_secular_elites_follower_ids_output.json -a ~/pool.json
 ```
 
-*input* a json or csv (one colmun) list with id as the column name 
+*input* a json or csv, must be a one column csv with `id` as the column:
 
-*output* a json file where each lin etakes the form `{"id": 750640012102864896, "smapp_original_user_id": "443789042"}`
-
-note:
-
-a field `smapp_original_user_id` gets added to the id object that tells us what the original user used to query for that follower was.
-
-note: 
-
-input is json or csv, csv must be a one column csv with `id` as the column:
 ```
 id
 12321323
@@ -654,6 +708,18 @@ or a json list:
      .
      .
 ]
+
+*output* a json file where each lin etakes the form `{"id": 750640012102864896, "smapp_original_user_id": "443789042"}`, fields on output are:
+
+`id` - the twitter id from the list of ids
+
+`smapp_original_user_id` - the id sent to twitter to get this id
+
+for example if yo uwanted the friends of user id '12344333' `id` fields would be their friends and `smapp_original_user_id` fields would be '12344333'
+
+note:
+
+a field `smapp_original_user_id` gets added to the id object that tells us what the original user used to query for that follower was
 
 #[transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
 
@@ -775,7 +841,7 @@ python py/archive_tools/dump_database.py -i germany_election mike_brown -ho loca
 
 -o `PATH_TO_OUTPUT_DIR` - is a path to a directory that wll contain a directory named after the database that will contain the dump
 
--q `--querydump` dumps the database collections to json by querying mongodb using smappdragon's MongoCollection and dump_to_json tools
+-q `--querydump` dumps the database collections to json by querying mongodb using smappdragon's MongoCollection and dump_to_json tools, the idea is taht sometimes mongodump doesnt work that great, it has issues where it misses data in the db, queries are more likely to return data
 
 `&>/dev/null` - runs the script quietly instaed of printing mongodumps output
 

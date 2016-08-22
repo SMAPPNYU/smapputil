@@ -24,7 +24,7 @@ def query_distribution(output_file, input_file):
     with open(output_file, 'w') as filehandle:
         val = 0
         items = 0
-        filehandle.write('{},{}'.format('id', 'smapp_tweet_count'))
+        filehandle.write('{},{}'.format('id', 'smapp_queried_tweet_count'))
         filehandle.write('\n')
         for key, value in count_struct.items():
             val = val + value
