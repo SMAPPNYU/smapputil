@@ -604,6 +604,9 @@ id,smapp_queried_tweet_count
 average_per_user,1342.0117647058823
 all_users_total,80606331
 ```
+fields on output are:
+
+`id` - a twitter id from the list of ids originally queried (this is figuring out how many returned ids per original user id)
 
 #[query_user_id_distribution](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_id_distribution.py)
 
@@ -645,7 +648,7 @@ all_users_total,80606331
 
 fields on output are:
 
-`id` - the twitter id from the list of ids
+`id` - a twitter id from the list of ids originally queried (this is figuring out how many returned ids per original user id)
 
 #[query_user_follower_ids](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_follower_ids.py)
 
