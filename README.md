@@ -606,7 +606,7 @@ all_users_total,80606331
 ```
 fields on output are:
 
-`id` - a twitter id from the list of ids originally queried (this is figuring out how many returned ids per original user id)
+`id` - the original twitter id whose friends, followers, or related ids were queried
 
 #[query_user_id_distribution](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_id_distribution.py)
 
@@ -648,7 +648,7 @@ all_users_total,80606331
 
 fields on output are:
 
-`id` - the twitter id for a user whose tweets were queried
+`id` - the original twitter id for a user whose tweets were queried
 
 #[query_user_follower_ids](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_follower_ids.py)
 
