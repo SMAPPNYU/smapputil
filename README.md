@@ -370,15 +370,8 @@ practical:
 python query_user_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
 ```
 
-*returns* a json file that writes to disk, with the 3200 (or less) of a user's most recent tweets.
+*input* input is json or csv, csv must be a one column csv with `id` as the column:
 
-note: input is json or csv, csv must be a one column csv with `id` as the column, json is just a json list ['id_one', 'id_two']
-
-note: `smapp_count` term added to each tweet object to tell you which count of a particular user's tweets you are looking at.
-
-note: 
-
-input is json or csv, csv must be a one column csv with `id` as the column:
 ```
 id
 12321323
@@ -399,6 +392,12 @@ or a json list:
      .
 ]
 ```
+
+*output* a json file that writes to disk, with the 3200 (or less) of a user's most recent tweets.
+
+note: input is json or csv, csv must be a one column csv with `id` as the column, json is just a json list ['id_one', 'id_two']
+
+note: `smapp_count` term added to each tweet object to tell you which count of a particular user's tweets you are looking at.
 
 #[query_search_tweets](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_search_tweets.py)
 
@@ -520,31 +519,6 @@ or a json list:
 note:
 
 a field `smapp_original_user_id` gets added to the user object that tells us what the original user used to query for that friend was.
-
-note: 
-
-input is json or csv, csv must be a one column csv with `id` as the column:
-
-```
-id
-12321323
-12321312321
-23232323
-.
-.
-.
-```
-
-or a json list:
-```
-[
-    'id_one',
-    'id_two'
-     .
-     .
-     .
-]
-```
 
 #[query_user_friends_ids](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_friends_ids.py)
 
@@ -708,6 +682,7 @@ or a json list:
      .
      .
 ]
+```
 
 *output* a json file where each lin etakes the form `{"id": 750640012102864896, "smapp_original_user_id": "443789042"}`, fields on output are:
 
