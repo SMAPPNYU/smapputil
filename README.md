@@ -38,6 +38,11 @@
     - [kill_hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputil#kill_hades_rotating_tunnel)
     - [logger](https://github.com/SMAPPNYU/smapputil#logger)
     - [clear_history](https://github.com/SMAPPNYU/smapputil#clear_history)
+# a note on environments
+
+for querying twitter use smapputil-py2, conda env create -f py2.7env.yml, this is because our queries rely on code that is py2, will be updating soon.
+
+for all others you can use smapputil, conda en create -f environment.yml, this is the python 3 env
 
 #logging
 
