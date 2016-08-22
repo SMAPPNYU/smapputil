@@ -26,7 +26,7 @@ class TestQueryDistribution(unittest.TestCase):
         self.assertEqual(args.output,'~/data3.json')
 
     def test_query_user_ids_distribution(self):
-        # self.setUp()
+        self.setUp()
         args = query_user_id_distribution.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test_user_ids.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.csv'])
         query_user_id_distribution.query_distribution(args.output, args.input)
 
