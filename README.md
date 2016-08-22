@@ -581,7 +581,7 @@ python py/query_twitter/query_tweet_distribution.py -i ~/smappwork/temp/joanna-u
 
 *output* a count file with the user id and the number of tweets by that user id in the jsoncollection/tweetfile
 
-#query_user_id_distribution(https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_id_distribution.py)
+#[query_user_id_distribution](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_id_distribution.py)
 
 checks a dumped file with a tweet json object on each line to and returns a count file the count file tells us how many ids there are for each original user id in the tweet file. (if all 0 or all the same,i.e. every user has 250 followers/friends the query should probably be investigated, logs checked, rerun)
 
