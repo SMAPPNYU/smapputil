@@ -21,6 +21,7 @@
     - [query_user_friends](#query_user_friends)
     - [query_user_friends_ids](#query_user_friends_ids)
     - [query_tweet_distribution](#query_tweet_distribution)
+    - [query_tweet_distribution](#query_tweet_distribution)
     - [query_user_follower_ids](#query_user_follower_ids)
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
@@ -579,6 +580,29 @@ python py/query_twitter/query_tweet_distribution.py -i ~/smappwork/temp/joanna-u
 *input* a file with a tweet object on each line (AKA a [JsonCollection](https://github.com/SMAPPNYU/smappdragon#json_collection))
 
 *output* a count file with the user id and the number of tweets by that user id in the jsoncollection/tweetfile
+
+#query_user_id_distribution(https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_id_distribution.py)
+
+checks a dumped file with a tweet json object on each line to and returns a count file the count file tells us how many ids there are for each original user id in the tweet file. (if all 0 or all the same,i.e. every user has 250 followers/friends the query should probably be investigated, logs checked, rerun)
+
+abstract:
+```bash
+/path/to/scriptsenv/bin/python query_user_id_distribution.py -i INPUT_ID_LIST_FILE -o OUTPUT_COUNTS_FILE
+```
+
+practical:
+```bash
+python py/query_twitter/query_user_id_distribution.py -i ~/smappwork/temp/EgyptGeo_and_Egypt_users_merged_friends_ids_output.json -o ~/smappwork/temp/id_distribution.csv
+```
+
+*input* a file with a json object on each line, containing at least fields `'id'` and `'smapp_original_user_id'` like so:
+
+```
+{"id": 216289357, "smapp_original_user_id": "2655698902"}
+{"id": 19923144, "smapp_original_user_id": "2655698902"}
+```
+
+*output* a count file with the user id and the number of ids for eahc original id (`smapp_original_user_id`) in the file
 
 #[query_user_follower_ids](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_follower_ids.py)
 
