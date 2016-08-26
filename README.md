@@ -159,7 +159,7 @@ goes through a bastion host to hades. 2. to create tunnels to hades on alternate
 
 abstract:
 ```python
-python py/ssh_tunnel/rotating_tunnel.py -op OPERATION -i /PATH/TO/TUNNEL/CONFIG.JSON -p REMOTE_BIND_PORT
+python py/ssh_tunnel/rotating_tunnel.py -op OPERATION -i /PATH/TO/TUNNEL/CONFIG.JSON -p LOCAL_BIND_PORT
 ```
 
 practical:
