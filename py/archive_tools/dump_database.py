@@ -21,12 +21,12 @@ def dump_database(hostname, port, dbname, username, password, authdb, output_pat
     except subprocess.CalledProcessError as e:
         logger.info('failed for reason: {} on data set: {}'.format(e, dbname))
 
-def query_dump_database(hostname, port, dbname, username, password, authdb, output_path):
+def query_dump_database(hostname, port, dbname, username, password, authdb, authusername, authpassword, output_path):
 
     # connect to the db
     mongo = pymongo.MongoClient(hostname, int(port))
     if username and password:
-        mongo[authdb].authenticate(username, password)
+        mongo[authdb].authenticate(authusername, authpassword)
 
     db = mongo[dbname]
 
@@ -64,6 +64,8 @@ def parse_args(args):
     parser.add_argument('-ho', '--hostname', dest='hostname', help='')
     parser.add_argument('-u', '--username', dest='username', help='the username for this database to read/write on')
     parser.add_argument('-w', '--password', dest='password', help='password for this user on this db')
+    parser.add_argument('-au', '--authusername', dest='authusername', help='the username for the admin db')
+    parser.add_argument('-aw', '--authpassword', dest='authpassword', help='password for the admin db')
     parser.add_argument('-p', '--port', dest='port', default='49999', help='local port to map to the remoteport')
     parser.add_argument('-a', '--auth', dest='authdb', default='admin', help='the auth db')
     parser.add_argument('-o', '--outputpath', dest='outputpath', help='the path to the folder where you\'d like the mongodump to go')
@@ -90,7 +92,7 @@ if __name__ == '__main__':
 
     for db in input_list:
         if args.querydump:
-            query_dump_database(args.hostname, args.port, db, args.username, args.password, args.authdb, args.outputpath)
+            query_dump_database(args.hostname, args.port, db, args.username, args.password, args.authdb, args.authusername, args.authpassword, args.outputpath)
         else:
             dump_database(args.hostname, args.port, db, args.username, args.password, args.authdb, args.outputpath)
 
