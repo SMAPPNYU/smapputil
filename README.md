@@ -192,11 +192,11 @@ screen -dmS rotating_tunnel ~/miniconda/envs/tunnel_env/bin/python ~/smapprepos/
     "remotehosts":[
         {
             "host":"host3",
-            "user":"user3"
+            "port":port
         },
         {
             "host":"host4",
-            "user":"user4"
+            "port":port
         }
     ],
     "altloginhosts":[
