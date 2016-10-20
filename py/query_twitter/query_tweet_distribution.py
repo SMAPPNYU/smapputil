@@ -36,7 +36,7 @@ def query_distribution(output_file, input_file):
         filehandle.write('all_users_total,{}'.format(val))
 
 def parse_args(args):
-    currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    currentdate = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M")
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input.json, a [] list of twitter ids.')
     parser.add_argument('-o', '--output', dest='output', required=True, help='This will be your output file, a {} json object showing original ids and twitter screen names.')
