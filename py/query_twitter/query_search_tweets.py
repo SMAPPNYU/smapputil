@@ -48,7 +48,7 @@ def query_search_tweets(output, terms_list, auth_file):
                     write_fd.write('\n')
             except TweepError as e:
                 logger.info('tweepy error: %s', e)
-            logger.info('counted %s objects for input %s', count, userid)
+            logger.info('counted %s objects for input %s', count, term)
         logger.info('number of inputs queried so far: %s', num_inputs_queried)
     write_fd.close()
 
