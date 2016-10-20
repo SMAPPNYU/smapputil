@@ -55,7 +55,7 @@ def csv_to_json_list(output, inputs, fieldnames, skipheader):
     json_output.close()
 
 def parse_args(args):
-    currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    currentdate = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M")
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--inputs', dest='inputs', required=True, nargs='+', help='These inputs are paths to your bson files. Required.')
     parser.add_argument('-o', '--output', dest='output', required=True, help='This will be your outputted single bson file. Required')

@@ -25,7 +25,7 @@ PRELIM_IMPORT_CHECK_MINUTES = 5
 PRELIM_IMPORT_BATCH_HOURS = 24
 
 indexed_date_field = None
-currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+currentdate = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M")
 
 def index_dataset_preliminary_import(dataset_name, doc_type, db_host, db_port, db_user, db_pass, es_instance, start_date):
 	print("Starting preliminary import for dataset {} from {}...".format(dataset_name, start_date))

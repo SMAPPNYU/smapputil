@@ -8,7 +8,7 @@ import datetime
 import subprocess
 from smappdragon import MongoCollection
 
-currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+currentdate = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M")
 
 def dump_database(hostname, port, dbname, username, password, authdb, output_path):
     mongodump_string = "mongodump --host {}:{} -u {} -p '{}' -o {} -d {} --authenticationDatabase {}".format(hostname, port, username, password, output_path, dbname, authdb)

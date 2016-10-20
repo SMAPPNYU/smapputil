@@ -6,7 +6,7 @@ import argparse
 import datetime
 import pymongo
 
-currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+currentdate = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M")
 
 def parse_args(args):
 	parser = argparse.ArgumentParser()

@@ -56,7 +56,7 @@ def date_filter(output, input_file, dateone, datetwo):
     logger.info('Finished merging all input files to path : %s', output)
 
 def parse_args(args):
-    currentdate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+    currentdate = datetime.datetime.now().strftime('%Y-%m-%d_%H:%M')
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', dest='input', required=True, help='These inputs are paths to your bson files. They must have a .json, .bson, or .csv extension')
     parser.add_argument('-d1', '--dateone', dest='dateone', default="", help='Date to start the filter at.')

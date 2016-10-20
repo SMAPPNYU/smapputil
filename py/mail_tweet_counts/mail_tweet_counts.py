@@ -36,7 +36,7 @@ def parse_args(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('-ho', '--host', dest='host', required=True, help='local hostname to map to')
     parser.add_argument('-p', '--port', dest='port', required=True, help='local port to map to the remoteport')
-    parser.add_argument('-l', '--log', dest='log', default=expanduser('~/pylogs/list_collections.log'), help='This is the path to where your output log should be.')
+    parser.add_argument('-l', '--log', dest='log', default=expanduser('~/pylogs/mail_tweet_counts.log'), help='This is the path to where your output log should be.')
     return parser.parse_args(args)
 
 if __name__ == '__main__':

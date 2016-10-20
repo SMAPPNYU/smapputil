@@ -9,7 +9,7 @@ import datetime
 import textwrap
 from pysmap import SmappCollection
 
-currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+currentdate = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M")
 
 #check_type
 COUNT_COLLECTIONS = 0
