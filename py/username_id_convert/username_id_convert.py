@@ -53,7 +53,7 @@ def usernames_to_ids(usernames_list, output, api):
     refuse_fd.close()
 
 def parse_args(args):
-    currentdate = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    currentdate = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M")
     parser = argparse.ArgumentParser()
     parser.add_argument('-op', '--operation', dest='operation', required=True, help='name of method to perform, ids_users, users_ids')
     parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input.json, a [] list of twitter ids.')
