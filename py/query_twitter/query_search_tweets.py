@@ -68,7 +68,7 @@ def get_terms_list(file_input):
                 # if list is not empty
                 if rowdict:
                     terms_list.append(rowdict['term'])
-        logger.info('launching query for %s users', len(terms_list))
+        logger.info('launching query for %s inputs', len(terms_list))
     return terms_list
 
 def parse_args(args):

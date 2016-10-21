@@ -66,7 +66,7 @@ def get_id_list(file_input):
                 # if list is not empty
                 if rowdict:
                     id_list.append(rowdict['id'])
-        logger.info('launching query for %s users', len(id_list))
+        logger.info('launching query for %s inputs', len(id_list))
     return id_list
 
 def parse_args(args):
