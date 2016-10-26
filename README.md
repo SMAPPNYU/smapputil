@@ -31,15 +31,12 @@
     - [dump_database](#dump_database)
     - [check_dump_integrity](#check_dump_integrity)
     - [make_tar](#make_tar)
-- [pbs]()
-    - [merge_dataset_files]()
-- [js](https://github.com/SMAPPNYU/smapputil#js)
-    - [adduserstomongo](https://github.com/SMAPPNYU/smapputil#adduserstomongo)
-- [sh](https://github.com/SMAPPNYU/smapputil#sh)
-    - [hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputil#hades_rotating_tunnel)
-    - [kill_hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputil#kill_hades_rotating_tunnel)
-    - [logger](https://github.com/SMAPPNYU/smapputil#logger)
-    - [clear_history](https://github.com/SMAPPNYU/smapputil#clear_history)
+    - [make_sqlite_db.py](#make_sqlite_db.py)
+- [pbs](#pbs)
+    - [merge_dataset_files](#merge_dataset_files)
+    - [make_sqlite_db](#make_sqlite_db)
+- [sh](#sh)
+    - [logger](#logger)
 
 #environments
 
@@ -916,6 +913,8 @@ python py/archive_tools/make_tar.py -i file1.bson germany_election_2013/ tweets_
 
 *returns* a .tar.gz file on disk for each input file or folder
 
+#make_sqlite_db.py
+
 #pbs
 
 job files to run on the cluster, see [nyu hpc wiki](https://wikis.nyu.edu/display/NYUHPC/Running+jobs)
@@ -976,108 +975,6 @@ qsub make_sqlite_db.pbs -i /scratch/mynetid560/germany_elec_2016/data/germany_el
 
 after its done you should find a file called something like `germany_elec_2016_data_json1.db` (its a .db file). this is your sqlite database, copy it, back it up, build indexes on it. do whatever you want to it.
 
-#js
-
-javascript scripts that perform useful tasks that we can run. It was built for node v5.X.X. All js code should adhere to [js standard code style](https://github.com/feross/standard). so far i'm using js scripts fo mongo operations that need good async and are difficult to replicate in python 
-
-
-For a fresh install:
-
-```
-sudo apt-get purge nodejs*
-sudo apt-get remove nodejs
-wget -qO- https://deb.nodesource.com/setup_5.x | sudo bash -
-sudo apt-get install --yes nodejs
-```
-
-Your node install can now be run to check version like so: `nodejs --version`. As of this writing node.js is on version 5.X, just replace the 5.X with 6.X or wtvr version you're looking for. Do not use node.js versions 0.X they are being phased out.
-
-[How to install node.js on Linux](http://askubuntu.com/questions/672994/how-to-install-nodejs-4-on-ubuntu-15-04-64-bit-edition)
-
-Respources:
-
-[Package / Dependencies](http://blog.nodejitsu.com/package-dependencies-done-right/)
-[Beginner Guide](http://blog.modulus.io/absolute-beginners-guide-to-nodejs)
-[How to install node via homebrew](https://changelog.com/install-node-js-with-homebrew-on-os-x/)
-
-Generators / Pormises / Co Resources:
-
-[promises explanation](http://www.mattgreer.org/articles/promises-in-wicked-detail/)
-
-[explanation](http://stackoverflow.com/questions/23099855/koa-co-bluebird-or-q-generators-promises-thunks-interplay-node-js)
-
-[co tutorial](https://medium.com/@tjholowaychuk/callbacks-vs-coroutines-174f1fe66127#.d1cud742h)
-
-[co libraries](https://github.com/tj/co/wiki)
-
-[js generators reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator)
-
-[js promises + generators](https://www.promisejs.org/generators/)
-
-[js promises tutorial](http://alexperry.io/node/2015/03/25/promises-in-node.html)
-
-[js generators tutorial](http://www.sitepoint.com/javascript-generators-preventing-callback-hell/)
-
-[js promises chaetsheet](http://ricostacruz.com/cheatsheets/bluebird.html)
-
-#[adduserstomongo](https://github.com/SMAPPNYU/smapputilities/tree/master/js/adduserstomongo)
-
-adds a set of specified users to specified databases running on a mongodb instance
-
-useful for:
-
-adding a user safely. 
-mass addind users to every db, normally a tedious task.
-
-
-Abstract:
-```javascript
-node /path/to/adduserstomongo.js
-```
-
-Practical:
-```javascript
-node ~/smapp-repositories/smapputilities/js/adduserstomongo/adduserstomongo.js
-```
-
-the structure of the config file `smapputilities/js/adduserstomongo/adduserstomongoconfig.js` is:
-```
-{
-    mongo: {
-        mongotest:  'mongodb://USER_ON_TEST_DB:USER_ON_TEST_PASSWORD@SERVER:PORT/test',
-        mongoanydb: 'mongodb://READONLY_SINGLEDB_USER:READONLY_SINGLEDB_PASS@SERVER:PORT/',
-        existingtestuser: {
-            name:'USER_ON_TEST_DB', 
-            pass:'PASSWORD'
-        }
-    },
-    addusers: [
-        {name: 'USER_NAME', pass: 'PASS_WORD', roles:['read']},
-        {name: 'USER_NAME', pass: 'PASS_WORD', roles: ['readWrite']},
-    ]
-    dbs: [
-    'DB_NAME_ONE'
-    'DB_NAME_TWO'
-    .
-    .
-    .
-    'DB_NAME_THIRTY'
-    'DB_NAME_THIRTYONE'
-    'DB_NAME_THIRTYTWO'
-    ]
-}
-```
-
-*Returns* nothing really, it updates the databses you list on the smapputilitiesconfig.js file 
-
-Test: 
-
-`npm install -g mocha`
-
-then
-
-run `mocha` in `smapputilities/js/adduserstomongo/`
-
 #sh 
 
 bash utilities / scripts that do useful thngs. Built in bash 3.2.X. You may notice many of the scripts are clones of scripts in [shellscripts repo](https://github.com/SMAPPNYU/shellscripts). This is temporary. Their final reting place will be here. The difference will be modularized testing, modularized scripts, each script will get its own tests (instead of the single file), the tests will be unit tests and as little as porrible system state tests, etc. As soon as the move is done and we're sure these scripts work we will phase out shellscripts repo (it was originally an experiment and we're going to wrangle it under control now before it becomes a legacy).
@@ -1116,61 +1013,6 @@ log "blah $c"
 
 [bash exit codes](http://www.tldp.org/LDP/abs/html/exitcodes.html)
 
-
-#[hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/ssh_tunnels/hades_rotating_tunnel.sh)
-
-a tunnel script that replaces our old tunnel scripts and eliminates the need to restart tunnels hourly usng autossh and an infinite loop. if a running tunnel dies 10x on one run of autossh it will rotate to the next login node on a new autossh tunnel. if a tunnel dies for any other reason and auto ssh exits it will rotate to the next tunnel.
-
-note: the input is the `LISTEN_PORT` for auto ssh. each colector box needs a different listen port because the listen port get set on the remote machine. i recommend using ports 40001 to 40121 for this parameter, because they are unbound.
-
-abstract:
-```sh
-echo 'PASS' | bash /path/to/hades_rotating_tunnel.sh LISTEN_PORT NETID
-```
-
-practical:
-```sh
-echo 'crazycats' | bash ~/smapprepos/smapputilities/sh/hades_tunnels/hades_rotating_tunnel.sh 56899 gtp324
-```
-
-*returns* a rotating tunnel that manages autossh connections between nodes on hades.
-
-test: 
-
-*WARNING: do not test on a server already running tunnels*
-
-```sh
-cd smapputilities/sh/hades_tunnels/test
-# then
-echo 'YOUR_HPC_PWD' | bash test_tunnel_functions.sh
-```
-
-#[kill_hades_rotating_tunnel](https://github.com/SMAPPNYU/smapputilities/blob/master/sh/ssh_tunnels/kill_hades_rotating_tunnel.sh)
-
-a script that kills a running [hades_rotating_tunnel.sh]() 
-
-abstract:
-```sh
-bash /path/to/kill_hades_rotating_tunnel.sh
-```
-
-practical:
-```sh
-bash ~/smapprepos/smapputilities/sh/hades_tunnels/kill_hades_rotating_tunnel.sh
-```
-
-*returns* nothing really, kills the rotating tunnel(s).
-
-test: 
-
-*WARNING: do not test on a server already running tunnels*
-
-```sh
-cd smapputilities/sh/hades_tunnels/test
-# then
-bash test_tunnel_functions.sh 
-```
-
 #[logger](https://github.com/SMAPPNYU/smapputilities/tree/master/sh/logger)
 
 this is a logger that can log output to a file, written in bash.
@@ -1194,19 +1036,6 @@ log "hey it works, nvm, error, error, oh man this is baaadddd"
 *returns* the ability to log in your bash script mad easily
 
 test: `bash sh/logger/test/test_logger.sh`
-
-#[clear_history](https://github.com/SMAPPNYU/smapputil/blob/master/sh/utility/clear_history.sh)
-
-clears bash history when run
-
-abstract / practical:
-```bash
-bash clear_history.sh
-```
-
-*returns* a cleared bash history
-
-note: you will also have to close all running terminal sessions to clear history as this is the only way to completely wipe bash history.
 
 #author
 
