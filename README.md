@@ -31,6 +31,8 @@
     - [dump_database](#dump_database)
     - [check_dump_integrity](#check_dump_integrity)
     - [make_tar](#make_tar)
+- [pbs]()
+    - [merge_dataset_files]()
 - [js](https://github.com/SMAPPNYU/smapputil#js)
     - [adduserstomongo](https://github.com/SMAPPNYU/smapputil#adduserstomongo)
 - [sh](https://github.com/SMAPPNYU/smapputil#sh)
@@ -913,6 +915,66 @@ python py/archive_tools/make_tar.py -i file1.bson germany_election_2013/ tweets_
 `PATH_TO_OUTPUT_DIRECTORY` - is a directory where all the archives will go to.
 
 *returns* a .tar.gz file on disk for each input file or folder
+
+#pbs
+
+job files to run on the cluster, see [nyu hpc wiki](https://wikis.nyu.edu/display/NYUHPC/Running+jobs)
+
+quick overview:
+
+qsub - submit a job
+qstat -u mynetid -> check the status of my jobs, C (complete), Q(wiaiting to be processed), R (running), T (terminated and didnt complete)
+qdel myjobid -> delete or cancel the job
+
+practical:
+```sh
+qsub name_of_pbs_job_file.pbs
+# or if its a cront job
+/share/apps/admins/torque/qsub.sh /path/to/pbs_job_file.pbs
+```
+
+#merge_dataset_files
+
+*not done*
+
+a job file that will merge unzip and merge json file of a dataset
+
+abstract:
+```sh
+qsub merge_dataset_files.pbs -i /path/to/data/folder startdate enddate
+```
+pratical:
+```sh
+# move data to a place your job can read it (/scratch /work)
+cp -r /archive/smapp/olympus/germany_elec_2016 /scratch/mynetid560
+# run the job
+qsub merge_dataset_files.pbs -i /scratch/mynetid560/germany_elec_2016/data 
+```
+
+then in `/scratch/mynetid560/germany_elec_2016/data` you will find the merged file, `germany_elec_2016_merged_all_data.json` or `germany_elec_2016_merged_03_10_2015__04_10_2015.json` depending on what your specified date range was youll get different names (logical right?).
+
+note: one alternative is to just bzip2 -d /scratch/mynetid560/germany_elec_2016/data/*.bz2 and then jsut use cat or 
+[merge_json](#merge_json) as a job to merge the dataset.
+
+note: if you omit startdate and enddate it get all the data files
+
+#make_sqlite_db
+
+*not done*
+
+make an sqlite database from a .json file, using json1 to make it behave like a document store see the [mini guide here](https://github.com/SMAPPNYU/smapphowto/blob/master/howto_get_going_with_sqlite_json1.md). you can see sqlite docs for json1 and what you can do with [sqlite json1 docs here](https://www.sqlite.org/json1.html).
+
+abstract:
+```sh
+qsub make_sqlite_db.pbs -i /path/to/data_file.json
+```
+
+practical:
+```sh
+qsub make_sqlite_db.pbs -i /scratch/mynetid560/germany_elec_2016/data/germany_elec_2016_merged_all_data.json
+```
+
+after its done you should find a file called something like `germany_elec_2016_data_json1.db` (its a .db file). this is your sqlite database, copy it, back it up, build indexes on it. do whatever you want to it.
 
 #js
 
