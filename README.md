@@ -31,7 +31,6 @@
     - [dump_database](#dump_database)
     - [check_dump_integrity](#check_dump_integrity)
     - [make_tar](#make_tar)
-    - [make_sqlite_db.py](#make_sqlite_db.py)
 - [pbs](#pbs)
     - [merge_dataset_files](#merge_dataset_files)
     - [make_sqlite_db](#make_sqlite_db)
@@ -913,8 +912,6 @@ python py/archive_tools/make_tar.py -i file1.bson germany_election_2013/ tweets_
 
 *returns* a .tar.gz file on disk for each input file or folder
 
-#make_sqlite_db.py
-
 #pbs
 
 job files to run on the cluster, see [nyu hpc wiki](https://wikis.nyu.edu/display/NYUHPC/Running+jobs)
@@ -961,7 +958,7 @@ note: if you omit startdate and enddate it get all the data files
 
 *not done*
 
-make an sqlite database from a .json file, using json1 to make it behave like a document store see the [mini guide here](https://github.com/SMAPPNYU/smapphowto/blob/master/howto_get_going_with_sqlite_json1.md). you can see sqlite docs for json1 and what you can do with [sqlite json1 docs here](https://www.sqlite.org/json1.html).
+make an sqlite database from a .json file, using json1 to make it behave like a document store see the [mini guide here](https://github.com/SMAPPNYU/smapphowto/blob/master/howto_get_going_with_sqlite_json1.md). you can see sqlite docs for json1 and what you can do with [sqlite json1 docs here](https://www.sqlite.org/json1.html). check out some pointers on how to do it in R [here](http://stackoverflow.com/questions/18107336/load-spatialite-extension-in-rsqlite-crashes-r-os-x-ubuntu) and check out the [RSQLite](https://cran.r-project.org/web/packages/RSQLite/index.html).
 
 abstract:
 ```sh
