@@ -31,6 +31,7 @@
     - [dump_database](#dump_database)
     - [check_dump_integrity](#check_dump_integrity)
     - [make_tar](#make_tar)
+    - [transform_dataset_to_pre]()
 - [pbs](#pbs)
     - [merge_dataset_files](#merge_dataset_files)
     - [make_sqlite_db](#make_sqlite_db)
@@ -912,6 +913,8 @@ python py/archive_tools/make_tar.py -i file1.bson germany_election_2013/ tweets_
 
 *returns* a .tar.gz file on disk for each input file or folder
 
+#transform_dataset_to_pre
+
 #pbs
 
 job files to run on the cluster, see [nyu hpc wiki](https://wikis.nyu.edu/display/NYUHPC/Running+jobs)
@@ -919,7 +922,9 @@ job files to run on the cluster, see [nyu hpc wiki](https://wikis.nyu.edu/displa
 quick overview:
 
 qsub - submit a job
+
 qstat -u mynetid -> check the status of my jobs, C (complete), Q(wiaiting to be processed), R (running), T (terminated and didnt complete)
+
 qdel myjobid -> delete or cancel the job
 
 practical:
