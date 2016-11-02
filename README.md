@@ -702,7 +702,7 @@ a field `smapp_original_user_id` gets added to the id object that tells us what 
 
 #[query_tweet_objects](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_tweet_objects.py)
 
-takes a list of tweet ids and returns full tweet objects.
+takes a list of tweet ids and returns full tweet objects, the number of inputs should equal the numer of outputs
 
 abstract:
 ```
@@ -711,11 +711,10 @@ abstract:
 
 practical:
 ```
-python ~/smapprepos/smapputil/py/query_twitter/query_user_follower_ids.py -i ~/smappwork/data/egypt_secular_elites.csv -o ~/smappwork/data/egypt_secular_elites_follower_ids_output.json -a ~/pool.json
+python ~/smapprepos/smapputil/py/query_twitter/query_tweet_objects.py -i ~/smappwork/data/tweet_ids.csv -o ~/smappwork/data/output_tweets.json -a ~/pool.json
 ```
 
-
-
+*output* a json file with a json object on each line, each json object is a tweet.
 
 #[transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
 
