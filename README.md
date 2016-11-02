@@ -23,6 +23,7 @@
     - [query_tweet_distribution](#query_tweet_distribution)
     - [query_user_id_distribution](#query_user_id_distribution)
     - [query_user_follower_ids](#query_user_follower_ids)
+    - [query_tweet_objects](#query_tweet_objects)
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
     - [rotating_tunnel](https://github.com/SMAPPNYU/smapputil#rotating_tunnel)
@@ -698,6 +699,23 @@ for example if yo uwanted the friends of user id '12344333' `id` fields would be
 note:
 
 a field `smapp_original_user_id` gets added to the id object that tells us what the original user used to query for that follower was
+
+#[query_tweet_objects](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_tweet_objects.py)
+
+takes a list of tweet ids and returns full tweet objects.
+
+abstract:
+```
+/path/to/scriptsenv/bin/python query_tweet_objects.py -i PATH_TO_INPUT -o PATH_TO_OUTPUT -a PATH_TO_AUTH_POOL
+```
+
+practical:
+```
+python ~/smapprepos/smapputil/py/query_twitter/query_user_follower_ids.py -i ~/smappwork/data/egypt_secular_elites.csv -o ~/smappwork/data/egypt_secular_elites_follower_ids_output.json -a ~/pool.json
+```
+
+
+
 
 #[transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
 
