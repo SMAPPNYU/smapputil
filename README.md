@@ -41,9 +41,7 @@
 
 #environments
 
-for querying twitter use smapputil-py2, conda env create -f py2.7env.yml, this is because our queries rely on code that is py2, will be updating soon.
-
-for all others you can use smapputil, conda en create -f environment.yml, this is the python 3 env
+py2.7env.yml is for back compatibility and support only. in regular day to day you shold use the python 3 environment in py/environment.yml
 
 #logging
 
@@ -89,14 +87,14 @@ You must write tests for every function in every script. Whenever you add a new 
 
 #py
 
-python utilities / scripts that do useful things. Built in python 2.7.X. To ru nthe python scripts I suggest activating the scriptsenv virtual environment with `source scriptsenv/bin/activate`. You should see a `(scriptsenv)` appear at the beginning of your consode prompt. (you can deactivate by typing `deactivate` anytime)
+python utilities / scripts that do useful things. Built in python 2.7.X. To ru nthe python scripts I suggest activating the scriptsenv virtual environment with `source smapputil/bin/activate`. You should see a `(smapputil)` appear at the beginning of your consode prompt. (you can deactivate by typing `source deactivate` anytime)
 
 environment.yml - for anaconda users to be able to create an environment easily, installs things from pip. to replicate the environment run `conda env create -f environment.yml` or simply `conda env create` in the `py` directory. [see this page.](http://conda.pydata.org/docs/using/envs.html#export-the-environment-file)
 requirements.txt - a file containing dependencies smapputilities needs
 
 #tests:
 
-to test your scripts create a file called `test_NAME_OF_YOUR_SCRIPT.py` following the format of files like [test_date_filter.py](https://github.com/SMAPPNYU/smapputilities/blob/master/py/test/test_date_filter.py) then run `python test/test_NAME_OF_YOUR_SCRIPT.py`
+to test your scripts create a file called `test_NAME_OF_YOUR_SCRIPT.py` following the format of files like [test_date_filter.py](https://github.com/SMAPPNYU/smapputilities/blob/master/py/test/test_date_filter.py) then run `python test/test_NAME_OF_YOUR_SCRIPT.py`, not all scripts are tested, notably twitter queries, although that may change.
 
 #resources:
 
