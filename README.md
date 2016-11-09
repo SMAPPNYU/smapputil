@@ -960,10 +960,12 @@ pratical:
 ```sh
 # run the job, getting data files from nov 8 2016 to nov 10 2016
 qsub merge_dataset_files.pbs /archive/smapp/olympus/germany_elec_2016/data/
-/scratch/mynetid560/germany_elec_merged.json.bz2 11_08_2016 11_10_2016
+/scratch/mynetid560/germany_elec_merged.json.bz2 2016-08-11 2016-10-11
 ```
 
 then in `/scratch/mynetid560/` you will find the merged file, `germany_elec_merged.json.bz2`
+
+note: input dates are year-month-day or %Y-%m-%d, filenames have their dates as month_day_year. this is because of the way linux date demands date formats
 
 note: one alternative is to just bzip2 -d /scratch/mynetid560/germany_elec_2016/data/*.bz2 and then jsut use cat or [merge_json](#merge_json) as a job to merge the dataset.
 

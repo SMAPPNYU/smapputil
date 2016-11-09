@@ -17,8 +17,8 @@ echo "Running script..."
 if [ ! -z "$3" ] && [ ! -z "$4" ]
 then
     # get all the dates specified in the range
-    startdate=$(date -j -f "%m_%d_%Y" $3 "+%s")
-    enddate=$(date -j -f "%m_%d_%Y" $4 "+%s")
+    startdate=$(date -j -f "%Y-%m-%d" $3 "+%s")
+    enddate=$(date -j -f "%Y-%m-%d" $4 "+%s")
     offset=86400
     dates=()
 
