@@ -16,8 +16,8 @@ echo "Running script..."
 # if the expansion of both daets is not null
 if [ ! -z "$3" ] && [ ! -z "$4" ]
 then
-    currentdate=$2
-    enddate=$(/bin/date --date "$3 1 day" %m_%d_%Y)
+    currentdate=$3
+    enddate=$(/bin/date --date "$4 1 day" %m_%d_%Y)
     dates=()
 
     until [ "$currentdate" == "$enddate" ]
