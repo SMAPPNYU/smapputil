@@ -34,7 +34,4 @@ cp metadata_pre.json /scratch/olympus/eric_garner_2016/metadata/
 cp filters_pre.json /scratch/olympus/eric_garner_2016/filters/
 echo "Done"
 
-# run every day, moves .bz2 files to a safe place.
 # https://wikis.nyu.edu/display/NYUHPC/Writing+and+submitting+a+job
-# http://unix.stackexchange.com/questions/2161/rsync-filter-copying-one-pattern-only
-# http://rclone.org/filtering/

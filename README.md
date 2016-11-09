@@ -32,7 +32,6 @@
     - [dump_database](#dump_database)
     - [check_dump_integrity](#check_dump_integrity)
     - [make_tar](#make_tar)
-    - [transform_dataset_to_pre]()
 - [pbs](#pbs)
     - [merge_dataset_files](#merge_dataset_files)
     - [make_sqlite_db](#make_sqlite_db)
@@ -957,14 +956,14 @@ a job file that will merge unzip and merge json file of a dataset
 
 abstract:
 ```sh
-qsub merge_dataset_files.pbs -i /path/to/data/folder startdate enddate
+qsub merge_dataset_files.pbs /path/to/data/folder startdate enddate
 ```
 pratical:
 ```sh
 # move data to a place your job can read it (/scratch /work)
 cp -r /archive/smapp/olympus/germany_elec_2016 /scratch/mynetid560
 # run the job
-qsub merge_dataset_files.pbs -i /scratch/mynetid560/germany_elec_2016/data 
+qsub merge_dataset_files.pbs /scratch/mynetid560/germany_elec_2016/data 
 ```
 
 then in `/scratch/mynetid560/germany_elec_2016/data` you will find the merged file, `germany_elec_2016_merged_all_data.json` or `germany_elec_2016_merged_03_10_2015__04_10_2015.json` depending on what your specified date range was youll get different names (logical right?).
