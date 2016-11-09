@@ -23,7 +23,7 @@ then
     until [ "$currentdate" == "$enddate" ]
     do
       dates+=( "$currentdate" )
-      currentdate=$(/bin/date --date "$currentdate 1 day" +%m_%d_%Y)
+      currentdate=$(/bin/date --date "$currentdate 1 day" "+%m_%d_%Y")
     done
 
     # find files with these dates
