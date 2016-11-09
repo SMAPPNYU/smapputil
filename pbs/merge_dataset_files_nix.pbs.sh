@@ -16,14 +16,14 @@ echo "Running script..."
 # if the expansion of both daets is not null
 if [ ! -z "$3" ] && [ ! -z "$4" ]
 then
-    currentdate=$3
-    enddate=$(/bin/date --date "$4 1 day" %m_%d_%Y)
+    currentdate=$(/bin/date --date "$3" +%Y-%m-%d)
+    enddate=$(/bin/date --date "$4 1 day" +%Y-%m-%d)
     dates=()
 
     until [ "$currentdate" == "$enddate" ]
     do
       dates+=( "$currentdate" )
-      currentdate=$(/bin/date --date "$currentdate + 1 day" "+%m_%d_%Y")
+      currentdate=$(/bin/date --date "$currentdate 1 day" +%m_%d_%Y)
     done
 
     # find files with these dates
