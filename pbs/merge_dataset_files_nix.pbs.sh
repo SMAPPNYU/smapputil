@@ -33,7 +33,7 @@ then
         filepaths+=($(find $1 -name *$date*.bz2))
     done
 else 
-    # get all files that end in bz2
+    # get all files that end in bz2 in the target dir
     filepaths=($(find $1 -name *.bz2))
 fi
 
