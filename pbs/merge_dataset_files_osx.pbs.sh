@@ -13,25 +13,32 @@
 
 echo "Running script..."
 
-# get all the dates specified in the range
-startdate=$(date -j -f "%m_%d_%Y" $3 "+%s")
-enddate=$(date -j -f "%m_%d_%Y" $4 "+%s")
-offset=86400
-dates=()
+# if the expansion of both daets is not null
+if [ ! -z "$3" ] && [ ! -z "$4" ]
+then
+    # get all the dates specified in the range
+    startdate=$(date -j -f "%m_%d_%Y" $3 "+%s")
+    enddate=$(date -j -f "%m_%d_%Y" $4 "+%s")
+    offset=86400
+    dates=()
 
-while [ "$startdate" -le "$enddate" ]
-do
-  date=$(date -j -f "%s" $startdate "+%m_%d_%Y")
-  dates+=( "$date" )
-  startdate=$(($startdate+$offset))
-done
+    while [ "$startdate" -le "$enddate" ]
+    do
+      date=$(date -j -f "%s" $startdate "+%m_%d_%Y")
+      dates+=( "$date" )
+      startdate=$(($startdate+$offset))
+    done
 
-# find files with these dates
-filepaths=()
-for date in "${dates[@]}"
-do
-    filepaths+=($(find $1 -name *$date*.bz2))
-done
+    # find files with these dates
+    filepaths=()
+    for date in "${dates[@]}"
+    do
+        filepaths+=($(find $1 -name *$date*.bz2))
+    done
+else 
+    # get all files that end in bz2 in the target dir
+    filepaths=($(find $1 -name *.bz2))
+fi
 
 # merge these files into one file, dont need to unzip
 echo "${filepaths[@]}" | xargs cat > "$2"

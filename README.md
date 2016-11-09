@@ -33,7 +33,8 @@
     - [check_dump_integrity](#check_dump_integrity)
     - [make_tar](#make_tar)
 - [pbs](#pbs)
-    - [merge_dataset_files](#merge_dataset_files)
+    - [merge_dataset_files_nix](#merge_dataset_files_nix)
+    - [merge_dataset_files_osx](#merge_dataset_files_osx)
     - [make_sqlite_db](#make_sqlite_db)
 - [sh](#sh)
     - [logger](#logger)
@@ -948,30 +949,31 @@ qsub name_of_pbs_job_file.pbs
 /share/apps/admins/torque/qsub.sh /path/to/pbs_job_file.pbs
 ```
 
-#merge_dataset_files
-
-*not done*
+#merge_dataset_files_osx, merge_dataset_files_nix
 
 a job file that will merge unzip and merge json file of a dataset
 
 abstract:
 ```sh
-qsub merge_dataset_files.pbs /path/to/data/folder startdate enddate
+qsub merge_dataset_files.pbs /path/to/data/folder /path/to/output/file startdate enddate
 ```
 pratical:
 ```sh
-# move data to a place your job can read it (/scratch /work)
-cp -r /archive/smapp/olympus/germany_elec_2016 /scratch/mynetid560
-# run the job
-qsub merge_dataset_files.pbs /scratch/mynetid560/germany_elec_2016/data 
+# run the job, getting data files from nov 8 2016 to nov 10 2016
+qsub merge_dataset_files.pbs /archive/smapp/olympus/germany_elec_2016/data/
+/scratch/mynetid560/germany_elec_merged.json.bz2 11_08_2016 11_10_2016
 ```
 
-then in `/scratch/mynetid560/germany_elec_2016/data` you will find the merged file, `germany_elec_2016_merged_all_data.json` or `germany_elec_2016_merged_03_10_2015__04_10_2015.json` depending on what your specified date range was youll get different names (logical right?).
+then in `/scratch/mynetid560/` you will find the merged file, `germany_elec_merged.json.bz2`
 
-note: one alternative is to just bzip2 -d /scratch/mynetid560/germany_elec_2016/data/*.bz2 and then jsut use cat or 
-[merge_json](#merge_json) as a job to merge the dataset.
+note: one alternative is to just bzip2 -d /scratch/mynetid560/germany_elec_2016/data/*.bz2 and then jsut use cat or [merge_json](#merge_json) as a job to merge the dataset.
 
-note: if you omit startdate and enddate it get all the data files
+note: if you omit startdate and enddate it get all the data files that have been bzipped (.bz2 files)
+
+note: if you want several discreet dates you can easily merge them with:
+```sh
+cat file1.json.bz2 file2.json.bz2 > /scratch/mynetid560/merged_file.json.bz2
+```
 
 #make_sqlite_db
 

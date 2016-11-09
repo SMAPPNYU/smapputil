@@ -13,22 +13,29 @@
 
 echo "Running script..."
 
-currentdate=$2
-enddate=$(/bin/date --date "$3 1 day" %m_%d_%Y)
-dates=()
+# if the expansion of both daets is not null
+if [ ! -z "$3" ] && [ ! -z "$4" ]
+then
+    currentdate=$2
+    enddate=$(/bin/date --date "$3 1 day" %m_%d_%Y)
+    dates=()
 
-until [ "$currentdate" == "$enddate" ]
-do
-  dates+=( "$currentdate" )
-  currentdate=$(/bin/date --date "$currentdate 1 day" +%m_%d_%Y)
-done
+    until [ "$currentdate" == "$enddate" ]
+    do
+      dates+=( "$currentdate" )
+      currentdate=$(/bin/date --date "$currentdate 1 day" +%m_%d_%Y)
+    done
 
-# find files with these dates
-filepaths=()
-for date in "${dates[@]}"
-do
-    filepaths+=($(find $1 -name *$date*.bz2))
-done
+    # find files with these dates
+    filepaths=()
+    for date in "${dates[@]}"
+    do
+        filepaths+=($(find $1 -name *$date*.bz2))
+    done
+else 
+    # get all files that end in bz2
+    filepaths=($(find $1 -name *.bz2))
+fi
 
 # merge these files into one file, dont need to unzip
 echo "${filepaths[@]}" | xargs cat > "$2"
