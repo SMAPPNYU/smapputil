@@ -33,8 +33,7 @@
     - [check_dump_integrity](#check_dump_integrity)
     - [make_tar](#make_tar)
 - [pbs](#pbs)
-    - [merge_dataset_files_nix](#merge_dataset_files_nix)
-    - [merge_dataset_files_osx](#merge_dataset_files_osx)
+    - [merge_dataset_files](#merge_dataset_files)
     - [make_sqlite_db](#make_sqlite_db)
 - [sh](#sh)
     - [logger](#logger)
@@ -949,9 +948,9 @@ qsub name_of_pbs_job_file.pbs
 /share/apps/admins/torque/qsub.sh /path/to/pbs_job_file.pbs
 ```
 
-#merge_dataset_files_osx, merge_dataset_files_nix
+#merge_dataset_files
 
-a job file that will merge unzip and merge json file of a dataset
+`merge_dataset_files_nix.pbs.sh`, `merge_dataset_files_osx.pbs.sh`, a job file that will merge unzip and merge json file of a dataset
 
 abstract:
 ```sh
