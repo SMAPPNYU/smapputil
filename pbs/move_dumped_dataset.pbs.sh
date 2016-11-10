@@ -16,21 +16,21 @@ echo "Running script..."
 rm system.indexes.json
 
 # rename files
-mv smapp_metadata.json metadata_pre.json
-mv tweets_limits.json metadata_limits_pre.json
-mv tweets_filter_criteria.json filters_pre.json
-mv check_dump_integrity.log check_dump_integrity_pre.log
-rename tweets $1_pre tweets_*.json tweets.json data.json
+mv $1smapp_metadata.json $1metadata_pre.json
+mv $1tweets_limits.json $1metadata_limits_pre.json
+mv $1tweets_filter_criteria.json $1filters_pre.json
+mv $1check_dump_integrity.log $1check_dump_integrity_pre.log
+rename tweets $1_pre tweets_*.json $1tweets.json $1data.json
 
 # compress
 bzip2 $1*.json
 
 # copy files to scratch
-cp *.bz2 /scratch/olympus/$1/data/
-cp check_dump_integrity_pre.log /scratch/olympus/$1/metadata/
-cp metadata_limits_pre.json /scratch/olympus/$1/metadata/
-cp metadata_pre.json /scratch/olympus/$1/metadata/
-cp filters_pre.json /scratch/olympus/$1/filters/
+cp *.bz2 /scratch/olympus/$2/data/
+cp $1check_dump_integrity_pre.log /scratch/olympus/$2/metadata/
+cp $1metadata_limits_pre.json /scratch/olympus/$2/metadata/
+cp $1metadata_pre.json /scratch/olympus/$2/metadata/
+cp $1filters_pre.json /scratch/olympus/$2/filters/
 echo "Done"
 
 # https://wikis.nyu.edu/display/NYUHPC/Writing+and+submitting+a+job
