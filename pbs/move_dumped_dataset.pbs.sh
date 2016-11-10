@@ -16,10 +16,10 @@ echo "Running script..."
 rm system.indexes.json
 
 # rename files
-mv smapp_metadata.json metadata_pre.json
-mv tweets_limits.json metadata_limits_pre.json
-mv tweets_filter_criteria.json filters_pre.json
-mv check_dump_integrity.log check_dump_integrity_pre.log
+cp smapp_metadata.json metadata_pre.json
+cp tweets_limits.json metadata_limits_pre.json
+cp tweets_filter_criteria.json filters_pre.json
+cp check_dump_integrity.log check_dump_integrity_pre.log
 rename tweets $1_pre tweets_*.json tweets.json data.json
 
 # compress
