@@ -42,6 +42,5 @@ echo "${filepaths[@]}" | xargs cat > "$2"
 
 echo "Done"
 
-# 
 # https://wikis.nyu.edu/display/NYUHPC/Writing+and+submitting+a+job
 # http://www.glatter-gotz.com/blog/2011/02/19/looping-through-dates-in-a-bash-script-on-osx/

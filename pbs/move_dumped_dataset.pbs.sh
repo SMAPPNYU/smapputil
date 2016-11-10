@@ -11,7 +11,6 @@
 #PBS -j oe
 #PBS -o localhost:${HOME}/jobs/${PBS_JOBNAME}.${PBS_JOBID}.oe
 
-module purge
 echo "Running script..."
 # remove indexes
 rm system.indexes.json
@@ -27,11 +26,11 @@ rename .json _pre.json tweets_*.json tweets.json
 bzip2 tweets_*.json
 
 # copy files to scratch
-cp *.bz2 /scratch/olympus/eric_garner_2016/data/
-cp check_dump_integrity_pre.log /scratch/olympus/eric_garner_2016/metadata/
-cp metadata_limits_pre.json /scratch/olympus/eric_garner_2016/metadata/
-cp metadata_pre.json /scratch/olympus/eric_garner_2016/metadata/
-cp filters_pre.json /scratch/olympus/eric_garner_2016/filters/
+cp *.bz2 /scratch/olympus/$1/data/
+cp check_dump_integrity_pre.log /scratch/olympus/$1/metadata/
+cp metadata_limits_pre.json /scratch/olympus/$1/metadata/
+cp metadata_pre.json /scratch/olympus/$1/metadata/
+cp filters_pre.json /scratch/olympus/$1/filters/
 echo "Done"
 
 # https://wikis.nyu.edu/display/NYUHPC/Writing+and+submitting+a+job

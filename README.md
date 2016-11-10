@@ -984,12 +984,12 @@ make an sqlite database from a .json file, using json1 to make it behave like a 
 
 abstract:
 ```sh
-qsub make_sqlite_db.pbs -i /path/to/data_file.json
+qsub make_sqlite_db.pbs /path/to/data_file.json /path/to/sqlite/db/file.db
 ```
 
 practical:
 ```sh
-qsub make_sqlite_db.pbs -i /scratch/mynetid560/germany_elec_2016/data/germany_elec_2016_merged_all_data.json
+qsub make_sqlite_db.pbs /scratch/mynetid560/germany_elec_2016/data/germany_elec_2016_merged_all_data.json /scratch/mynetid443/germany_elec_2016.db
 ```
 
 after its done you should find a file called something like `germany_elec_2016_data_json1.db` (its a .db file). this is your sqlite database, copy it, back it up, build indexes on it. do whatever you want to it.
