@@ -20,7 +20,7 @@ mv smapp_metadata.json metadata_pre.json
 mv tweets_limits.json metadata_limits_pre.json
 mv tweets_filter_criteria.json filters_pre.json
 mv check_dump_integrity.log check_dump_integrity_pre.log
-rename .json _pre.json tweets_*.json tweets.json
+rename tweets $1_pre tweets_*.json tweets.json
 
 # compress
 bzip2 tweets_*.json
@@ -34,3 +34,4 @@ cp filters_pre.json /scratch/olympus/$1/filters/
 echo "Done"
 
 # https://wikis.nyu.edu/display/NYUHPC/Writing+and+submitting+a+job
+
