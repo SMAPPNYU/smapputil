@@ -23,7 +23,7 @@ mv check_dump_integrity.log check_dump_integrity_pre.log
 rename tweets $1_pre tweets_*.json tweets.json
 
 # compress
-bzip2 tweets_*.json
+bzip2 $1*.json
 
 # copy files to scratch
 cp *.bz2 /scratch/olympus/$1/data/
