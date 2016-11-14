@@ -6,7 +6,7 @@ import csv
 import sys
 import os
 
-from tkpool.tweepypool import TweepyPool
+from tkpool.tkpool.tweepypool import TweepyPool
 from tweepy import Cursor, TweepError
 
 def twitter_query(output, input_file, auth_file):
