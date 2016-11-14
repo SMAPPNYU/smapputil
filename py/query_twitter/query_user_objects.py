@@ -7,7 +7,7 @@ import csv
 import sys
 import os
 
-from smappPy import tweepy_pool
+from tkpool.tweepypool import TweepyPool
 from tweepy import Cursor, TweepError
 
 def twitter_query(output, input_file, auth_file):
@@ -25,10 +25,8 @@ def query_user_tweets(output, id_list, auth_file):
 
     num_inputs_queried = 0
 
-    #create the api pool
-    json_data = open(auth_file).read()
-    oauth = json.loads(json_data)
-    api_pool = tweepy_pool.APIPool(oauth)
+    # #create the api pool
+    api_pool = TweepyPool(auth_file)
 
     write_fd = open(output, 'w+')
 
