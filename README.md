@@ -950,6 +950,8 @@ qsub name_of_pbs_job_file.pbs
 
 #merge_dataset_files
 
+*only works in interactive session, dont try to use qsub*
+
 `merge_dataset_files_nix.pbs.sh` (for the cluster), `merge_dataset_files_osx.pbs.sh` (for personal use), a job file that will merge unzip and merge json file of a dataset, the two scripts differ in their use of date, as its different on osx and linux/*nix
 
 abstract:
