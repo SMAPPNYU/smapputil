@@ -959,10 +959,11 @@ qsub merge_dataset_files.pbs -v 1="/path/to/data/folder",2="/path/to/output/file
 pratical:
 ```sh
 # run the job, getting data files from nov 8 2016 to nov 10 2016
-# in normal bash 
-qsub merge_dataset_files.pbs /archive/smapp/olympus/germany_elec_2016/data/ /scratch/mynetid560/germany_elec_merged.json.bz2 2016-08-11 2016-10-11
 # on hpc
-qsub ~/smapprepos/smapputil/pbs/merge_dataset_files_nix.pbs.sh -v 1="/scratch/olympus/us_election_trump_2016/data/",2="/scratch/smapp/us_election_trump_2016.json.bz2"
+qsub ~/smapprepos/smapputil/pbs/merge_dataset_files_nix.pbs -v 1="/scratch/olympus/us_election_trump_2016/data/",2="/scratch/smapp/us_election_trump_2016.json.bz2",3="2016-08-11",4="2016-10-11"
+
+# in normal bash 
+bash merge_dataset_files.pbs /archive/smapp/olympus/germany_elec_2016/data/ /scratch/mynetid560/germany_elec_merged.json.bz2 2016-08-11 2016-10-11
 ```
 
 then in `/scratch/mynetid560/` you will find the merged file, `germany_elec_merged.json.bz2`
