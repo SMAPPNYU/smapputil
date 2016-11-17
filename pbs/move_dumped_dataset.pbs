@@ -12,6 +12,12 @@
 #PBS -o localhost:${HOME}/jobs/${PBS_JOBNAME}.${PBS_JOBID}.oe
 
 echo "Running script..."
+# make a copy of the dump
+cp -r $1 "$(dirname $1)/$(basename $1)_copy"
+
+#set our first variable to that input
+1="$(dirname $1)/$(basename $1)_copy/"
+
 # remove indexes
 rm system.indexes.json
 
