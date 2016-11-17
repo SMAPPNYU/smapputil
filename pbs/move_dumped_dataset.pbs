@@ -15,21 +15,21 @@ module load mongodb/3.2.8
 
 echo "Running script..."
 # make a copy of the dump
-cp -r $1 "$(dirname $1)/$(basename $1)_copy"
+cp -r "$1" "$(dirname "$1")/$(basename "$1")_copy"
 
 #set our first variable to that input
-1="$(dirname $1)/$(basename $1)_copy/"
+folderpath="$(dirname "$1")/$(basename "$1")_copy/"
 
 #bsondump all bson to json .bson -> .bson.json
-for file in $1*.bson
+for file in "$folderpath"*.bson
 do 
     bsondump "$file" > "$file".json;
 done 
 
 #rename all .bson.json now to .json
-for file in $1*.bson.json
+for file in "$folderpath"*.bson.json
 do
-    mv "$file" $1"`basename "$file" .bson.json`.json"
+    mv "$file" "$folderpath""`basename "$file" .bson.json`.json"
 done
 
 #remove all bson files
@@ -39,21 +39,21 @@ rm *.bson
 rm system.indexes.json
 
 # rename files
-mv $1smapp_metadata.json $1metadata_pre.json
-mv $1tweets_limits.json $1metadata_limits_pre.json
-mv $1tweets_filter_criteria.json $1filters_pre.json
-mv $1check_dump_integrity.log $1check_dump_integrity_pre.log
-rename tweets $1_pre tweets_*.json $1tweets.json $1data.json
+mv "$folderpath"smapp_metadata.json "$folderpath"metadata_pre.json
+mv "$folderpath"tweets_limits.json "$folderpath"metadata_limits_pre.json
+mv "$folderpath"tweets_filter_criteria.json "$folderpath"filters_pre.json
+mv "$folderpath"check_dump_integrity.log "$folderpath"check_dump_integrity_pre.log
+rename tweets "$folderpath"_pre tweets_*.json "$folderpath"tweets.json "$folderpath"data.json
 
 # compress
-bzip2 $1*.json
+bzip2 "$folderpath"*.json
 
 # copy files to scratch
 cp *.bz2 /scratch/olympus/$2/data/
-cp $1check_dump_integrity_pre.log /scratch/olympus/$2/metadata/
-cp $1metadata_limits_pre.json /scratch/olympus/$2/metadata/
-cp $1metadata_pre.json /scratch/olympus/$2/metadata/
-cp $1filters_pre.json /scratch/olympus/$2/filters/
+cp "$folderpath"check_dump_integrity_pre.log /scratch/olympus/$2/metadata/
+cp "$folderpath"metadata_limits_pre.json /scratch/olympus/$2/metadata/
+cp "$folderpath"metadata_pre.json /scratch/olympus/$2/metadata/
+cp "$folderpath"filters_pre.json /scratch/olympus/$2/filters/
 echo "Done"
 
 # https://wikis.nyu.edu/display/NYUHPC/Writing+and+submitting+a+job
