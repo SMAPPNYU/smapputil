@@ -1,3 +1,5 @@
+# script that converts all bson files to json 
+
 #bsondump all bson to json .bson -> .bson.json
 for file in "$folderpath"*.bson
 do 
