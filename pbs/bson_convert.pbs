@@ -7,10 +7,7 @@ do
 done 
 
 #rename all .bson.json now to .json
-for file in "$folderpath"*.bson.json
-do
-    mv "$file" "$folderpath""`basename "$file" .bson.json`.json"
-done
+rename .bson.json .json "$folderpath"*.bson.json
 
 #remove all bson files
 rm *.bson
