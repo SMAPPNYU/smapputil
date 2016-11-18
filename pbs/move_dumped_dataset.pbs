@@ -25,7 +25,9 @@ rm "$folderpath"system.indexes.json
 
 # rename files
 mv "$folderpath"smapp_metadata.json "$folderpath"metadata_pre.json
+mv "$folderpath"metadata.json "$folderpath"metadata_pre.json
 mv "$folderpath"tweets_limits.json "$folderpath"metadata_limits_pre.json
+mv "$folderpath"filters.json "$folderpath"filters_pre.json
 mv "$folderpath"tweets_filter_criteria.json "$folderpath"filters_pre.json
 mv "$folderpath"check_dump_integrity.log "$folderpath"check_dump_integrity_pre.log
 rename tweets $2_pre "$folderpath"tweets_*.json "$folderpath"tweets.json "$folderpath"data.json
