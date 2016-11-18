@@ -31,7 +31,7 @@ mv "$folderpath"check_dump_integrity.log "$folderpath"check_dump_integrity_pre.l
 rename tweets $2_pre "$folderpath"tweets_*.json "$folderpath"tweets.json "$folderpath"data.json
 
 # compress
-bzip2 "$folderpath"*.json
+bzip2 "$folderpath"$2_pre*.json
 
 # copy files to scratch
 cp *.bz2 /scratch/olympus/$2/data/
