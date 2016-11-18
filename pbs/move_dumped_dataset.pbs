@@ -20,21 +20,6 @@ cp -r "$1" "$(dirname "$1")/$(basename "$1")_copy"
 #set our first variable to that input
 folderpath="$(dirname "$1")/$(basename "$1")_copy/"
 
-#bsondump all bson to json .bson -> .bson.json
-for file in "$folderpath"*.bson
-do 
-    bsondump "$file" > "$file".json;
-done 
-
-#rename all .bson.json now to .json
-for file in "$folderpath"*.bson.json
-do
-    mv "$file" "$folderpath""`basename "$file" .bson.json`.json"
-done
-
-#remove all bson files
-rm *.bson
-
 # remove indexes
 rm system.indexes.json
 

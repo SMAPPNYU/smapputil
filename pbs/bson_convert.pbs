@@ -1,0 +1,14 @@
+#bsondump all bson to json .bson -> .bson.json
+for file in "$folderpath"*.bson
+do 
+    bsondump "$file" > "$file".json;
+done 
+
+#rename all .bson.json now to .json
+for file in "$folderpath"*.bson.json
+do
+    mv "$file" "$folderpath""`basename "$file" .bson.json`.json"
+done
+
+#remove all bson files
+rm *.bson
