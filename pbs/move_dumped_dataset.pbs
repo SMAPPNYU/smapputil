@@ -21,7 +21,7 @@ cp -r "$1" "$(dirname "$1")/$(basename "$1")_copy"
 folderpath="$(dirname "$1")/$(basename "$1")_copy/"
 
 # remove indexes
-rm system.indexes.json
+rm "$folderpath"system.indexes.json
 
 # rename files
 mv "$folderpath"smapp_metadata.json "$folderpath"metadata_pre.json
