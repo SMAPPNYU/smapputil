@@ -27,7 +27,7 @@ def parse_args(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--inputs', dest='inputs', required=True, nargs='+', help='These inputs are paths to your json files. Required.')
     parser.add_argument('-o', '--output', dest='output', required=True, help='This will be your outputted single json file. Required')
-    parser.add_argument('-l', '--log', dest='log', default=expanduser('~/pylogs/merge_json_'+currentdate+'.log'), help='This is the path to where your output log should be. Required')
+    parser.add_argument('-l', '--log', dest='log', default=expanduser('~/pylogs/merge_dataset_'+currentdate+'.log'), help='This is the path to where your output log should be. Required')
     return parser.parse_args(args)
 
 if __name__ == '__main__':
