@@ -932,19 +932,30 @@ python py/archive_tools/make_tar.py -i file1.bson germany_election_2013/ tweets_
 
 *not done*
 
-make an sqlite database from a .json file, using json1 to make it behave like a document store see the [mini guide here](https://github.com/SMAPPNYU/smapphowto/blob/master/howto_get_going_with_sqlite_json1.md). you can see sqlite docs for json1 and what you can do with [sqlite json1 docs here](https://www.sqlite.org/json1.html). check out some pointers on how to do it in R [here](http://stackoverflow.com/questions/18107336/load-spatialite-extension-in-rsqlite-crashes-r-os-x-ubuntu) and check out the [RSQLite](https://cran.r-project.org/web/packages/RSQLite/index.html).
+make an sqlite database from a .json file, first it uses the same underlying code as [dump_to_csv](https://github.com/SMAPPNYU/smappdragon#dump_to_csv) to pull out columns that you specify, then it puts those columns into an sqlite db file.
 
 abstract:
 ```sh
-qsub make_sqlite_db.pbs /path/to/data_file.json /path/to/sqlite/db/file.db
+python make_sqlite_db.py /path/to/data_file.json /path/to/sqlite/db/file.db
 ```
 
 practical:
 ```sh
-qsub make_sqlite_db.pbs /scratch/mynetid560/germany_elec_2016/data/germany_elec_2016_merged_all_data.json /scratch/mynetid443/germany_elec_2016.db
+python make_sqlite_db.py /scratch/mynetid560/germany_elec_2016/data/germany_elec_2016_merged_all_data.json /scratch/mynetid443/germany_elec_2016.db
+```
+
+use:
+```sh
+sqlite3 /scratch/mynetid443/germany_elec_2016.db
+# or 
+sqlite germany_elec_2016.db
 ```
 
 after its done you should find a file called something like `germany_elec_2016_data_json1.db` (its a .db file). this is your sqlite database, copy it, back it up, build indexes on it. do whatever you want to it.
+
+r-links:
+[RSQLite](https://cran.r-project.org/web/packages/RSQLite/index.html)
+[sqlite extensions](http://stackoverflow.com/questions/18107336/load-spatialite-extension-in-rsqlite-crashes-r-os-x-ubuntu)
 
 #pbs
 
