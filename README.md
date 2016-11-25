@@ -10,8 +10,9 @@
 ⚙ smapputil that contains utility scripts in python, bash or javascript. Javascript run here will be of the variety node.js 5.0.0. Python is generally python 2.7.11 moving to python 3. Shellscript/bash is expected to be in bash 3.2. A lot of the code here are refined, modularized, improved versions of scripts that used to be in Sandbox and smappPy.
 
 - [py](https://github.com/SMAPPNYU/smapputil#py)
-    - [merge_bson](https://github.com/SMAPPNYU/smapputil#merge_bson)
-    - [merge_json](https://github.com/SMAPPNYU/smapputil#merge_json)
+    - [merge_bson](#merge_bson)
+    - [merge_json](#merge_json)
+    - [merge_dataset_files](#merge_dataset_files)
     - [csv_to_json](https://github.com/SMAPPNYU/smapputil#csv_to_json)
     - [date_filter_bson](https://github.com/SMAPPNYU/smapputil#date_filter_bson)
     - [list_collections](https://github.com/SMAPPNYU/smapputil#list_collections)
@@ -32,9 +33,10 @@
     - [dump_database](#dump_database)
     - [check_dump_integrity](#check_dump_integrity)
     - [make_tar](#make_tar)
+
 - [pbs](#pbs)
-    - [merge_dataset_files](#merge_dataset_files)
     - [make_sqlite_db](#make_sqlite_db)
+    - [pbs_merge_dataset_files](#pbs_merge_dataset_files)
 - [sh](#sh)
     - [logger](#logger)
 
@@ -948,7 +950,7 @@ qsub name_of_pbs_job_file.pbs
 /share/apps/admins/torque/qsub.sh /path/to/pbs_job_file.pbs
 ```
 
-#merge_dataset_files
+#pbs_merge_dataset_files
 
 *only works in interactive session, dont try to use qsub*
 

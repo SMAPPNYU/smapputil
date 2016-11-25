@@ -1,7 +1,6 @@
 '''
 Takes multiple json files in as inputs and merges them.
 '''
-
 import sys
 import json
 import logging

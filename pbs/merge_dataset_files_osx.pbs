@@ -1,4 +1,4 @@
-# job file for merging datasets on a mac
+# script is no good, cant merge bz2 w/o unzipping, unzipping+merge would take more than 100 hours, max job time job file for merging datasets on a mac
 
 #!/bin/bash
 
