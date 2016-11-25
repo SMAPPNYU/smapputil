@@ -33,9 +33,8 @@
     - [dump_database](#dump_database)
     - [check_dump_integrity](#check_dump_integrity)
     - [make_tar](#make_tar)
-
-- [pbs](#pbs)
     - [make_sqlite_db](#make_sqlite_db)
+- [pbs](#pbs)
     - [pbs_merge_dataset_files](#pbs_merge_dataset_files)
 - [sh](#sh)
     - [logger](#logger)
@@ -929,7 +928,23 @@ python py/archive_tools/make_tar.py -i file1.bson germany_election_2013/ tweets_
 
 *returns* a .tar.gz file on disk for each input file or folder
 
-#transform_dataset_to_pre
+#make_sqlite_db
+
+*not done*
+
+make an sqlite database from a .json file, using json1 to make it behave like a document store see the [mini guide here](https://github.com/SMAPPNYU/smapphowto/blob/master/howto_get_going_with_sqlite_json1.md). you can see sqlite docs for json1 and what you can do with [sqlite json1 docs here](https://www.sqlite.org/json1.html). check out some pointers on how to do it in R [here](http://stackoverflow.com/questions/18107336/load-spatialite-extension-in-rsqlite-crashes-r-os-x-ubuntu) and check out the [RSQLite](https://cran.r-project.org/web/packages/RSQLite/index.html).
+
+abstract:
+```sh
+qsub make_sqlite_db.pbs /path/to/data_file.json /path/to/sqlite/db/file.db
+```
+
+practical:
+```sh
+qsub make_sqlite_db.pbs /scratch/mynetid560/germany_elec_2016/data/germany_elec_2016_merged_all_data.json /scratch/mynetid443/germany_elec_2016.db
+```
+
+after its done you should find a file called something like `germany_elec_2016_data_json1.db` (its a .db file). this is your sqlite database, copy it, back it up, build indexes on it. do whatever you want to it.
 
 #pbs
 
@@ -954,7 +969,7 @@ qsub name_of_pbs_job_file.pbs
 
 *only works in interactive session, dont try to use qsub*
 
-`merge_dataset_files_nix.pbs.sh` (for the cluster), `merge_dataset_files_osx.pbs.sh` (for personal use), a job file that will merge unzip and merge json file of a dataset, the two scripts differ in their use of date, as its different on osx and linux/*nix
+`merge_dataset_files_nix.pbs.sh` (for the cluster), `merge_dataset_files_osx.pbs.sh` (for personal use), a job file that will merge unzip and merge json file of a dataset, the two scripts differ in their use of date, as its different on osx and linux/*nix, erges files from a dataset into one file
 
 abstract:
 ```sh
@@ -984,24 +999,6 @@ cat file1.json.bz2 file2.json.bz2 > /scratch/mynetid560/merged_file.json.bz2
 ```
 
 note: see docs here https://wikis.nyu.edu/display/NYUHPC/Submitting+a+job+with+qsub
-
-#make_sqlite_db
-
-*not done*
-
-make an sqlite database from a .json file, using json1 to make it behave like a document store see the [mini guide here](https://github.com/SMAPPNYU/smapphowto/blob/master/howto_get_going_with_sqlite_json1.md). you can see sqlite docs for json1 and what you can do with [sqlite json1 docs here](https://www.sqlite.org/json1.html). check out some pointers on how to do it in R [here](http://stackoverflow.com/questions/18107336/load-spatialite-extension-in-rsqlite-crashes-r-os-x-ubuntu) and check out the [RSQLite](https://cran.r-project.org/web/packages/RSQLite/index.html).
-
-abstract:
-```sh
-qsub make_sqlite_db.pbs /path/to/data_file.json /path/to/sqlite/db/file.db
-```
-
-practical:
-```sh
-qsub make_sqlite_db.pbs /scratch/mynetid560/germany_elec_2016/data/germany_elec_2016_merged_all_data.json /scratch/mynetid443/germany_elec_2016.db
-```
-
-after its done you should find a file called something like `germany_elec_2016_data_json1.db` (its a .db file). this is your sqlite database, copy it, back it up, build indexes on it. do whatever you want to it.
 
 #sh 
 

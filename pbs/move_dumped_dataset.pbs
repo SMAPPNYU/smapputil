@@ -36,7 +36,7 @@ rename tweets $2_pre "$folderpath"tweets_*.json "$folderpath"tweets.json "$folde
 bzip2 "$folderpath$2"_pre*.json
 
 # copy files to scratch
-cp *.bz2 /scratch/olympus/$2/data/
+cp "$folderpath"*.bz2 /scratch/olympus/$2/data/
 cp "$folderpath"check_dump_integrity_pre.log /scratch/olympus/$2/metadata/
 cp "$folderpath"metadata_limits_pre.json /scratch/olympus/$2/metadata/
 cp "$folderpath"metadata_pre.json /scratch/olympus/$2/metadata/

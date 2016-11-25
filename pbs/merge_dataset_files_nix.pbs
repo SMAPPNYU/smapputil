@@ -38,7 +38,7 @@ else
 fi
 
 # merge these files into one file, dont need to unzip
-echo "${filepaths[@]}" | xargs cat > "$2"
+echo "${filepaths[@]}" | xargs bzip2 -dc | bzip2 >"$2"
 
 echo "Done"
 
