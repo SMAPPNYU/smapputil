@@ -284,6 +284,22 @@ test: `python -m unittest test.test_csv_to_json`
 
 `--jsonlist`: outputs a json list instead of a json object on each line
 
+#merge_dataset_files
+
+merges files in a dataset of .json.bz2 files
+
+abstract:
+```
+python merge_dataset_files.py -i file1.json.bz2 file2.json.bz2 -o merged.json
+```
+
+practical:
+```
+python merge_dataset_files.py -i vp_debate_2016_1_data__10_04_2016__00_00_00__23_59_59.json.bz2 vp_debate_2016_1_data__10_05_2016__00_00_00__23_59_59.json.bz2 -o vp_debate_2016_1_data__merged.json
+```
+
+*returns* a new merged file from the input files
+
 #[date_filter_bson](https://github.com/SMAPPNYU/smapputilities/blob/master/py/date_filter/date_filter_bson.py)
 
 Uses the [smapp-toolkit](https://github.com/SMAPPNYU/smapp-toolkit) to filter by date.
@@ -995,13 +1011,11 @@ qsub name_of_pbs_job_file.pbs
 
 #pbs_merge_dataset_files
 
-*only works in interactive session, dont try to use qsub*
-
 `merge_dataset_files_nix.pbs.sh` (for the cluster), `merge_dataset_files_osx.pbs.sh` (for personal use), a job file that will merge unzip and merge json file of a dataset, the two scripts differ in their use of date, as its different on osx and linux/*nix, erges files from a dataset into one file
 
 abstract:
 ```sh
-qsub merge_dataset_files.pbs -v 1="/path/to/data/folder",2="/path/to/output/file",3="startdate",4="enddate"
+qsub merge_dataset_files_nix.pbs -v 1="/path/to/data/folder",2="/path/to/output/file",3="startdate",4="enddate"
 ```
 pratical:
 ```sh
