@@ -34,6 +34,8 @@
     - [check_dump_integrity](#check_dump_integrity)
     - [make_tar](#make_tar)
     - [make_sqlite_db](#make_sqlite_db)
+    - [launch_job]()
+    - [launch_parallel_jobs]()
 - [pbs](#pbs)
     - [pbs_merge_dataset_files](#pbs_merge_dataset_files)
 - [sh](#sh)
@@ -989,6 +991,53 @@ r-links:
 [sqlite extensions](http://stackoverflow.com/questions/18107336/load-spatialite-extension-in-rsqlite-crashes-r-os-x-ubuntu)
 
 note: user fields are input with dot notation (as they come from json), all input field dots are converted to double underscores `__` in their respective sqlite database columns. this is because using dots `.` is troublesome on sqlite (as its a builtin). so an input field `entities.urls.0.expanded_url` would be `'entities__urls__0__expanded_url` in its sqlite column. double underscore is the only good option to represent one level of depth.
+
+#launch_job
+
+abstract:
+```
+python launch_job.py -c 'python myscript.py -a arg1 -b arg2'
+```
+
+practical:
+```
+python launch_job.py -c 'python merge_dataset_files.py 
+-i vp_debate_2016_1_data__10_04_2016__00_00_00__23_59_59.json.bz2 vp_debate_2016_1_data__10_05_2016__00_00_00__23_59_59.json.bz2 
+-o vp_debate_2016_1_data__merged.json'
+```
+
+*starts* one running job
+
+note:
+
+'-a' and '-b' are arguments to your myscript.py they are totally optional and depend on the
+script you are running on each inputfile.
+
+note:
+
+make sure you are using anaconda python, ~/anaconda/bin/python
+
+#launch_parallel_jobs
+
+very similar to 'launch_job' the difference is its meant to be used on split up datasets so yo ucan parallelize whatever script you are calling. this is good for when your job is long running and 1 - will last more than 100 hrs (which is the walltime limit on hpc) 2 - is big and you want to finish faster. each job will run the command python myscript.py -a arg1 -b arg2 -i INPUTFILE_x
+
+abstract:
+```
+python launch_parallel_jobs.py -i inputfile_*.json -c 'python myscript.py -a arg1 -b arg2'
+```
+
+practical:
+```
+# makes a database for each input file
+python launch_parallel_jobs.py -i vp_debate_2016_1_data__merged.json venezuela_2016_data__merged.json -c 'python make_sqlite_db.py -o /scratch/yournetid/test.db -t json -f 'id_str' 'user.id_str' 'text'
+```
+
+*starts* one job per input file specified by `-i`
+
+note:
+
+in the practical exmaple the call to `-c 'python make_sqlite_db.py ...` does not contain a -i as it should, this is bceause our -i is already covered by launch_parallel_jobs.py -i (input). this would start several process and craete several separate sqlite db files.
+
 
 #pbs
 
