@@ -1037,7 +1037,7 @@ note: if you omit startdate and enddate it get all the data files that have been
 
 note: if you want several discreet dates you can easily merge them with:
 ```sh
-cat file1.json.bz2 file2.json.bz2 > /scratch/mynetid560/merged_file.json.bz2
+echo /path/to/data_folder/*.bz2 | xargs bzip2 -dc | bzip2 >/path/to/merged/file.json.bz2
 ```
 
 note: see docs here https://wikis.nyu.edu/display/NYUHPC/Submitting+a+job+with+qsub
