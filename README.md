@@ -945,7 +945,7 @@ practical:
 python make_sqlite_db.py -i /scratch/yournetid/test.json -o /scratch/yournetid/test.db -t json -f 'id_str' 'user.id_str' 'text' 'entities.urls.0.expanded_url' 'entities.urls.1.expanded_url'
 
 # or from csv, with header/fieldnames at the top
-python make_sqlite_db.py -i /scratch/yournetid/test.json -o /scratch/yournetid/test.db -t csv
+python make_sqlite_db.py -i /scratch/yournetid/test.csv -o /scratch/yournetid/test.db -t csv
 ```
 
 use:
