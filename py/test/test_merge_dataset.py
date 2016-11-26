@@ -43,6 +43,3 @@ class TestMergeDataset(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-# c* http://stackoverflow.com/questions/9623114/check-if-two-unordered-lists-are-equal
-# c* http://stackoverflow.com/questions/12161223/testing-argparse-in-python
