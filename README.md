@@ -1019,7 +1019,13 @@ make sure you are using anaconda python, ~/anaconda/bin/python
 
 #launch_parallel_jobs
 
-very similar to 'launch_job' the difference is its meant to be used on split up datasets so yo ucan parallelize whatever script you are calling. this is good for when your job is long running and 1 - will last more than 100 hrs (which is the walltime limit on hpc) 2 - is big and you want to finish faster. each job will run the command python myscript.py -a arg1 -b arg2 -i INPUTFILE_x
+very similar to 'launch_job' the difference is its meant to be used on split up datasets so yo ucan parallelize whatever script you are calling. this is good for when your job is long running and 1 - will last more than 100 hrs (which is the walltime limit on hpc) 2 - is big and you want to finish faster. will start several jobs equivalent to running commands:
+```
+python myscript.py -a arg1 -b arg2 -i input_file_1.json
+python myscript.py -a arg1 -b arg2 -i input_file_2.json
+...
+etc
+```
 
 abstract:
 ```
