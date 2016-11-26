@@ -8,53 +8,79 @@ import argparse
 import datetime
 
 from os.path import expanduser
+from smappdragon.tools.tweet_parser import TweetParser
+from smappdragon import JsonCollection
 
-def make_sqlite_db(output, inputs):
-    #configure logging
+def make_sqlite_db_csv(output, input_file):
     logger = logging.getLogger(__name__)
     logger.info('Creating your output file : %s', output)
 
-    con = sqlite3.connect(":memory:")
+    with open(input_file,'r') as f:
+        csv_reader = csv.DictReader(f)
+        csv_field_names = list(csv_reader.fieldnames)
+        csv_fieldnames_str = ','.join(csv_field_names).replace('.','__')
+        question_marks = ','.join(['?' for column in csv_field_names])
+
+        con = sqlite3.connect(output)
+        cur = con.cursor()
+        cur.execute("CREATE TABLE data ({});".format(csv_fieldnames_str))
+        for line in csv_reader:
+            row = [line[field] for field in csv_field_names]
+            cur.execute("INSERT INTO data ({}) VALUES ({});".format(csv_fieldnames_str, question_marks), row)
+            con.commit()
+        con.close()
+
+    logger.info('Finished processing input: {}, output is: {}'.format(input_file, output))
+
+def make_sqlite_db_json(output, input_file, fields):
+    logger = logging.getLogger(__name__)
+    logger.info('Creating your output file : %s', output)
+
+    ret_column_str = ','.join([column for column in fields]).replace('.','__')
+    question_marks = ','.join(['?' for column in fields])
+    con = sqlite3.connect(output)
     cur = con.cursor()
-    cur.execute("CREATE TABLE data (col1, col2);") # use your column names here
+    cur.execute("CREATE TABLE data ({});".format(ret_column_str))
 
-    with open('data.csv','rb') as fin: # `with` statement available in 2.5+
-        # csv.DictReader uses first line in file for column headings by default
-        dr = csv.DictReader(fin) # comma is default delimiter
-        to_db = [(i['col1'], i['col2']) for i in dr]
+    json_col = JsonCollection(input_file)
 
-    cur.executemany("INSERT INTO t (col1, col2) VALUES (?, ?);", to_db)
-    con.commit()
+    for tweet in json_col.get_iterator():
+        tp = TweetParser()
+        ret = tp.parse_columns_from_tweet(tweet, fields)
+
+        cur.execute("INSERT INTO data ({}) VALUES ({});".format(ret_column_str, question_marks), [replace_none(col_val[1]) for col_val in ret])
+        con.commit()
+
     con.close()
+    logger.info('Finished processing input: {}, output is: {}'.format(input_file, output))
 
-    with open(output, 'wb') as outputjson:
-        for jsonfile in inputs:
-            logger.info('Opening input file : %s', jsonfile)
-            with bz2.BZ2File(jsonfile, 'rb') as jsonfile_handle:
-                for count,line in enumerate(jsonfile_handle):
-                    outputjson.write(line.rstrip())
-                    outputjson.write(b'\n')
-        logger.info('Finished merging input file : %s', jsonfile)
-    logger.info('Finished merging all input files to path : %s', output)
+def replace_none(s):
+    if s is None:
+        return 'NULL'
+    return s
 
 def parse_args(args):
     currentdate = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M")
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', dest='input', required=True, nargs='+', help='These inputs are paths to your json file. Required')
+    parser.add_argument('-t', '--type', dest='type', required=True, help='Is your input a \'csv\' or a \'json\'?, Pick one.')
+    parser.add_argument('-i', '--input', dest='input', required=True, help='These inputs are paths to your json file. Required')
+    parser.add_argument('-f', '--fields', dest='fields', nargs='+', help='The field names you would like to turn into columns')
     parser.add_argument('-o', '--output', dest='output', required=True, help='This will be your outputted single json file. Required')
     parser.add_argument('-l', '--log', dest='log', default=expanduser('~/pylogs/make_sqlite_db'+currentdate+'.log'), help='This is the path to where your output log should be. Required')
     return parser.parse_args(args)
 
 if __name__ == '__main__':
-    #setup parser for command line arguments
     args = parse_args(sys.argv[1:])
-    #configure logs
     logging.basicConfig(filename=args.log, level=logging.INFO)
-    # actually merge the json` files
-    make_sqlite_db(args.output, args.input)
+    if args.type == 'csv':
+        make_sqlite_db_csv(args.output, args.input)
+    elif args.type == 'json':
+        make_sqlite_db_json(args.output, args.input, args.fields)
+    else:
+        print('pick an appropriate input, csv or json')
 
 '''
-takes multiple .json.bz2 files in as inputs and merges them.
+takes a .json file and coaxes out the specified fieldnames as co
 author @yvan
 '''
 

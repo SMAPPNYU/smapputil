@@ -941,21 +941,38 @@ python make_sqlite_db.py /path/to/data_file.json /path/to/sqlite/db/file.db
 
 practical:
 ```sh
-python make_sqlite_db.py /scratch/mynetid560/germany_elec_2016/data/germany_elec_2016_merged_all_data.json /scratch/mynetid443/germany_elec_2016.db
+# from json
+python make_sqlite_db.py -i /scratch/yournetid/test.json -o /scratch/yournetid/test.db -t json -f 'id_str' 'user.id_str' 'text' 'entities.urls.0.expanded_url' 'entities.urls.1.expanded_url'
+
+# or from csv, with header/fieldnames at the top
+python make_sqlite_db.py -i /scratch/yournetid/test.json -o /scratch/yournetid/test.db -t csv
 ```
 
 use:
 ```sh
-sqlite3 /scratch/mynetid443/germany_elec_2016.db
+sqlite3 /scratch/mynetid443/test.db
 # or 
-sqlite germany_elec_2016.db
+sqlite test.db
 ```
 
-after its done you should find a file called something like `germany_elec_2016_data_json1.db` (its a .db file). this is your sqlite database, copy it, back it up, build indexes on it. do whatever you want to it.
+input:
+```
+#example json input, each line looks like so
+{"_id":{"$oid":"56949f8758ca5622d0a320d9"},"contributors":null,"coordinates":null,"created_at":"Tue Jan 12 06:39:03 +0000 2016","entities":{"hashtags":[],"symbols":[],"urls":[],"user_mentions":[{"id":107837944,"id_str":"107837944","indices":[0,7],"name":"Tess Rinearson","screen_name":"_tessr"},{"id":{"$numberLong":"2208027565"},"id_str":"2208027565","indices":[8,20],"name":"Product Hunt","screen_name":"ProductHunt"}]},"favorite_count":0,"favorited":false,"filter_level":"low","geo":null,"id":{"$numberLong":"686799531875405824"},"id_str":"686799531875405824","in_reply_to_screen_name":"_tessr","in_reply_to_status_id":{"$numberLong":"686798991166550016"},"in_reply_to_status_id_str":"686798991166550016","in_reply_to_user_id":107837944,"in_reply_to_user_id_str":"107837944","is_quote_status":false,"lang":"en","place":{"attributes":{},"bounding_box":{"coordinates":[[[-74.026675,40.683935],[-74.026675,40.877483],[-73.910408,40.877483],[-73.910408,40.683935]]],"type":"Polygon"},"country":"United States","country_code":"US","full_name":"Manhattan, NY","id":"01a9a39529b27f36","name":"Manhattan","place_type":"city","url":"https://api.twitter.com/1.1/geo/id/01a9a39529b27f36.json"},"random_number":0.24758333772157703,"retweet_count":0,"retweeted":false,"source":"\u003ca href=\"http://twitter.com\" rel=\"nofollow\"\u003eTwitter Web Client\u003c/a\u003e","text":"@_tessr @ProductHunt No one has stolen me yet. Security through obscurity.","timestamp":{"$date":"2016-01-12T06:39:03.000Z"},"timestamp_ms":"1452580743174","truncated":false,"user":{"contributors_enabled":false,"created_at":"Mon Feb 13 07:00:10 +0000 2012","default_profile":false,"default_profile_image":false,"description":"I am a tan white dot on a pale blue dot.","favourites_count":1028,"follow_request_sent":null,"followers_count":216,"following":null,"friends_count":300,"geo_enabled":true,"id":491074580,"id_str":"491074580","is_translator":false,"lang":"en","listed_count":16,"location":"NYC","name":"Yvan Scher","notifications":null,"profile_background_color":"9AE4E8","profile_background_image_url":"http://pbs.twimg.com/profile_background_images/513013156122087424/ycK_CMAU.jpeg","profile_background_image_url_https":"https://pbs.twimg.com/profile_background_images/513013156122087424/ycK_CMAU.jpeg","profile_background_tile":true,"profile_banner_url":"https://pbs.twimg.com/profile_banners/491074580/1399645051","profile_image_url":"http://pbs.twimg.com/profile_images/655145248616783873/bjsSKAcb_normal.jpg","profile_image_url_https":"https://pbs.twimg.com/profile_images/655145248616783873/bjsSKAcb_normal.jpg","profile_link_color":"D60916","profile_sidebar_border_color":"FFFFFF","profile_sidebar_fill_color":"DDEEF6","profile_text_color":"333333","profile_use_background_image":true,"protected":false,"screen_name":"yvanscher","statuses_count":2733,"time_zone":"Eastern Time (US \u0026 Canada)","url":"https://about.me/yvanscher","utc_offset":-18000,"verified":false}}
+
+#example csv input
+id_str,coordinates.coordinates.0,coordinates.coordinates.1,user.id_str,user.lang,lang,text,user.screen_name,user.location,user.description,created_at,user.friends_count,user.followers_count,retweet_count,entities.urls.0.expanded_url,entities.urls.1.expanded_url,entities.urls.2.expanded_url,entities.urls.3.expanded_url,entities.urls.4.expanded_url
+790040318603329536,,,767465035815723008,en,en,#TrumpNavyShipNames USS Hillary Loves Yoko Ono   https://t.co/sHMLE50jvF,SpitfireSuzy,,"Outspoken opinions on Politics, Government & Media",Sun Oct 23 04:01:04 +0000 2016,151,121,0,http://worldnewsdailyreport.com/yoko-ono-i-had-an-affair-with-hillary-clinton-in-the-70s/,,,,
+790040319882514432,,,485310129,en,en,RT @MikePenceVP: Photo of Bill Clinton giving a speech in Moscow for $500K right before Hillary sold 20% of US uranium to Russia. https://t?<80>?,WickedBecks,No Kaep fan in 49er Territory,TRUMP: Cuz You'd be in Jail #TRUMPPENCE #MAGA #AmericaFirst #CAIndieVoter Pro-OEXIT,Sun Oct 23 04:01:05 +0000 2016,5844,5794,0,,,,,
+```
+
+after its done you should find a a `.db` file. this is your sqlite database, copy it, back it up, build indexes on it. do whatever you want to it.
 
 r-links:
 [RSQLite](https://cran.r-project.org/web/packages/RSQLite/index.html)
 [sqlite extensions](http://stackoverflow.com/questions/18107336/load-spatialite-extension-in-rsqlite-crashes-r-os-x-ubuntu)
+
+note: user fields are input with dot notation (as they come from json), all input field dots are converted to double underscores `__` in their respective sqlite database columns. this is because using dots `.` is troublesome on sqlite (as its a builtin). so an input field `entities.urls.0.expanded_url` would be `'entities__urls__0__expanded_url` in its sqlite column. double underscore is the only good option to represent one level of depth.
 
 #pbs
 
