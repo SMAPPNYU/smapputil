@@ -973,7 +973,7 @@ sqlite3 /scratch/mynetid443/test.db
 sqlite test.db
 ```
 
-input:
+*input* a csv or json line by line file
 ```
 #example json input, each line looks like so
 {"_id":{"$oid":"56949f8758ca5622d0a320d9"},"contributors":null,"coordinates":null,"created_at":"Tue Jan 12 06:39:03 +0000 2016","entities":{"hashtags":[],"symbols":[],"urls":[],"user_mentions":[{"id":107837944,"id_str":"107837944","indices":[0,7],"name":"Tess Rinearson","screen_name":"_tessr"},{"id":{"$numberLong":"2208027565"},"id_str":"2208027565","indices":[8,20],"name":"Product Hunt","screen_name":"ProductHunt"}]},"favorite_count":0,"favorited":false,"filter_level":"low","geo":null,"id":{"$numberLong":"686799531875405824"},"id_str":"686799531875405824","in_reply_to_screen_name":"_tessr","in_reply_to_status_id":{"$numberLong":"686798991166550016"},"in_reply_to_status_id_str":"686798991166550016","in_reply_to_user_id":107837944,"in_reply_to_user_id_str":"107837944","is_quote_status":false,"lang":"en","place":{"attributes":{},"bounding_box":{"coordinates":[[[-74.026675,40.683935],[-74.026675,40.877483],[-73.910408,40.877483],[-73.910408,40.683935]]],"type":"Polygon"},"country":"United States","country_code":"US","full_name":"Manhattan, NY","id":"01a9a39529b27f36","name":"Manhattan","place_type":"city","url":"https://api.twitter.com/1.1/geo/id/01a9a39529b27f36.json"},"random_number":0.24758333772157703,"retweet_count":0,"retweeted":false,"source":"\u003ca href=\"http://twitter.com\" rel=\"nofollow\"\u003eTwitter Web Client\u003c/a\u003e","text":"@_tessr @ProductHunt No one has stolen me yet. Security through obscurity.","timestamp":{"$date":"2016-01-12T06:39:03.000Z"},"timestamp_ms":"1452580743174","truncated":false,"user":{"contributors_enabled":false,"created_at":"Mon Feb 13 07:00:10 +0000 2012","default_profile":false,"default_profile_image":false,"description":"I am a tan white dot on a pale blue dot.","favourites_count":1028,"follow_request_sent":null,"followers_count":216,"following":null,"friends_count":300,"geo_enabled":true,"id":491074580,"id_str":"491074580","is_translator":false,"lang":"en","listed_count":16,"location":"NYC","name":"Yvan Scher","notifications":null,"profile_background_color":"9AE4E8","profile_background_image_url":"http://pbs.twimg.com/profile_background_images/513013156122087424/ycK_CMAU.jpeg","profile_background_image_url_https":"https://pbs.twimg.com/profile_background_images/513013156122087424/ycK_CMAU.jpeg","profile_background_tile":true,"profile_banner_url":"https://pbs.twimg.com/profile_banners/491074580/1399645051","profile_image_url":"http://pbs.twimg.com/profile_images/655145248616783873/bjsSKAcb_normal.jpg","profile_image_url_https":"https://pbs.twimg.com/profile_images/655145248616783873/bjsSKAcb_normal.jpg","profile_link_color":"D60916","profile_sidebar_border_color":"FFFFFF","profile_sidebar_fill_color":"DDEEF6","profile_text_color":"333333","profile_use_background_image":true,"protected":false,"screen_name":"yvanscher","statuses_count":2733,"time_zone":"Eastern Time (US \u0026 Canada)","url":"https://about.me/yvanscher","utc_offset":-18000,"verified":false}}
@@ -984,7 +984,22 @@ id_str,coordinates.coordinates.0,coordinates.coordinates.1,user.id_str,user.lang
 790040319882514432,,,485310129,en,en,RT @MikePenceVP: Photo of Bill Clinton giving a speech in Moscow for $500K right before Hillary sold 20% of US uranium to Russia. https://t?<80>?,WickedBecks,No Kaep fan in 49er Territory,TRUMP: Cuz You'd be in Jail #TRUMPPENCE #MAGA #AmericaFirst #CAIndieVoter Pro-OEXIT,Sun Oct 23 04:01:05 +0000 2016,5844,5794,0,,,,,
 ```
 
-after its done you should find a a `.db` file. this is your sqlite database, copy it, back it up, build indexes on it. do whatever you want to it.
+*output* after its done you should find a a `.db` file. this is your sqlite database, copy it, back it up, build indexes on it. do whatever you want to it.
+```
+sqlite> .schema
+CREATE TABLE data (id_str,user__id_str,text,entities__urls__0__expanded_url,entities__urls__1__expanded_url,entities__media__0__expanded_url,entities__media__1__expanded_url);
+sqlite> .tables
+data
+sqlite> select * from data;
+686799531875405824|491074580|@_tessr @ProductHunt No one has stolen me yet. Security through obscurity.|NULL|NULL|NULL|NULL
+686661056115175425|491074580|Predictions of peach's demise already starting. Nice.|NULL|NULL|NULL|NULL
+686956278099349506|491074580|When was the state of the union first started? Ok wow since the office has existed. https://t.co/Cqgjkhr3Aa|https://en.wikipedia.org/wiki/State_of_the_Union#History|NULL|NULL|NULL
+687115788487122944|491074580|RT @lessig: Looks like the @citizenequality act got a supporter tonight. Thank you @POTUS|NULL|NULL|NULL|NULL
+686661056115175425|491074580|Predictions of peach's demise already starting. Nice.|NULL|NULL|NULL|NULL
+687008713039835136|491074580|#GOPDebate approaching. Can't wait to observer a trump in its natural habitat!|NULL|NULL|NULL|NULL
+687208777561448448|18673945|@yvanscher hey! saw u upvoted Cubeit on ProductHunt. Any feedback on how we can make Cubeit better for you? :) Thanks!|NULL|NULL|NULL|NULL
+686662539913084928|491074580|RT @PopSci: iOS 9.3 update will tint your screen at night, for your health https://t.co/zrDt4TsoXB https://t.co/yXCEGQPHWp|http://pops.ci/cJWqhM|NULL|http://twitter.com/PopSci/status/686661925267206144/photo/1|NULL
+```
 
 r-links:
 [RSQLite](https://cran.r-project.org/web/packages/RSQLite/index.html)
