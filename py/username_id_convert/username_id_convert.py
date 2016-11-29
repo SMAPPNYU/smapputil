@@ -8,7 +8,7 @@ import argparse
 import datetime
 
 from os.path import expanduser
-from smappPy import tweepy_pool
+from tkpool.tkpool.tweepypool import TweepyPool
 
 def ids_to_usernames(id_list, output, api):
     #configure logging
@@ -87,11 +87,9 @@ if __name__ == '__main__':
                 input_list.append(row[0])
             count = count + 1
         logger.info('loaded input_list as csv')
-
-    # create an API pool
-    json_data = open(args.auth).read()
-    oauth = json.loads(json_data)
-    api = tweepy_pool.APIPool(oauth)
+        
+    #create the api pool
+    api = TweepyPool(args.auth)
 
     if args.operation == 'ids_users':
         ids_to_usernames(input_list, args.output, api)
