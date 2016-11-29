@@ -20,6 +20,7 @@ def ids_to_usernames(id_list, output, api):
         try:
             name_json = {}
             res = api.get_user(user_id=a_user_id)
+            name_json['id'] = res.id
             name_json['screen_name'] = res.screen_name
             write_fd.write(json.dumps(name_json))
             write_fd.write('\n')
@@ -41,6 +42,7 @@ def usernames_to_ids(usernames_list, output, api):
             name_json = {}
             res = api.get_user(screen_name=a_user_screen_name)
             name_json['id'] = res.id
+            name_json['screen_name'] = res.screen_name
             write_fd.write(json.dumps(name_json))
             write_fd.write('\n')
             logger.info("{} , {}".format(a_user_screen_name, res.id))
