@@ -1,4 +1,6 @@
 # moves old data set to appropriate pre files
+# only use on json db dumps, dont use on old archived stuff
+# the format is a bit dif, those should be done manually (as theres too many dif formats)
 
 #!/bin/bash
 
@@ -28,6 +30,7 @@ mv "$folderpath"smapp_metadata.json "$folderpath"metadata_pre.json
 mv "$folderpath"metadata.json "$folderpath"metadata_pre.json
 mv "$folderpath"tweets_limits.json "$folderpath"metadata_limits_pre.json
 mv "$folderpath"filters.json "$folderpath"filters_pre.json
+mv "$folderpath"tweets_deletes.json "$folderpath"metadata_deletes_pre.json
 mv "$folderpath"tweets_filter_criteria.json "$folderpath"filters_pre.json
 mv "$folderpath"check_dump_integrity.log "$folderpath"check_dump_integrity_pre.log
 rename tweets $2_pre "$folderpath"tweets_*.json "$folderpath"tweets.json "$folderpath"data.json
