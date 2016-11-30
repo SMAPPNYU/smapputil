@@ -1081,7 +1081,7 @@ qsub name_of_pbs_job_file.pbs
 
 #pbs_merge_dataset_files
 
-`merge_dataset_files_nix.pbs.sh` (for the cluster), `merge_dataset_files_osx.pbs.sh` (for personal use), a job file that will merge unzip and merge json file of a dataset, the two scripts differ in their use of date, as its different on osx and linux/*nix, erges files from a dataset into one file
+`merge_dataset_files_nix.pbs.sh` (for the cluster), `merge_dataset_files_osx.pbs.sh` (for personal use), a job file that will merge unzip and merge json file of a dataset, the two scripts differ in their use of date, as its different on osx and linux/*nix, merges files from a dataset into one file
 
 abstract:
 ```sh
@@ -1107,10 +1107,16 @@ note: if you omit startdate and enddate it get all the data files that have been
 
 note: if you want several discreet dates you can easily merge them with:
 ```sh
-echo /path/to/data_folder/*.bz2 | xargs bzip2 -dc | bzip2 >/path/to/merged/file.json.bz2
+echo /path/to/data_folder/date1.bz2 /path/to/data_folder/date1.bz2 | xargs bzip2 -dc | bzip2 >/path/to/merged/file.json.bz2
 ```
 
-note: see docs here https://wikis.nyu.edu/display/NYUHPC/Submitting+a+job+with+qsub
+or if you want to merge things manually
+```sh
+#unzip the files
+bzip2 -d /path/to/data_folder/*.bz2
+#merge the files
+cat /path/to/data_folder/*.json > /path/to/merged_file.json
+```
 
 #sh 
 

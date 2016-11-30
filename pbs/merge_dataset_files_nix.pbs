@@ -37,7 +37,7 @@ else
     filepaths=($(find $1 -name *.bz2))
 fi
 
-# merge these files into one file, dont need to unzip
+# merge these files into one file
 echo "${filepaths[@]}" | xargs bzip2 -dc | bzip2 >"$2"
 
 echo "Done"
