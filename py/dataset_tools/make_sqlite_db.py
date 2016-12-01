@@ -24,9 +24,16 @@ def make_sqlite_db_csv(output, input_file):
         con = sqlite3.connect(output)
         cur = con.cursor()
         cur.execute("CREATE TABLE data ({});".format(csv_fieldnames_str))
+        insert_list = []
         for line in csv_reader:
             row = [line[field] for field in csv_field_names]
-            cur.execute("INSERT INTO data ({}) VALUES ({});".format(csv_fieldnames_str, question_marks), row)
+            insert_list.append(tuple(row))
+            if (count % 10000) == 0:
+                cur.executemany("INSERT INTO data ({}) VALUES ({});".format(csv_fieldnames_str, question_marks), insert_list)
+                con.commit()
+                insert_list = []
+        if count < 10000:
+            cur.executemany("INSERT INTO data ({}) VALUES ({});".format(csv_fieldnames_str, question_marks), insert_list)
             con.commit()
         con.close()
 
@@ -36,19 +43,28 @@ def make_sqlite_db_json(output, input_file, fields):
     logger = logging.getLogger(__name__)
     logger.info('Creating your output file : %s', output)
 
-    ret_column_str = ','.join([column for column in fields]).replace('.','__')
+    column_str = ','.join([column for column in fields]).replace('.','__')
     question_marks = ','.join(['?' for column in fields])
     con = sqlite3.connect(output)
     cur = con.cursor()
-    cur.execute("CREATE TABLE data ({});".format(ret_column_str))
+    cur.execute("CREATE TABLE IF NOT EXISTS data ({});".format(column_str))
 
     json_col = JsonCollection(input_file)
+    insert_list = []
+    tp = TweetParser()
 
-    for tweet in json_col.get_iterator():
-        tp = TweetParser()
+    for count,tweet in enumerate(json_col.get_iterator()):
         ret = tp.parse_columns_from_tweet(tweet, fields)
+        row = [replace_none(col_val[1]) for col_val in ret]
+        insert_list.append(tuple(row))
 
-        cur.execute("INSERT INTO data ({}) VALUES ({});".format(ret_column_str, question_marks), [replace_none(col_val[1]) for col_val in ret])
+        if (count % 10000) == 0:
+            cur.executemany("INSERT INTO data ({}) VALUES ({});".format(column_str, question_marks), insert_list)
+            con.commit()
+            insert_list = []
+
+    if count < 10000:
+        cur.executemany("INSERT INTO data ({}) VALUES ({});".format(column_str, question_marks), insert_list)
         con.commit()
 
     con.close()

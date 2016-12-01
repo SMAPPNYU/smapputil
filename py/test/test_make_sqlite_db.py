@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/../dataset_tools
 import unittest
 import make_sqlite_db
 
-class TestMergeDataset(unittest.TestCase):
+class TestMakeSqliteDb(unittest.TestCase):
 
     def setUp(self):
         if os.path.exists(os.path.dirname(os.path.abspath(__file__))+'/../test/output.db'):
@@ -30,7 +30,7 @@ class TestMergeDataset(unittest.TestCase):
 
     def test_make_sqlite_db(self):
         self.setUp()
-        args = make_sqlite_db.parse_args(['-i', 'py/test/test.json', '-o', 'py/test/output.db', '-t', 'json', '-f', 'id_str', 'user.id_str', 'text', 'entities.urls.0.expanded_url', 'entities.urls.1.expanded_url', 'entities.media.0.expanded_url', 'entities.media.1.expanded_url'])
+        args = make_sqlite_db.parse_args(['-i', os.path.dirname(os.path.abspath(__file__))+'/../test/test.json', '-o', os.path.dirname(os.path.abspath(__file__))+'/../test/output.db', '-t', 'json', '-f', 'id_str', 'user.id_str', 'text', 'entities.urls.0.expanded_url', 'entities.urls.1.expanded_url', 'entities.media.0.expanded_url', 'entities.media.1.expanded_url'])
         make_sqlite_db.make_sqlite_db_json(args.output, args.input, args.fields)
         con = sqlite3.connect(os.path.dirname(os.path.abspath(__file__))+'/../test/output.db')
         cur = con.cursor()
