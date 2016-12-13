@@ -40,6 +40,7 @@
     - [pbs_merge_dataset_files](#pbs_merge_dataset_files)
 - [sh](#sh)
     - [logger](#logger)
+    - [term_search](#term_search)
 
 #environments
 
@@ -1144,6 +1145,19 @@ and then use it like so:
 ```bash
 log "blah"
 log "blah $c"
+```
+
+#term_search
+
+searches for a term among all filter files on /scratch/olympus (active datasets)
+
+```bash
+bash term_search.sh 'hillary'
+```
+
+would return:
+```
+{"value": "#aleppo", "date_added": "Tue Dec 13 10:10:25 +0000 2016", "date_removed": null, "turnoff_date": null, "active": true, "filter_type": "track"}
 ```
 
 #resources:
