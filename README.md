@@ -1147,12 +1147,12 @@ log "blah"
 log "blah $c"
 ```
 
-#term_search
+#[term_search](https://github.com/SMAPPNYU/smapputil/blob/master/sh/term_search.sh)
 
 searches for a term among all filter files on /scratch/olympus (active datasets)
 
 ```bash
-bash term_search.sh 'hillary'
+bash sh/term_search.sh 'hillary'
 ```
 
 would return:
