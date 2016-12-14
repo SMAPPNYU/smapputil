@@ -1,1 +1,1 @@
-cat /scratch/olympus/*/filters/filters.json | grep $1
+find /scratch/olympus/*/filters/filters.json -type f -print -exec cat {} \; | grep $1
