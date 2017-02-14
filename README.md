@@ -835,7 +835,7 @@ practical:
 ```python
 python py/archive_tools/dump_database.py -i ~/pylogs/dump_dbs_input.json -ho 100.100.100.100 -p 27017 -u some_db_user -w some_db_password -o ~/dumps/ &>/dev/null
 
-python py/archive_tools/dump_database.py -i germany_election mike_brown -ho localhost -p 49999 -u some_db_user -w some_db_password -o ~/dumps/ --querydump
+python py/archive_tools/dump_database.py -i germany_election mike_brown -ho localhost -p 49999 -u some_db_user -w some_db_password -o ~/dumps/ -au admin -aw 'YOUR_ADMIN_USER_PASS' --querydump
 ```
 
 -i should provide names corresponding to mongo databases
@@ -853,7 +853,7 @@ python py/archive_tools/dump_database.py -i germany_election mike_brown -ho loca
 
 -o `PATH_TO_OUTPUT_DIR` - is a path to a directory that wll contain a directory named after the database that will contain the dump
 
--q `--querydump` dumps the database collections to json by querying mongodb using smappdragon's MongoCollection and dump_to_json tools, the idea is taht sometimes mongodump doesnt work that great, it has issues where it misses data in the db, queries are more likely to return data
+-q `--querydump` dumps the database collections to json by querying mongodb using smappdragon's MongoCollection and dump_to_json tools, the idea is taht sometimes mongodump doesnt work that great, it has issues where it misses data in the db, queries are more likely to return data. query dump requires the use of an admin user/pass.
 
 `&>/dev/null` - runs the script quietly instaed of printing mongodumps output
 
