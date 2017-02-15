@@ -25,6 +25,7 @@
     - [query_user_id_distribution](#query_user_id_distribution)
     - [query_user_follower_ids](#query_user_follower_ids)
     - [query_tweet_objects](#query_tweet_objects)
+    - [generate_random_twitter_potential_ids](#generate_random_twitter_potential_ids)
     - [transfer_collection](https://github.com/SMAPPNYU/smapputil#transfer_collection)
     - [ssh_tunnel](https://github.com/SMAPPNYU/smapputil#ssh_tunnel)
     - [rotating_tunnel](https://github.com/SMAPPNYU/smapputil#rotating_tunnel)
@@ -732,6 +733,24 @@ python ~/smapprepos/smapputil/py/query_twitter/query_tweet_objects.py -i ~/smapp
 ```
 
 *output* a json file with a json object on each line, each json object is a tweet.
+
+#[generate_random_twitter_potential_ids](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/generate_random_twitter_potential_ids.py)
+
+get random user objects gets a bunch of random twitter user objects and puts them line by line in a json file.
+
+abstract:
+```
+python generate_random_twitter_potential_ids.py -n NUMBER_IDS -o /path/to/output/file.json
+```
+
+practical:
+```
+python generate_random_twitter_potential_ids.py -n 2000 -o data/2000_twitter_ids.json
+```
+
+*returns* a json list of twitter ids written to file
+
+note: https://dev.twitter.com/overview/api/twitter-ids-json-and-snowflake
 
 #[transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
 
