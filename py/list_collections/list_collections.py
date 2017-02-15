@@ -23,14 +23,14 @@ def paramiko_list_crontab(collector_machine, username):
 def build_collection_list(crontab_entries):
     # create a parser for this argument
     cron_parser = argparse.ArgumentParser()
-    cron_parser.add_argument('-d')
+    cron_parser.add_argument('-n')
 
     collection_list = []
 
     # loop through each crontab entry 
     # and get the name of each collection
     for cron_entry in crontab_entries:
-        if '-d' in cron_entry:
+        if '-n' in cron_entry:
             split_cron_entry = cron_entry.split(' ')
             known_args, unknown_args = cron_parser.parse_known_args(split_cron_entry)
             collection_list.append(known_args.d)
