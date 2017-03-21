@@ -43,11 +43,11 @@
     - [logger](#logger)
     - [term_search](#term_search)
 
-#environments
+# environments
 
 py2.7env.yml is for back compatibility and support only. in regular day to day you shold use the python 3 environment in py/environment.yml
 
-#logging
+# logging
 
 Logging is required on all scripts. A few reasons:
 
@@ -67,7 +67,7 @@ That said you can specify whatever log path  you want. Just know that you must h
 
 [Bash Logging Example]() 
 
-#tests
+# tests
 
 You must write tests for every function in every script. Whenever you add a new script you need to run your unit tests. Scripts with no tests will not be allowed into the repository. 
 
@@ -89,24 +89,24 @@ You must write tests for every function in every script. Whenever you add a new 
 
 [Javascript Testing Example](https://github.com/SMAPPNYU/smapputilities/blob/master/js/mailtweetcounts/test/test_mailtweetcounts.js)
 
-#py
+# py
 
 python utilities / scripts that do useful things. Built in python 2.7.X. To ru nthe python scripts I suggest activating the scriptsenv virtual environment with `source smapputil/bin/activate`. You should see a `(smapputil)` appear at the beginning of your consode prompt. (you can deactivate by typing `source deactivate` anytime)
 
 environment.yml - for anaconda users to be able to create an environment easily, installs things from pip. to replicate the environment run `conda env create -f environment.yml` or simply `conda env create` in the `py` directory. [see this page.](http://conda.pydata.org/docs/using/envs.html#export-the-environment-file)
 requirements.txt - a file containing dependencies smapputilities needs
 
-#tests:
+## tests
 
 to test your scripts create a file called `test_NAME_OF_YOUR_SCRIPT.py` following the format of files like [test_date_filter.py](https://github.com/SMAPPNYU/smapputilities/blob/master/py/test/test_date_filter.py) then run `python test/test_NAME_OF_YOUR_SCRIPT.py`, not all scripts are tested, notably twitter queries, although that may change.
 
-#resources:
+## resources
 
 [Python Unit Test Framework](https://docs.python.org/2/library/unittest.html#assert-methods)
 
 [Adding imports to python sys path](http://askubuntu.com/questions/470982/how-to-add-a-python-module-to-syspath/471168)
 
-#[merge_bson](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_bson)
+## [merge_bson](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_bson)
 
 takes arbitrary number of bson files and merges them.
 
@@ -126,7 +126,7 @@ python merge_bson.py -i ~/bson1.bson ~/bson2.bson -o ~/output.bson -l ~/log.log 
 
 test: `python -m unittest test.test_merge_bson`
 
-#[ssh_tunnel](https://github.com/SMAPPNYU/smapputil/tree/master/py/ssh_tunnel)
+## [ssh_tunnel](https://github.com/SMAPPNYU/smapputil/tree/master/py/ssh_tunnel)
 
 creates an ssh tunnel.
 
@@ -153,7 +153,7 @@ ssh_tunnel.start_ssh_tunnel(args.loginhost, args.username, args.password, args.l
 test: `python test/test_ssh_tunnel LOGIN_USER LOGIN_PASSWORD`
 
 
-#[rotating_tunnel](https://github.com/SMAPPNYU/smapputil/tree/master/py/ssh_tunnel)
+## [rotating_tunnel](https://github.com/SMAPPNYU/smapputil/tree/master/py/ssh_tunnel)
 
 creates a keyed login only rotating tunnel. less general than ssh_tunnel, rotates the tunnels among
 login nodes and remote ports provided in input. basically therer are two modes of use. 1. to create a single tunnel that 
@@ -236,7 +236,7 @@ basically alt login and remote hosts are for making "double tunnels" to get wher
 
 note: if using the tunnel to connect to nyu bastion host contact the sys admin there to add your public keys to the authorized_hosts file for your account on that machine.
 
-#[merge_json](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_json)
+## [merge_json](https://github.com/SMAPPNYU/smapputilities/blob/master/py/merge_json)
 
 merges two files where each file has a json object on each line, or each file i a list of json objects
 
@@ -262,7 +262,7 @@ test: `python -m unittest test.test_merge_json`
 
 `--jsonlist`: outputs a json list instead of a json object on each line
 
-#[csv_to_json](https://github.com/SMAPPNYU/smapputilities/tree/master/py/csv_to_json)
+## [csv_to_json](https://github.com/SMAPPNYU/smapputilities/tree/master/py/csv_to_json)
 
 take a csv and make it into a json file or a json list
 
@@ -288,7 +288,7 @@ test: `python -m unittest test.test_csv_to_json`
 
 `--jsonlist`: outputs a json list instead of a json object on each line
 
-#merge_dataset_files
+## merge_dataset_files
 
 merges files in a dataset of .json.bz2 files
 
@@ -304,7 +304,7 @@ python merge_dataset_files.py -i vp_debate_2016_1_data__10_04_2016__00_00_00__23
 
 *returns* a new merged file from the input files
 
-#[date_filter_bson](https://github.com/SMAPPNYU/smapputilities/blob/master/py/date_filter/date_filter_bson.py)
+## [date_filter_bson](https://github.com/SMAPPNYU/smapputilities/blob/master/py/date_filter/date_filter_bson.py)
 
 Uses the [smapp-toolkit](https://github.com/SMAPPNYU/smapp-toolkit) to filter by date.
 
@@ -337,7 +337,7 @@ python date_filter_bson.py -i ~/bson1.bson -d1 '2016-01-18 02:00:00' -d2 '2016-0
 
 test: `python test/test_date_filter.py`
 
-#[list_collections](https://github.com/SMAPPNYU/smapputilities/tree/master/py/list_collections)
+## [list_collections](https://github.com/SMAPPNYU/smapputilities/tree/master/py/list_collections)
 
 a way to list the running collections on a machine by logging in and listing that machine's crontab, would be nice to add a name field to the script input and output files, would also be nice to have the number per machine running.
 
@@ -374,7 +374,7 @@ note: make sure you have `~/pylogs` directory before running this script.
 
 test: `python test/test_list_collections.py SERVER_IP_OR_NAME SERVER_USERNAME`
 
-#[query_user_tweets](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_tweets.py)
+## [query_user_tweets](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_tweets.py)
 
 take a list of users and get each of their 3200 most recent tweets. Works on the twitter api with tweepy.
 
@@ -417,7 +417,7 @@ note: input is json or csv, csv must be a one column csv with `id` as the column
 
 note: `smapp_count` term added to each tweet object to tell you which count of a particular user's tweets you are looking at.
 
-#[query_search_tweets](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_search_tweets.py)
+## [query_search_tweets](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_search_tweets.py)
 
 queries the twitter search api for any list of terms.
 
@@ -459,7 +459,7 @@ or a json list:
 
 note: fields `smapp_term` and `smapp_count` are added to each tweet object to tell you which term the tweet war queried for and what its count in the query was.
 
-#[query_user_objects](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_objects.py)
+## [query_user_objects](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_objects.py)
 
 queries the twitter api for any list of user objects. takes a list of twitter user ids as input.
 
@@ -496,7 +496,7 @@ or a json list:
 ```
 *output* a json file that writes to disk with the resulting user objects in JSON format
 
-#[query_user_friends](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_friends.py)
+## [query_user_friends](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_friends.py)
 
 queries the twitter api for  the 'friends' (users a userid follows) of a particular twitter user id 
 
@@ -539,7 +539,7 @@ note:
 
 a field `smapp_original_user_id` gets added to the user object that tells us what the original user used to query for that friend was.
 
-#[query_user_friends_ids](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_friends_ids.py)
+## [query_user_friends_ids](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_friends_ids.py)
 
 queries the twitter api for the ids of 'friends' (users a userid follows) of a particular twitter user id 
 
@@ -586,7 +586,7 @@ note:
 
 a field `smapp_original_user_id` gets added to the user object that tells us what the original user used to query for that friend was.
 
-#[query_tweet_distribution](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_tweet_distribution.py)
+## [query_tweet_distribution](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_tweet_distribution.py)
 
 checks a dumped file with a tweet json object on each line to and returns a count file the count file tells us how many tweets there are for each user id in the tweet file. (if all 0 or all the same the query should probably be investigated, logs checked, rerun)
 
@@ -627,7 +627,7 @@ fields on output are:
 
 `id` - the original twitter id whose friends, followers, or related ids were queried
 
-#[query_user_id_distribution](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_id_distribution.py)
+## [query_user_id_distribution](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_id_distribution.py)
 
 checks a dumped file with a tweet json object on each line to and returns a count file the count file tells us how many ids there are for each original user id in the tweet file. (if all 0 or all the same,i.e. every user has 250 followers/friends the query should probably be investigated, logs checked, rerun)
 
@@ -669,7 +669,7 @@ fields on output are:
 
 `id` - the original twitter id for a user whose tweets were queried
 
-#[query_user_follower_ids](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_follower_ids.py)
+## [query_user_follower_ids](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_user_follower_ids.py)
 
 takes a list of user ids and returns a file with the followers of each id listed in the file.
 
@@ -718,7 +718,7 @@ note:
 
 a field `smapp_original_user_id` gets added to the id object that tells us what the original user used to query for that follower was
 
-#[query_tweet_objects](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_tweet_objects.py)
+## [query_tweet_objects](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/query_tweet_objects.py)
 
 takes a list of tweet ids and returns full tweet objects, the number of inputs should equal the numer of outputs
 
@@ -734,7 +734,7 @@ python ~/smapprepos/smapputil/py/query_twitter/query_tweet_objects.py -i ~/smapp
 
 *output* a json file with a json object on each line, each json object is a tweet.
 
-#[generate_random_twitter_potential_ids](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/generate_random_twitter_potential_ids.py)
+## [generate_random_twitter_potential_ids](https://github.com/SMAPPNYU/smapputil/blob/master/py/query_twitter/generate_random_twitter_potential_ids.py)
 
 get random user objects gets a bunch of random twitter user objects and puts them line by line in a json file.
 
@@ -752,7 +752,7 @@ python generate_random_twitter_potential_ids.py -n 2000 -o data/2000_twitter_ids
 
 note: https://dev.twitter.com/overview/api/twitter-ids-json-and-snowflake
 
-#[transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
+## [transfer_collection](https://github.com/SMAPPNYU/smapputilities/tree/master/py/transfer_collection)
 
 *warning* bulk inserts will create a surge of pending deletes on a sharded mongo cluster. this will stop shards from rebalancing properly and they will have to be stepped down or reset.
 
@@ -772,7 +772,7 @@ practical:
 
 note: requires at least mongo 3.0
 
-#[mail_tweet_counts](https://github.com/SMAPPNYU/smapputilities/tree/master/py/mail_tweet_counts)
+## [mail_tweet_counts](https://github.com/SMAPPNYU/smapputilities/tree/master/py/mail_tweet_counts)
 
 mails tweet counts daily from our db
 
@@ -803,7 +803,7 @@ config = \
 }
 ```
 
-#[username_id_convert](https://github.com/SMAPPNYU/smapputilities/tree/master/py/username_id_convert)
+## [username_id_convert](https://github.com/SMAPPNYU/smapputilities/tree/master/py/username_id_convert)
 
 convert twitter ids to usernames and vice versa.
 
@@ -839,7 +839,7 @@ j_a_tucker
 RichBonneauNYU
 ```
 
-#[dump_database](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
+## [dump_database](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
 
 mongodumps a list of dbs fo a specified place
 
@@ -885,7 +885,7 @@ takes a json input
 ]
 ```
 
-#[check_dump_integrity](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
+## [check_dump_integrity](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
 
 Checks whether one or more mongo databases from [dump_database](#dump_database) were dumped successfully at a specified location. Dumps can be in .bson or .json format.
 
@@ -948,7 +948,7 @@ Collections Missing Documents: ['tweets_2']
 
 ```
 
-#[make_tar](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
+## [make_tar](https://github.com/SMAPPNYU/smapputilities/tree/master/py/archive_tools)
 
 makes multiple tar file from a list of input files and makes a separate tar for each file
 
@@ -1027,7 +1027,7 @@ r-links:
 
 note: user fields are input with dot notation (as they come from json), all input field dots are converted to double underscores `__` in their respective sqlite database columns. this is because using dots `.` is troublesome on sqlite (as its a builtin). so an input field `entities.urls.0.expanded_url` would be `'entities__urls__0__expanded_url` in its sqlite column. double underscore is the only good option to represent one level of depth.
 
-#launch_job
+## launch_job
 
 abstract:
 ```
@@ -1052,7 +1052,7 @@ note:
 
 make sure you are using anaconda python, ~/anaconda/bin/python
 
-#launch_parallel_jobs
+## launch_parallel_jobs
 
 very similar to 'launch_job' the difference is its meant to be used on split up datasets so yo ucan parallelize whatever script you are calling. this is good for when your job is long running and 1 - will last more than 100 hrs (which is the walltime limit on hpc) 2 - is big and you want to finish faster. will start several jobs equivalent to running commands:
 ```
@@ -1080,7 +1080,7 @@ note:
 in the practical exmaple the call to `-c 'python make_sqlite_db.py ...` does not contain a -i as it should, this is bceause our -i is already covered by launch_parallel_jobs.py -i (input). this would start several process and craete several separate sqlite db files.
 
 
-#pbs
+# pbs
 
 job files to run on the cluster, see [nyu hpc wiki](https://wikis.nyu.edu/display/NYUHPC/Running+jobs)
 
@@ -1099,7 +1099,7 @@ qsub name_of_pbs_job_file.pbs
 /share/apps/admins/torque/qsub.sh /path/to/pbs_job_file.pbs
 ```
 
-#pbs_merge_dataset_files
+## pbs_merge_dataset_files
 
 `merge_dataset_files_nix.pbs.sh` (for the cluster), `merge_dataset_files_osx.pbs.sh` (for personal use), a job file that will merge unzip and merge json file of a dataset, the two scripts differ in their use of date, as its different on osx and linux/*nix, merges files from a dataset into one file
 
@@ -1138,11 +1138,11 @@ bzip2 -d /path/to/data_folder/*.bz2
 cat /path/to/data_folder/*.json > /path/to/merged_file.json
 ```
 
-#sh 
+# sh 
 
 bash utilities / scripts that do useful thngs. Built in bash 3.2.X. You may notice many of the scripts are clones of scripts in [shellscripts repo](https://github.com/SMAPPNYU/shellscripts). This is temporary. Their final reting place will be here. The difference will be modularized testing, modularized scripts, each script will get its own tests (instead of the single file), the tests will be unit tests and as little as porrible system state tests, etc. As soon as the move is done and we're sure these scripts work we will phase out shellscripts repo (it was originally an experiment and we're going to wrangle it under control now before it becomes a legacy).
 
-#testing:
+## testing
 
 [Download the shunit2 framework](https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/shunit2/shunit2-2.1.6.tgz), put it in `sh/bash_modules`. Go into the `smapputilities/sh/test` folder using `cd test` and run `bash test_*.sh` this should run a series of shunit2 tests. You should only run tests on a system that isn't running any hades tunnels currently.
 
@@ -1152,7 +1152,7 @@ For bash testing we could try to use [maybe] (https://github.com/p-e-w/maybe) wi
 
 i know that testing with bash is hard and can be very sketchy. just do your best to modularize the code and test each piece that is important.
 
-#logging:
+## logging
 
 you'll want to import the logger into your bash script:
 
@@ -1166,7 +1166,7 @@ log "blah"
 log "blah $c"
 ```
 
-#[term_search](https://github.com/SMAPPNYU/smapputil/blob/master/sh/term_search.sh)
+## [term_search](https://github.com/SMAPPNYU/smapputil/blob/master/sh/term_search.sh)
 
 searches for a term among all filter files on /scratch/olympus (active datasets)
 
@@ -1179,7 +1179,7 @@ would return:
 {"value": "#aleppo", "date_added": "Tue Dec 13 10:10:25 +0000 2016", "date_removed": null, "turnoff_date": null, "active": true, "filter_type": "track"}
 ```
 
-#resources:
+## resources
 
 [run a bash program in the back ground] (http://stackoverflow.com/questions/13676457/how-can-i-put-the-current-running-linux-process-in-background)
 
@@ -1189,7 +1189,7 @@ would return:
 
 [bash exit codes](http://www.tldp.org/LDP/abs/html/exitcodes.html)
 
-#[logger](https://github.com/SMAPPNYU/smapputilities/tree/master/sh/logger)
+## [logger](https://github.com/SMAPPNYU/smapputilities/tree/master/sh/logger)
 
 this is a logger that can log output to a file, written in bash.
 
