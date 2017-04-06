@@ -22,12 +22,12 @@ time {command}
 echo 'Done!'
 '''
 
-def launch_job(command, nodes, ntasks, cpus_per_tasks, job_output, job_error, hours, minutes, seconds, memory, job_name, mail_addr):
+def launch_job(command, nodes, ntasks, cpus_per_task, job_output, job_error, hours, minutes, seconds, memory, job_name, mail_addr):
     #create a randomized string in base64 with a .sbatch extension
     tempfilename = ''.join(choice(digits) for i in range(10))+'.sbatch'
     #create/open a file with the write option, store its file handle, write to the file
     tempfile = open(tempfilename, 'w')
-    tempfile.write(SBATCH_TEMPLATE.format(command=command, hours=hours))
+    tempfile.write(SBATCH_TEMPLATE.format(command=command, nodes=nodes, ntasks=ntasks, cpus_per_task=cpus_per_task, job_output=job_output, job_error=job_error, hours=hours, minutes=minutes, seconds=seconds, memory=memory, job_name=job_name, mail_addr))
     tempfile.close()
 
     #run the script by running qsub with the pbs file we just created
@@ -42,9 +42,9 @@ if __name__ == '__main__':
     #create a parser for arguments, add some arguments, parse arguments stored in argv
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--command', required=True, help='command to be injected into .pbs file.')
-    parser.add_argument('-nodes', '--nodes', default=1, help='the number of nodes your job will have')
-    parser.add_argument('-ntasks', '--ntasks', default=1, help='the number of tasks, processes, or programs that will run on your node')
-    parser.add_argument('-cpt', '--cpus-per-task', default=1, help='the number of cpus you want to allocate for each task/process/program')
+    parser.add_argument('-no', '--nodes', default=1, help='the number of nodes your job will have')
+    parser.add_argument('-nt', '--ntasks', default=1, help='the number of tasks, processes, or programs that will run on your node')
+    parser.add_argument('-cp', '--cpus-per-task', default=1, help='the number of cpus you want to allocate for each task/process/program')
     parser.add_argument('-o', '--joboutput', default='localhost:${{HOME}}/job_output_%%A_%%a.out', help='the output log path you would like to give your job, this is optional')
     parser.add_argument('-e', '--joberror', default='localhost:${{HOME}}/job_output_%%A_%%a.err', help='the error log path you would like to give your job, this is optional')
     parser.add_argument('-w', '--hours', default='01', help='the number of hours the job will take')
