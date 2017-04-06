@@ -14,7 +14,7 @@ SBATCH_TEMPLATE='''#!/bin/bash
 #SBATCH --mem={memory}
 #SBATCH --job-name={job_name}
 #SBATCH --mail-type=END
-#SBATCH --mail-user{mail_addr}
+#SBATCH --mail-user={mail_addr}
 #SBATCH --output={job_output}
 #SBATCH --error={job_error}
 
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--seconds', default='00', help='the number of seconds to give to your job, optional')
     parser.add_argument('-me', '--memory', default='15GB', help='the amount of memory you need to give to your job, optional')
     parser.add_argument('-j', '--job-name', default='smapp_job', help='the name of your job, optional')
-    parser.add_argument('-ma', '--mail-addr', default='{}@nyu.edu'.format(os.environ['USER']), help='the mail address to send job reports to, optional')
+    parser.add_argument('-ma', '--mail-addr', default='${{USER}}@nyu.edu', help='the mail address to send job reports to, optional')
     args = parser.parse_args()
 
     #create an empty list
