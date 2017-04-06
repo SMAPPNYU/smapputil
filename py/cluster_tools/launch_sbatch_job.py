@@ -5,8 +5,7 @@ import subprocess
 from random import choice
 from string import digits
 
-SBATCH_TEMPLATE='''
-#!/bin/sh
+SBATCH_TEMPLATE='''#!/bin/sh
 
 #SBATCH --nodes={nodes}
 #SBATCH --ntasks={ntasks}
