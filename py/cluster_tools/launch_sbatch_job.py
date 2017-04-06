@@ -29,7 +29,7 @@ def launch_job(command, nodes, ntasks, cpus_per_tasks, job_output, job_error, ho
     tempfile.close()
 
     #run the script by running qsub with the pbs file we just created
-    sbatch_cmd = 'sbatch -V {jobscript}'.format(jobscript=tempfilename)
+    sbatch_cmd = 'sbatch {jobscript}'.format(jobscript=tempfilename)
     #the subprocess module pauses the execution of the script and waits for the output from stdout
     output = subprocess.check_output(sbatch_cmd, shell=True)
     #delete the .pbs file we just made to keep stuff clean.
