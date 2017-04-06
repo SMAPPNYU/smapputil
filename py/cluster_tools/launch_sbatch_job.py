@@ -7,6 +7,7 @@ from string import digits
 
 SBATCH_TEMPLATE='''
 #!/bin/bash
+
 #SBATCH --nodes={nodes}
 #SBATCH --ntasks={ntasks}
 #SBATCH --cpus-per-task={cpus_per_task}
@@ -17,6 +18,7 @@ SBATCH_TEMPLATE='''
 #SBATCH --mail-user{mail_addr}
 #SBATCH --output={job_output}
 #SBATCH --error={job_error}
+
 echo 'Processing...'
 time {command}
 echo 'Done!'
