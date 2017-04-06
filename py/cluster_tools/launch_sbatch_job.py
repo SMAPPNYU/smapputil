@@ -1,7 +1,9 @@
 import os
-import base64
 import argparse
 import subprocess
+
+from random import choice
+from string import digits
 
 SBATCH_TEMPLATE='''
 #!/bin/bash
@@ -22,7 +24,7 @@ echo 'Done!'
 
 def launch_job(command, nodes, ntasks, cpus_per_tasks, job_output, job_error, hours, minutes, seconds, memory, job_name, mail_addr):
     #create a randomized string in base64 with a .sbatch extension
-    tempfilename = base64.b64encode(command, 'ab')[:10]+'.sbatch'
+    tempfilename = ''.join(choice(digits) for i in range(10))+'.sbatch'
     #create/open a file with the write option, store its file handle, write to the file
     tempfile = open(tempfilename, 'w')
     tempfile.write(SBATCH_TEMPLATE.format(command=command, hours=hours))
