@@ -27,7 +27,7 @@ def launch_job(command, nodes, ntasks, cpus_per_task, job_output, job_error, hou
     tempfilename = ''.join(choice(digits) for i in range(10))+'.sbatch'
     #create/open a file with the write option, store its file handle, write to the file
     tempfile = open(tempfilename, 'w')
-    tempfile.write(SBATCH_TEMPLATE.format(command=command, nodes=nodes, ntasks=ntasks, cpus_per_task=cpus_per_task, job_output=job_output, job_error=job_error, hours=hours, minutes=minutes, seconds=seconds, memory=memory, job_name=job_name, mail_addr))
+    tempfile.write(SBATCH_TEMPLATE.format(command=command, nodes=nodes, ntasks=ntasks, cpus_per_task=cpus_per_task, job_output=job_output, job_error=job_error, hours=hours, minutes=minutes, seconds=seconds, memory=memory, job_name=job_name, mail_addr=mail_addr))
     tempfile.close()
 
     #run the script by running qsub with the pbs file we just created
