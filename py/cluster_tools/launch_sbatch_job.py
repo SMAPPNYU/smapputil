@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
     #create an empty list
     command, job_number = launch_job(args.command, args.nodes, args.ntasks, args.cpus_per_task, args.joboutput, args.joberror, args.hours, args.minutes, args.seconds, args.memory, args.job_name, args.mail_addr)
-    print('{jobnumber}: {command} (walltime: {hours})').format(jobnumber=job_number, command=command, hours=args.hours)
+    print('{jobnumber}: {command} (walltime: {hours})'.format(jobnumber=job_number, command=command, hours=args.hours))
 
 '''
 author @yvan
