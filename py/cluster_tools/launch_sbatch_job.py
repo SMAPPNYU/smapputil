@@ -46,14 +46,14 @@ if __name__ == '__main__':
     parser.add_argument('-no', '--nodes', default=1, help='the number of nodes your job will have')
     parser.add_argument('-nt', '--ntasks', default=1, help='the number of tasks, processes, or programs that will run on your node')
     parser.add_argument('-cp', '--cpus-per-task', default=1, help='the number of cpus you want to allocate for each task/process/program')
-    parser.add_argument('-o', '--joboutput', default='${{HOME}}/job_output_%%j.out', help='the output log path you would like to give your job, this is optional')
-    parser.add_argument('-e', '--joberror', default='${{HOME}}/job_output_%%j.err', help='the error log path you would like to give your job, this is optional')
+    parser.add_argument('-o', '--joboutput', default='${HOME}/job_output_%j.out', help='the output log path you would like to give your job, this is optional')
+    parser.add_argument('-e', '--joberror', default='${HOME}/job_output_%j.err', help='the error log path you would like to give your job, this is optional')
     parser.add_argument('-w', '--hours', default='01', help='the number of hours the job will take')
     parser.add_argument('-m', '--minutes', default='00', help='the number of minutes, optional')
     parser.add_argument('-s', '--seconds', default='00', help='the number of seconds to give to your job, optional')
     parser.add_argument('-me', '--memory', default='15GB', help='the amount of memory you need to give to your job, optional')
     parser.add_argument('-j', '--job-name', default='smapp_job', help='the name of your job, optional')
-    parser.add_argument('-ma', '--mail-addr', default='${{USER}}@nyu.edu', help='the mail address to send job reports to, optional')
+    parser.add_argument('-ma', '--mail-addr', default='${USER}@nyu.edu', help='the mail address to send job reports to, optional')
     args = parser.parse_args()
 
     #create an empty list
