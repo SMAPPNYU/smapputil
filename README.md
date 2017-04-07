@@ -1085,8 +1085,10 @@ in the practical exmaple the call to `-c 'python make_sqlite_db.py ...` does not
 
 abstract:
 ```
+# with required options
 python launch_sbatch_job.py -c PARALLEL_COMMAND 
 
+# with additional unrequired options
 python launch_sbatch_job.py -c PARALLEL_COMMAND  -no NUMBER_OF_NODES -nt NUMBER_OF_TASKS -cp CPUS_PER_TASK -o JOB_LOG -e JOB_ERROR_LOG -w JOB_HOURS -m JOB_MINUTES -s JOB_SECONDS -me JOB_MEMORY -j JOB_NAME -ma EMAIL_TO_MESSAGE
 ```
 
@@ -1104,9 +1106,11 @@ python launch_sbatch_job.py -c 'python my_script.py -a arg1 -b arg2 -i my_file.j
 
 abstract:
 ```
-python launch_sbatch_job.py -c PARALLEL_COMMAND 
+# with required options
+python launch_sbatch_job.py -c PARALLEL_COMMAND -i INPUTS_FOR_EACH_JOB -t INPUT_FLAG_FOR_YOUR_SCRIPT
 
-python launch_sbatch_job.py -c PARALLEL_COMMAND  -no NUMBER_OF_NODES -nt NUMBER_OF_TASKS -cp CPUS_PER_TASK -o JOB_LOG -e JOB_ERROR_LOG -w JOB_HOURS -m JOB_MINUTES -s JOB_SECONDS -me JOB_MEMORY -j JOB_NAME -ma EMAIL_TO_MESSAGE
+# with additional unrequired options
+python launch_sbatch_job.py -c PARALLEL_COMMAND -i INPUTS_FOR_EACH_JOB -t INPUT_FLAG_FOR_YOUR_SCRIPT -no NUMBER_OF_NODES -nt NUMBER_OF_TASKS -cp CPUS_PER_TASK -o JOB_LOG -e JOB_ERROR_LOG -w JOB_HOURS -m JOB_MINUTES -s JOB_SECONDS -me JOB_MEMORY -j JOB_NAME -ma EMAIL_TO_MESSAGE
 ```
 
 practical:
@@ -1115,8 +1119,34 @@ practical:
 python launch_parallel_sbatch_jobs.py -i ~/* -c 'ls -lah'
 
 #example with all inputs
-python launch_parallel_sbatch_jobs.py
+python launch_parallel_sbatch_jobs.py -i ~/* -c 'python my_script.py -a arg1 -b arg2' -t 'i' -no 1 -nt 1 -cp 1 -o ~/my_job_log.out -e ~/my_error_log.err -w 50 -m 10 -s 05-me 10GB -j parallel_job_apr7 -ma dtjp67443@nyu.edu
 ```
+
+note: the -t flag tells the parallelizer what the script in -c takes as its input argument, it can be omitted if there is no special flag (as seen above in the caes of the `ls` command which takes inputs without a flag telling it to). 
+
+so for a single job you would do:
+
+```
+python launch_sbatch_job.py -c 'python my_script.py -a arg1 -b arg2 -i my_file.json'
+```
+
+but if you needed to run several of these in parallel you would do:
+
+```
+python launch_parallel_sbatch_jobs.py -c 'python my_script.py -a arg1 -b arg2' -t 'i' -i ~/*
+```
+
+the `-i` from inside the -c in the first command gets pulled out and turns into -i and -t 'i'. if myscript.py instead takes its inputs as `-a` then the command would be written as so the first time for a single job:
+
+```
+python launch_sbatch_job.py -c 'python my_script.py -a arg1 -b arg2 -a my_file.json'
+```
+
+```
+python launch_parallel_sbatch_jobs.py -c 'python my_script.py -a arg1 -b arg2' -t 'a' -i ~/*
+```
+
+note the substiuttion of i with a in two places.
 
 # pbs
 
