@@ -66,5 +66,6 @@ if __name__ == '__main__':
         print('{jobnumber}: {filecommand} (walltime: {hours})').format(jobnumber=job_number, filecommand=file_command, hours=args.hours)
 
 '''
-author @yvan @jonathanronen
+author @yvan
+http://www.arc.ox.ac.uk/content/slurm-job-scheduler
 '''

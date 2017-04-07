@@ -43,6 +43,8 @@ def launch_job(command, nodes, ntasks, cpus_per_task, job_output, job_error, hou
 if __name__ == '__main__':
     #create a parser for arguments, add some arguments, parse arguments stored in argv
     parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--inputs', nargs='+', required=True, help='this is the list of file inputs to go to each parallel job')
+    parser.add_argument('-t', '--script-input', required=True, help='this is the input flag your script in -c takes')
     parser.add_argument('-c', '--command', required=True, help='command to be injected into .pbs file.')
     parser.add_argument('-no', '--nodes', default=1, help='the number of nodes your job will have')
     parser.add_argument('-nt', '--ntasks', default=1, help='the number of tasks, processes, or programs that will run on your node')
@@ -59,13 +61,16 @@ if __name__ == '__main__':
 
     #create an empty list
 
-    for inputs in args.inputs:
-        command, job_number = launch_job(args.command, args.nodes, args.ntasks, args.cpus_per_task, args.joboutput, args.joberror, args.hours, args.minutes, args.seconds, args.memory, args.job_name, args.mail_addr)
-        print('{jobnumber}: {command} (walltime: {hours})'.format(jobnumber=job_number, command=command, hours=args.hours))
+    for single_input in args.inputs:
+        comamnd_with_input = args.command + '-' + args.script_input + ' ' + single_input
+        command, job_number = launch_job(comamnd_with_input, args.nodes, args.ntasks, args.cpus_per_task, args.joboutput, args.joberror, args.hours, args.minutes, args.seconds, args.memory, args.job_name, args.mail_addr)
+        print('{jobnumber}: {command} (walltime: {hours})'.format(jobnumber=job_number, command=comamnd_with_input, hours=args.hours))
 
 '''
 author @yvan
 
 this script takes inputs (many can be omitted and left at defaults) and launches an sbatch
 job on the nyu hpc prince cluster.
+http://www.arc.ox.ac.uk/content/slurm-job-scheduler
+https://slurm.schedmd.com/sbatch.html
 '''

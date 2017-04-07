@@ -66,4 +66,6 @@ author @yvan
 
 this script takes inputs (many can be omitted and left at defaults) and launches an sbatch
 job on the nyu hpc prince cluster.
+http://www.arc.ox.ac.uk/content/slurm-job-scheduler
+https://slurm.schedmd.com/sbatch.html
 '''
