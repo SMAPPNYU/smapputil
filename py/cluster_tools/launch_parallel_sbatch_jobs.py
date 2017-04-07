@@ -62,9 +62,12 @@ if __name__ == '__main__':
     #create an empty list
 
     for single_input in args.inputs:
-        comamnd_with_input = args.command + '-' + args.script_input + ' ' + single_input
-        command, job_number = launch_job(comamnd_with_input, args.nodes, args.ntasks, args.cpus_per_task, args.joboutput, args.joberror, args.hours, args.minutes, args.seconds, args.memory, args.job_name, args.mail_addr)
-        print('{jobnumber}: {command} (walltime: {hours})'.format(jobnumber=job_number, command=comamnd_with_input, hours=args.hours))
+        if args.script_input:
+            comamnd_with_input = args.command + '-' + args.script_input + ' ' + single_input
+        else:
+            comamnd_with_input = args.command + ' ' + single_input
+            command, job_number = launch_job(comamnd_with_input, args.nodes, args.ntasks, args.cpus_per_task, args.joboutput, args.joberror, args.hours, args.minutes, args.seconds, args.memory, args.job_name, args.mail_addr)
+            print('{jobnumber}: {command} (walltime: {hours})'.format(jobnumber=job_number, command=comamnd_with_input, hours=args.hours))
 
 '''
 author @yvan
