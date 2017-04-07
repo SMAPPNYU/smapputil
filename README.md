@@ -1084,7 +1084,7 @@ in the practical exmaple the call to `-c 'python make_sqlite_db.py ...` does not
 ## launch_sbatch_job
 
 abstract:
-```
+```sh
 # with required options
 python launch_sbatch_job.py -c PARALLEL_COMMAND 
 
@@ -1093,7 +1093,7 @@ python launch_sbatch_job.py -c PARALLEL_COMMAND  -no NUMBER_OF_NODES -nt NUMBER_
 ```
 
 practical:
-```
+```sh
 # example with minimal inputs
 python launch_sbatch_job.py -c 'python my_script.py -a arg1 -b arg2 -i my_file.json'
 
@@ -1105,7 +1105,7 @@ python launch_sbatch_job.py -c 'python my_script.py -a arg1 -b arg2 -i my_file.j
 ## launch_parallel_sbatch_jobs
 
 abstract:
-```
+```sh
 # with required options
 python launch_sbatch_job.py -c PARALLEL_COMMAND -i INPUTS_FOR_EACH_JOB -t INPUT_FLAG_FOR_YOUR_SCRIPT
 
@@ -1114,7 +1114,7 @@ python launch_sbatch_job.py -c PARALLEL_COMMAND -i INPUTS_FOR_EACH_JOB -t INPUT_
 ```
 
 practical:
-```
+```sh
 # example with minimal inputs
 python launch_parallel_sbatch_jobs.py -i ~/* -c 'ls -lah'
 
@@ -1126,23 +1126,23 @@ note: the -t flag tells the parallelizer what the script in -c takes as its inpu
 
 so for a single job you would do:
 
-```
+```sh
 python launch_sbatch_job.py -c 'python my_script.py -a arg1 -b arg2 -i my_file.json'
 ```
 
 but if you needed to run several of these in parallel you would do:
 
-```
+```sh
 python launch_parallel_sbatch_jobs.py -c 'python my_script.py -a arg1 -b arg2' -t 'i' -i ~/*
 ```
 
 the `-i` from inside the -c in the first command gets pulled out and turns into -i and -t 'i'. if myscript.py instead takes its inputs as `-a` then the command would be written as so the first time for a single job:
 
-```
+```sh
 python launch_sbatch_job.py -c 'python my_script.py -a arg1 -b arg2 -a my_file.json'
 ```
 
-```
+```sh
 python launch_parallel_sbatch_jobs.py -c 'python my_script.py -a arg1 -b arg2' -t 'a' -i ~/*
 ```
 
