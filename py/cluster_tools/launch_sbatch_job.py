@@ -37,7 +37,7 @@ def launch_job(command, nodes, ntasks, cpus_per_task, job_output, job_error, hou
     #the subprocess module pauses the execution of the script and waits for the output from stdout
     output = subprocess.check_output(sbatch_cmd, shell=True)
     #delete the .pbs file we just made to keep stuff clean.
-    # os.remove(os.path.expanduser(os.path.join('~', tempfilename)))
+    os.remove(os.path.expanduser(os.path.join('~', tempfilename)))
     return command, output.strip()
 
 if __name__ == '__main__':
