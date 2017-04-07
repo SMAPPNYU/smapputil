@@ -17,6 +17,7 @@ SBATCH_TEMPLATE='''#!/bin/bash
 #SBATCH --mail-user={mail_addr}
 #SBATCH --output={job_output}
 #SBATCH --error={job_error}
+#SBATCH --get-user-env
 
 echo 'Processing...'
 time {command}
