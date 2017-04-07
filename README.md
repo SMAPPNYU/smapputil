@@ -35,8 +35,10 @@
     - [check_dump_integrity](#check_dump_integrity)
     - [make_tar](#make_tar)
     - [make_sqlite_db](#make_sqlite_db)
-    - [launch_job](#launch_job)
-    - [launch_parallel_jobs](#launch_parallel_jobs)
+    - [launch_pbs_job](#launch_pbs_job)
+    - [launch_parallel_pbs_jobs](#launch_parallel_pbs_jobs)
+    - [launch_sbatch_job](#launch_sbatch_job)
+    - [launch_parallel_sbatch_jobs](#launch_parallel_sbatch_jobs)
 - [pbs](#pbs)
     - [pbs_merge_dataset_files](#pbs_merge_dataset_files)
 - [sh](#sh)
@@ -1027,16 +1029,16 @@ r-links:
 
 note: user fields are input with dot notation (as they come from json), all input field dots are converted to double underscores `__` in their respective sqlite database columns. this is because using dots `.` is troublesome on sqlite (as its a builtin). so an input field `entities.urls.0.expanded_url` would be `'entities__urls__0__expanded_url` in its sqlite column. double underscore is the only good option to represent one level of depth.
 
-## launch_job
+## launch_pbs_job
 
 abstract:
 ```
-python launch_job.py -c 'python myscript.py -a arg1 -b arg2'
+python launch_pbs_job.py -c 'python myscript.py -a arg1 -b arg2'
 ```
 
 practical:
 ```
-python launch_job.py -c 'python merge_dataset_files.py 
+python launch_pbs_job.py -c 'python merge_dataset_files.py 
 -i vp_debate_2016_1_data__10_04_2016__00_00_00__23_59_59.json.bz2 vp_debate_2016_1_data__10_05_2016__00_00_00__23_59_59.json.bz2 
 -o vp_debate_2016_1_data__merged.json'
 ```
@@ -1052,7 +1054,7 @@ note:
 
 make sure you are using anaconda python, ~/anaconda/bin/python
 
-## launch_parallel_jobs
+## launch_parallel_pbs_jobs
 
 very similar to 'launch_job' the difference is its meant to be used on split up datasets so yo ucan parallelize whatever script you are calling. this is good for when your job is long running and 1 - will last more than 100 hrs (which is the walltime limit on hpc) 2 - is big and you want to finish faster. will start several jobs equivalent to running commands:
 ```
@@ -1064,13 +1066,13 @@ etc
 
 abstract:
 ```
-python launch_parallel_jobs.py -i inputfile_*.json -c 'python myscript.py -a arg1 -b arg2'
+python launch_parallel_pbs_jobs.py -i inputfile_*.json -c 'python myscript.py -a arg1 -b arg2'
 ```
 
 practical:
 ```
 # makes a database for each input file
-python launch_parallel_jobs.py -i vp_debate_2016_1_data__merged.json venezuela_2016_data__merged.json -c 'python make_sqlite_db.py -o /scratch/yournetid/test.db -t json -f 'id_str' 'user.id_str' 'text'
+python launch_parallel_pbs_jobs.py -i vp_debate_2016_1_data__merged.json venezuela_2016_data__merged.json -c 'python make_sqlite_db.py -o /scratch/yournetid/test.db -t json -f 'id_str' 'user.id_str' 'text'
 ```
 
 *starts* one job per input file specified by `-i`
@@ -1079,6 +1081,42 @@ note:
 
 in the practical exmaple the call to `-c 'python make_sqlite_db.py ...` does not contain a -i as it should, this is bceause our -i is already covered by launch_parallel_jobs.py -i (input). this would start several process and craete several separate sqlite db files.
 
+## launch_sbatch_job
+
+abstract:
+```
+python launch_sbatch_job.py -c PARALLEL_COMMAND 
+
+python launch_sbatch_job.py -c PARALLEL_COMMAND  -no NUMBER_OF_NODES -nt NUMBER_OF_TASKS -cp CPUS_PER_TASK -o JOB_LOG -e JOB_ERROR_LOG -w JOB_HOURS -m JOB_MINUTES -s JOB_SECONDS -me JOB_MEMORY -j JOB_NAME -ma EMAIL_TO_MESSAGE
+```
+
+practical:
+```
+# example with minimal inputs
+python launch_sbatch_job.py -c 'python my_script.py -a arg1 -b arg2 -i my_file.json'
+
+#example with all optional inputs, inputs will be set to a default if you do not set them
+#these defaults automatically detect your email and put log files in your home directory ~/
+python launch_sbatch_job.py -c 'python my_script.py -a arg1 -b arg2 -i my_file.json' -no 2 -nt 4 -cp 1 -o ~/logfile.out -e ~/errorfile.err -w 100 -m 00 -s 05 -me 15GB -j my_job_name -ma my_mail_addr
+```
+
+## launch_parallel_sbatch_jobs
+
+abstract:
+```
+python launch_sbatch_job.py -c PARALLEL_COMMAND 
+
+python launch_sbatch_job.py -c PARALLEL_COMMAND  -no NUMBER_OF_NODES -nt NUMBER_OF_TASKS -cp CPUS_PER_TASK -o JOB_LOG -e JOB_ERROR_LOG -w JOB_HOURS -m JOB_MINUTES -s JOB_SECONDS -me JOB_MEMORY -j JOB_NAME -ma EMAIL_TO_MESSAGE
+```
+
+practical:
+```
+# example with minimal inputs
+python launch_parallel_sbatch_jobs.py -i ~/* -c 'ls -lah'
+
+#example with all inputs
+python launch_parallel_sbatch_jobs.py
+```
 
 # pbs
 
