@@ -44,7 +44,7 @@ if __name__ == '__main__':
     #create a parser for arguments, add some arguments, parse arguments stored in argv
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--inputs', nargs='+', required=True, help='this is the list of file inputs to go to each parallel job')
-    parser.add_argument('-t', '--script-input', required=True, help='this is the input flag your script in -c takes')
+    parser.add_argument('-t', '--script-input', help='this is the input flag your script in -c takes')
     parser.add_argument('-c', '--command', required=True, help='command to be injected into .pbs file.')
     parser.add_argument('-no', '--nodes', default=1, help='the number of nodes your job will have')
     parser.add_argument('-nt', '--ntasks', default=1, help='the number of tasks, processes, or programs that will run on your node')
