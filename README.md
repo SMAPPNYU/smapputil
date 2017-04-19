@@ -39,8 +39,11 @@
     - [launch_parallel_pbs_jobs](#launch_parallel_pbs_jobs)
     - [launch_sbatch_job](#launch_sbatch_job)
     - [launch_parallel_sbatch_jobs](#launch_parallel_sbatch_jobs)
+    - [olympus2scratch](#olympus2scratch)
 - [pbs](#pbs)
     - [pbs_merge_dataset_files](#pbs_merge_dataset_files)
+- [nbs](#nbs)
+    - [olympus2scratch](https://github.com/SMAPPNYU/smapputil/blob/master/nbs/olympus2scratch.ipynb)
 - [sh](#sh)
     - [logger](#logger)
     - [term_search](#term_search)
@@ -1147,6 +1150,29 @@ python launch_parallel_sbatch_jobs.py -c 'python my_script.py -a arg1 -b arg2' -
 ```
 
 note the substiuttion of i with a in two places.
+
+## olympus2scratch
+
+moves the specified dataset to your personal scratch space, unzips it, and cleans it
+
+abstract:
+```sh
+python olympus2scratch.py -c COLLECTION_NAME -n NUMBER_OF_CPUS
+```
+
+practical:
+```sh
+# move the data set inside the folder called 'mike_brown' using 1 cpu
+python olympus2scratch.py -c mike_brown -n 1
+```
+
+*output* a copied set of files for the dataset requested
+
+note: you will need to run this inside a job using either sbatch, or our [job script, launch_sbatch_job](#launch_sbatch_job)
+
+note: do not try to use more CPUs than your job has allocated
+
+note cleaning scipt used is [smappdragon's tweet cleaner](https://github.com/SMAPPNYU/smappdragon#tweet_cleaner)
 
 # pbs
 
