@@ -6,29 +6,6 @@
 #SBATCH --mem=16GB
 #SBATCH --time=12:00:00
 
-:'This is a variation of the instructions offered by HPC 
-see: https://wikis.nyu.edu/display/NYUHPC/Running+Jupyter+on+Prince
-located here: /share/apps/examples/jupyter/run-jupyter.sbatch
-
-Be advised!
-Make sure SSH-authentication is enabled on Prince see: 
-https://wikis.nyu.edu/display/NYUHPC/Configuring+SSH+Key-Based+Authentication
-
-This implementation also assumes you use your own distro of Python (and Jupyter) via Anaconda.
-To download Anaconda (https://www.continuum.io/downloads), 
-you can the run the following in your Prince home:
-```
-wget https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
-bash Anaconda3-4.3.0-Linux-x86_64.sh
-```
-
-Troubleshooting:
-- If a session quits, you may need to increase the allocated memory (--mem).
-- If you parallelize tasks you will need to increase the --cpus-per-task.
-
-Last updated: 2017-04-14
-'
-
 module purge
 
 jupyter_dir=/home/$USER/
@@ -77,3 +54,30 @@ if [ "$SLURM_JOBTMP" != "" ]; then
 fi
 
 /home/$USER/anaconda3/bin/jupyter notebook --no-browser --port $port
+
+
+
+:'This is a variation of the instructions offered by HPC 
+see: https://wikis.nyu.edu/display/NYUHPC/Running+Jupyter+on+Prince
+located here: /share/apps/examples/jupyter/run-jupyter.sbatch
+
+Be advised!
+Make sure SSH-authentication is enabled on Prince see: 
+https://wikis.nyu.edu/display/NYUHPC/Configuring+SSH+Key-Based+Authentication
+
+This implementation also assumes you use your own distro of Python (and Jupyter) via Anaconda.
+To download Anaconda (https://www.continuum.io/downloads), 
+you can the run the following in your Prince home:
+```
+wget https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
+bash Anaconda3-4.3.0-Linux-x86_64.sh
+```
+
+Troubleshooting:
+- If a session quits, you may need to increase the allocated memory (--mem).
+- If you parallelize tasks you will need to increase the --cpus-per-task.
+
+Last updated: 2017-04-18
+
+Author @yinleon
+'

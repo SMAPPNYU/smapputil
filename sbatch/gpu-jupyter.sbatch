@@ -7,29 +7,6 @@
 #SBATCH --time=12:00:00
 #SBATCH --gres=gpu:1
 
-:'
-================================
-Only use this is you NEED A GPU!
-================================
-
-If you are using Theano, please alter/create the .theanorc file as follows:
-```
-[global]
-device = gpu
-floatx = float32
-
-[lib]
-cnmem=.5
-```
-
-If you are using Keras, there are currently buffering issues when fitting a model. 
-The current solution is to set the verbose argument for model.fit() to 2
-
-Also note Keras default backend is Tensorflow.
-You will need to change ~/.keras/keras.json
-
-Last updated: 2017-04-17
-'
 module purge
 module load cuda
 module load cudnn
@@ -80,3 +57,54 @@ if [ "$SLURM_JOBTMP" != "" ]; then
 fi
 
 /home/$USER/anaconda3/bin/jupyter notebook --no-browser --port $port
+
+
+
+
+:'
+================================
+Only use this is you NEED A GPU!
+================================
+
+If you are using Theano, please alter/create the .theanorc file as follows:
+```
+[global]
+device = gpu
+floatx = float32
+
+[lib]
+cnmem=.5
+```
+If you are using Keras, there are currently buffering issues when fitting a model. 
+The current solution is to set the verbose argument for model.fit() to 2
+
+Also note Keras default backend is Tensorflow.
+You will need to change ~/.keras/keras.json
+
+==================================
+
+This is a variation of the instructions offered by HPC 
+see: https://wikis.nyu.edu/display/NYUHPC/Running+Jupyter+on+Prince
+located here: /share/apps/examples/jupyter/run-jupyter.sbatch
+
+Be advised!
+Make sure SSH-authentication is enabled on Prince see: 
+https://wikis.nyu.edu/display/NYUHPC/Configuring+SSH+Key-Based+Authentication
+
+This implementation also assumes you use your own distro of Python (and Jupyter) via Anaconda.
+To download Anaconda (https://www.continuum.io/downloads), 
+you can the run the following in your Prince home:
+```
+wget https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
+bash Anaconda3-4.3.0-Linux-x86_64.sh
+```
+
+Troubleshooting:
+- If a session quits, you may need to increase the allocated memory (--mem).
+- If you parallelize tasks you will need to increase the --gres.
+
+
+Last updated: 2017-04-18
+
+Author @yinleon
+'
