@@ -1153,7 +1153,7 @@ note the substiuttion of i with a in two places.
 
 ## olympus2scratch
 
-moves the specified dataset to your personal scratch space, unzips it, and cleans it
+moves the specified dataset to your personal scratch space, unzips it, and cleans it, there is also a [notebook version](https://github.com/SMAPPNYU/smapputil/blob/master/nbs/olympus2scratch.ipynb) that does the same thing.
 
 abstract:
 ```sh
@@ -1172,7 +1172,7 @@ note: you will need to run this inside a job using either sbatch, or our [job sc
 
 note: do not try to use more CPUs than your job has allocated
 
-note cleaning scipt used is [smappdragon's tweet cleaner](https://github.com/SMAPPNYU/smappdragon#tweet_cleaner)
+note: cleaning scipt used is [smappdragon's tweet cleaner](https://github.com/SMAPPNYU/smappdragon#tweet_cleaner)
 
 # pbs
 
