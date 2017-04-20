@@ -13,7 +13,7 @@ parser = optparse.OptionParser()
 parser.add_option('-c', '--collection',
     action="store", dest="collection_name",
     help="What olympus collection do you want?", default="")
-parser.add_option('-n', '--n_jobs',
+parser.add_option('-n', '--n_jobs', type=int,
     action="store", dest="n_jobs",
     help="How many cores do you want", default=4)
 options, args = parser.parse_args()
@@ -83,6 +83,8 @@ def copy_unzip_clean(f, collection_name):
         return
     copyfile(f, f_c)
     bunzip(f_c)
+    while os.path.isfile(f_c):
+        sleep(1)
     clean_file(f_u)
 
 def main():
@@ -98,7 +100,7 @@ def main():
         This is the parallelized version of the following:
 
         for f in files:
-            copy_unzip(f)
+            copy_unzip_clean(f, collection_local)
 
         Pool(8), means we're using 8 cpus!
 
