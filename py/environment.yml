@@ -18,3 +18,4 @@ dependencies:
     - envelopes==0.4
     - smappPy==0.1.31
     - elasticsearch==2.3.0
+    - smappdragon==0.0.43
