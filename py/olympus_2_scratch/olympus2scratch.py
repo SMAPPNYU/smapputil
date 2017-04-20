@@ -34,7 +34,7 @@ if not os.path.exists(olympus_tweets):
     print("the collection: {} does not exist".format(olympus_tweets))
 
 if not os.path.exists(olympus_local):
-    os.makedirs(local_tweets)
+    os.makedirs(olympus_local)
 if not os.path.exists(collection_local):
     os.makedirs(collection_local)
     
