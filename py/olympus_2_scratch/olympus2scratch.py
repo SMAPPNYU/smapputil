@@ -52,7 +52,7 @@ def clean_file(f):
     JSON blobs that are corrupt will be written to a new file (dirty)
     '''
     clean = f + '.clean_temp'
-    dirty = f + '.dirty_temp'
+    dirty = f + '.dirty'
 
     clean_tweets(f, clean, dirty)
     
@@ -129,6 +129,9 @@ Yields the Women's March collection using 8 CPUs.
 
 This script originates from a Jupyter Notebook:
 https://github.com/SMAPPNYU/smapputil/blob/master/nbs/olympus2scratch.ipynb
+
+And can be implented in SLURM using this test script:
+https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/olympus2scratch_test.sbatch
 
 There you will find better documentation!
 
