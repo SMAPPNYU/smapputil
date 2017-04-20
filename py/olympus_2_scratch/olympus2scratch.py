@@ -13,7 +13,7 @@ parser = optparse.OptionParser()
 parser.add_option('-c', '--collection',
     action="store", dest="collection_name",
     help="What olympus collection do you want?", default="")
-parser.add_option('-n', '--n_jobs',
+parser.add_option('-n', '--n_jobs', type=int,
     action="store", dest="n_jobs",
     help="How many cores do you want", default=4)
 options, args = parser.parse_args()
@@ -34,7 +34,7 @@ if not os.path.exists(olympus_tweets):
     print("the collection: {} does not exist".format(olympus_tweets))
 
 if not os.path.exists(olympus_local):
-    os.makedirs(local_tweets)
+    os.makedirs(olympus_local)
 if not os.path.exists(collection_local):
     os.makedirs(collection_local)
     
