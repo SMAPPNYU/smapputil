@@ -46,6 +46,7 @@
     - [olympus2scratch](https://github.com/SMAPPNYU/smapputil/blob/master/nbs/olympus2scratch.ipynb)
 - [sh](#sh)
     - [logger](#logger)
+    - [interactive_prince](#interactive_prince)
     - [term_search](#term_search)
 
 # environments
@@ -1258,6 +1259,19 @@ and then use it like so:
 ```bash
 log "blah"
 log "blah $c"
+```
+
+## interactive_prince
+
+starts an interactive session on prince
+
+```bash
+bash sh/interactive_prince.sh CPUS HOURS RAM
+# starts an interactive session with 1 cpu, for 1 hour, and 1 GB RAM
+bash sh/interactive_prince.sh 1 1 1
+
+# starts an interactive session with 1 cpu, for 7 hours, and 10 GB RAM
+bash sh/interactive_prince.sh 1 7 10
 ```
 
 ## [term_search](https://github.com/SMAPPNYU/smapputil/blob/master/sh/term_search.sh)
