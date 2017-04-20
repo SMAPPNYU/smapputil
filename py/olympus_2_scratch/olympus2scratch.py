@@ -83,6 +83,8 @@ def copy_unzip_clean(f, collection_name):
         return
     copyfile(f, f_c)
     bunzip(f_c)
+    while os.path.isfile(f_c):
+        sleep(1)
     clean_file(f_u)
 
 def main():
@@ -98,7 +100,7 @@ def main():
         This is the parallelized version of the following:
 
         for f in files:
-            copy_unzip(f)
+            copy_unzip_clean(f, collection_local)
 
         Pool(8), means we're using 8 cpus!
 
