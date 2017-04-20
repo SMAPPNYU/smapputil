@@ -6,17 +6,19 @@
 #SBATCH --mem=8GB
 #SBATCH --time=6:00:00
 
-/home/$USER/anaconda3/bin/python /home/$USER/smapputl/py/olympus_2_scratch/olympus2scratch.py -c us_geobox -n 4
+/home/$USER/anaconda3/bin/python /home/$USER/smapputil/py/olympus_2_scratch/olympus2scratch.py -c us_geobox -n 4
 
 :'
 This is an example of a slurm/sbatch script:
 https://wikis.nyu.edu/display/NYUHPC/Slurm+Tutorial
 
-Specifically, it's an sbatch implementation of olympus2scratch.py
-see source:
+Specifically, it's an sbatch implementation of olympus2scratch.py 
+for the /scratch/olympus/us_geobox collection using 4 8GB memory CPUs.
+
+See source for olympus2scratch:
 https://github.com/SMAPPNYU/smapputil/blob/master/py/olympus_2_scratch/olympus2scratch.py
 
-and explanatory jupyter notebook here:
+...and explanatory Jupyter notebook here:
 http://nbviewer.jupyter.org/github/SMAPPNYU/smapputil/blob/master/nbs/olympus2scratch.ipynb
 
 The script will copy, uncompress, and clean all tweets from the us_geobox

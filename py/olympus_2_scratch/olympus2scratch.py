@@ -52,7 +52,7 @@ def clean_file(f):
     JSON blobs that are corrupt will be written to a new file (dirty)
     '''
     clean = f + '.clean_temp'
-    dirty = f + '.dirty_temp'
+    dirty = f + '.dirty'
 
     clean_tweets(f, clean, dirty)
     
