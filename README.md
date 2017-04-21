@@ -1317,7 +1317,7 @@ an sbatch script that runs a jupyter notebook on hpc, using a gpu to compute on
 
 ## olympus2scratch_ex
 
-an exmaple sbatch script using olympus2 scratch to move files between /scratch/olympus and your personal scratch.
+an example sbatch script using [olympus2scratch](https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/olympus2scratch_ex.sbatch) to move files between /scratch/olympus and your personal scratch.
 
 # sh 
 
