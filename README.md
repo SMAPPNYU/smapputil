@@ -1248,11 +1248,11 @@ an sbatch script that runs a jupyter notebook on hpc, using a cpu to compute on
 sbatch cpu-jupyter.sbatch
 ```
 
-step 2:
+**step 2:**
 
 then get your connection url and save it somewhere (in a note or text file). you can find this connection url in the slurm-PROCESSID.out (where process id is the id returned when you submitted the job on the command line) file in the working directory where you were when you ran the sbatch command above. this url will contain the connection port you will need for the next step. the URL is something: http://localhost:PORT/?token=XXXXXXXX
 
-step 3: 
+**step 3:**
 
 create a tunnel to map the notebook on hpc to your local computer's port. in a local (non-hpc) terminal window you will want to follow one of these paths:
 
@@ -1273,7 +1273,7 @@ ssh -L PORT:localhost:PORT NET_ID@prince
 
 Keep the iTerm windows from this step open. 
 
-step 4:
+**step 4:**
 
 Now open browser you should be able to connect to jupyter notebook running remotely on prince compute node with above url you procured above of the format: 
 
