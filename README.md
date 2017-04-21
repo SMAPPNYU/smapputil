@@ -1249,6 +1249,7 @@ sbatch cpu-jupyter.sbatch
 ```
 
 step 2:
+
 then get your connection url and save it somewhere (in a note or text file). you can find this connection url in the slurm-PROCESSID.out (where process id is the id returned when you submitted the job on the command line) file in the working directory where you were when you ran the sbatch command above. this url will contain the connection port you will need for the next step. the URL is something: http://localhost:PORT/?token=XXXXXXXX
 
 step 3: 
