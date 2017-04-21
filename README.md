@@ -1317,6 +1317,11 @@ an sbatch script that runs a jupyter notebook on hpc, using a gpu to compute on
 
 an example sbatch script using [olympus2scratch](https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/olympus2scratch_ex.sbatch) to move files between /scratch/olympus and your personal scratch.
 
+abstract/practical:
+```
+sbatch olympus2scratch_ex.sbatch
+```
+
 # sh 
 
 bash utilities / scripts that do useful thngs. Built in bash 3.2.X. You may notice many of the scripts are clones of scripts in [shellscripts repo](https://github.com/SMAPPNYU/shellscripts). This is temporary. Their final reting place will be here. The difference will be modularized testing, modularized scripts, each script will get its own tests (instead of the single file), the tests will be unit tests and as little as porrible system state tests, etc. As soon as the move is done and we're sure these scripts work we will phase out shellscripts repo (it was originally an experiment and we're going to wrangle it under control now before it becomes a legacy).
