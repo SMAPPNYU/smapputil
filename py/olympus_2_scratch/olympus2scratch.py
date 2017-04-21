@@ -27,7 +27,7 @@ if not collection_name:
 netid = os.environ.get('USER')
 olympus_tweets = '/scratch/olympus/{}/data'.format(collection_name)
 olympus_local = '/scratch/{}/olympus_local/'.format(netid)
-collection_local = olympus_local + collection_name
+collection_local = os.path.join(olympus_local, collection_name, 'json')
 print("files will be stored here: {}".format(collection_local))
 
 if not os.path.exists(olympus_tweets):
@@ -131,7 +131,7 @@ This script originates from a Jupyter Notebook:
 https://github.com/SMAPPNYU/smapputil/blob/master/nbs/olympus2scratch.ipynb
 
 And can be implented in SLURM using this test script:
-https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/olympus2scratch_test.sbatch
+https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/olympus2scratch_ex.sbatch
 
 There you will find better documentation!
 
