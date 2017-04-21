@@ -1243,7 +1243,7 @@ cat /path/to/data_folder/*.json > /path/to/merged_file.json
 
 an sbatch script that runs a jupyter notebook on hpc, using a cpu to compute on
 
-step 1 - run:
+**step 1 - run:
 ```
 sbatch cpu-jupyter.sbatch
 ```
