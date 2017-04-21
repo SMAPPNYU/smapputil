@@ -1313,6 +1313,13 @@ Troubleshooting:
 
 an sbatch script that runs a jupyter notebook on hpc, using a gpu to compute on
 
+absract/practical:
+```
+sbatch gpu-jupyter.sbatch
+```
+
+note: everything from the [cpu-jupyter](#cpu-jupyter) guide applies
+
 ## olympus2scratch_ex
 
 an example sbatch script using [olympus2scratch](https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/olympus2scratch_ex.sbatch) to move files between /scratch/olympus and your personal scratch.
