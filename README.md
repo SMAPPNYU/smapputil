@@ -1237,6 +1237,88 @@ bzip2 -d /path/to/data_folder/*.bz2
 cat /path/to/data_folder/*.json > /path/to/merged_file.json
 ```
 
+# sbatch 
+
+## cpu-jupyter
+
+an sbatch script that runs a jupyter notebook on hpc, using a cpu to compute on
+
+step 1 - run:
+```
+sbatch cpu-jupyter.sbatch
+```
+
+step 2:
+then get your connection url and save it somewhere (in a note or text file). you can find this connection url in the slurm-PROCESSID.out (where process id is the id returned when you submitted the job on the command line) file in the working directory where you were when you ran the sbatch command above. this url will contain the connection port you will need for the next step. the URL is something: http://localhost:PORT/?token=XXXXXXXX
+
+step 3: create a tunnel to map the notebook on hpc to your local computer's port. in a local (non-hpc) terminal window you will want to follow one of these paths:
+
+If you are working in NYU campus, please open an iTerm window, run command
+
+ssh -L PORT:localhost:PORT NET_ID@prince.hpc.nyu.edu
+
+where `PORT` is the port you found in the connection url (in output file) and `NET_ID` is your nyu netid.
+
+If you are working off campus, you should already have ssh tunneling setup through HPC bastion host, 
+that you can directly login to prince with command
+
+ssh $USER@prince
+
+Please open an iTerm window, run command
+
+ssh -L PORT:localhost:PORT NET_ID@prince
+
+Keep the iTerm windows from this step open. 
+
+step 4:
+
+Now open browser you should be able to connect to jupyter notebook running remotely on prince compute node with above url you procured above of the format: 
+
+http://localhost:PORT/?token=XXXXXXXX
+
+notes:
+
+This is a variation of the instructions offered by HPC 
+see: https://wikis.nyu.edu/display/NYUHPC/Running+Jupyter+on+Prince
+located here: /share/apps/examples/jupyter/run-jupyter.sbatch
+
+Make sure SSH-authentication is enabled on Prince see: 
+https://wikis.nyu.edu/display/NYUHPC/Configuring+SSH+Key-Based+Authentication
+
+This implementation also assumes you use your own distro of Python (and Jupyter) via Anaconda.
+To download Anaconda (https://www.continuum.io/downloads), 
+you can the run the following in your Prince home:
+```
+wget https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
+bash Anaconda3-4.3.0-Linux-x86_64.sh
+```
+
+if working off campus setup an hpctunnel (before the prince tunnel to the notebook), your ~/.ssh/config file should have the lines like so:
+
+Host hpctunnel
+   HostName hpc.nyu.edu
+   ForwardX11 yes
+   LocalForward 80237 prince.hpc.nyu.edu:22
+   User YOUR_NET_ID
+
+Host prince
+  HostName localhost
+  Port 8027
+  ForwardX11 yes
+  User YOUR_NET_ID
+
+Troubleshooting:
+- If a session quits, you may need to increase the allocated memory (--mem).
+- If you parallelize tasks you will need to increase the --cpus-per-task.
+
+## gpu-jupyter
+
+an sbatch script that runs a jupyter notebook on hpc, using a gpu to compute on
+
+## olympus2scratch_ex
+
+an exmaple sbatch script using olympus2 scratch to move files between /scratch/olympus and your personal scratch.
+
 # sh 
 
 bash utilities / scripts that do useful thngs. Built in bash 3.2.X. You may notice many of the scripts are clones of scripts in [shellscripts repo](https://github.com/SMAPPNYU/shellscripts). This is temporary. Their final reting place will be here. The difference will be modularized testing, modularized scripts, each script will get its own tests (instead of the single file), the tests will be unit tests and as little as porrible system state tests, etc. As soon as the move is done and we're sure these scripts work we will phase out shellscripts repo (it was originally an experiment and we're going to wrangle it under control now before it becomes a legacy).
