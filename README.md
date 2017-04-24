@@ -1156,7 +1156,7 @@ python launch_parallel_sbatch_jobs.py -c 'python my_script.py -a arg1 -b arg2' -
 
 note the substiuttion of i with a in two places.
 
-## olympus2scratch
+## [olympus2scratch](https://github.com/SMAPPNYU/smapputil/blob/master/py/olympus_2_scratch/olympus2scratch.py)
 
 moves the specified dataset to your personal scratch space, unzips it, and cleans it, there is also a [notebook version](https://github.com/SMAPPNYU/smapputil/blob/master/nbs/olympus2scratch.ipynb) that does the same thing.
 
@@ -1320,13 +1320,27 @@ sbatch gpu-jupyter.sbatch
 
 note: everything from the [cpu-jupyter](#cpu-jupyter) guide applies
 
-## olympus2scratch_ex
+## [olympus2scratch_ex](https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/olympus2scratch_ex.sbatch))
 
-an example sbatch script using [olympus2scratch](https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/olympus2scratch_ex.sbatch) to move files between /scratch/olympus and your personal scratch.
+An example [slurm/sbatch](https://wikis.nyu.edu/display/NYUHPC/Slurm+Tutorial) script using [olympus2scratch](https://github.com/SMAPPNYU/smapputil/blob/master/py/olympus_2_scratch/olympus2scratch.py) to copy, decompress, and clean files from `/scratch/olympus/` to your personal scratch space `/scratch/$USER/`.
 
 abstract/practical:
 ```
 sbatch olympus2scratch_ex.sbatch
+```
+
+Note:<br>
+The sbatch script assumes you're using conda distributed Python.
+You can get this using the following command in your HPC Prince home
+```
+wget https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh
+bash Anaconda3-4.3.0-Linux-x86_64.sh
+```
+
+You're also going to need smappdragon, for the tweet cleaner
+https://github.com/SMAPPNYU/smappdragon
+```
+pip install smappdragon
 ```
 
 # sh 

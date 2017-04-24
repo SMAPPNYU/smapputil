@@ -135,5 +135,6 @@ https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/olympus2scratch_ex.sbat
 
 There you will find better documentation!
 
-author @yinleon
+Last updated 2017-04-21
+Author @yinleon
 '''
