@@ -55,7 +55,11 @@ fi
 
 /home/$USER/anaconda3/bin/jupyter notebook --no-browser --port $port
 
+
 :'
+Read the docs for this script here:
+https://github.com/SMAPPNYU/smapputil#cpu-jupyter
+
 Last updated: 2017-04-21
 
 Author @yinleon @yvan
