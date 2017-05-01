@@ -4,13 +4,13 @@
 #SBATCH --mem=1GB
 #SBATCH --time=1:00:00
 
-# make is so that all new files created in 
-# olympus in the future have the smapp group
-chmod g+s /scratch/olympus
-
 # set all files already in olympus
 # to have the smapp group
 chown -R $USER:smapp /scratch/olympus
+
+# make is so that all new files created in 
+# olympus in the future have the smapp group
+chmod g+s /scratch/olympus
 
 # update the permissions to rwxr-x--- for all files and folders
 # inside olympus recursively, this is rwx for user and r-x for
