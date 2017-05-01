@@ -1346,7 +1346,7 @@ pip install smappdragon
 
 ## [set_olympus_permissions](https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/set_olympus_permissions.sbatch)
 
-this script sets the permissions on olympus and just makes sure they stay the way we want them.
+this script sets the permissions on olympus and makes sure they stay the way we want them.
 
 abstract/practical:
 ```
