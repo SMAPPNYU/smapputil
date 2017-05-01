@@ -10,7 +10,7 @@ chmod g+s /scratch/olympus
 
 # set all files already in olympus
 # to have the smapp group
-chown -R $USER:smapp * .[^.]*
+chown -R $USER:smapp /scratch/olympus
 
 # update the permissions to rwxr-x--- for all files and folders
 # inside olympus recursively, this is rwx for user and r-x for
