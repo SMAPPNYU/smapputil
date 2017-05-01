@@ -46,6 +46,7 @@
     - [cpu-jupyter](#cpu-jupyter)
     - [gpu-jupyter](#gpu-jupyter)
     - [olympus2scratch_ex](#olympus2scratch_ex)
+    - [set_olympus_permissions](#set_olympus_permissions)
 - [nbs](#nbs)
     - [olympus2scratch](https://github.com/SMAPPNYU/smapputil/blob/master/nbs/olympus2scratch.ipynb)
 - [sh](#sh)
@@ -1320,7 +1321,7 @@ sbatch gpu-jupyter.sbatch
 
 note: everything from the [cpu-jupyter](#cpu-jupyter) guide applies
 
-## [olympus2scratch_ex](https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/olympus2scratch_ex.sbatch))
+## [olympus2scratch_ex](https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/olympus2scratch_ex.sbatch)
 
 An example [slurm/sbatch](https://wikis.nyu.edu/display/NYUHPC/Slurm+Tutorial) script using [olympus2scratch](https://github.com/SMAPPNYU/smapputil/blob/master/py/olympus_2_scratch/olympus2scratch.py) to copy, decompress, and clean files from `/scratch/olympus/` to your personal scratch space `/scratch/$USER/`.
 
@@ -1341,6 +1342,13 @@ You're also going to need smappdragon, for the tweet cleaner
 https://github.com/SMAPPNYU/smappdragon
 ```
 pip install smappdragon
+```
+
+## [set_olympus_permissions](https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/set_olympus_permissions.sbatch)
+
+abstract/practical:
+```
+sbatch set_olympus_permissions.sbatch
 ```
 
 # sh 
