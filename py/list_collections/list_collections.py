@@ -35,7 +35,7 @@ def build_collection_list(crontab_entries):
         if ' -n ' in cron_entry:
             split_cron_entry = cron_entry.split(' ')
             known_args, unknown_args = cron_parser.parse_known_args(split_cron_entry)
-            collection_list.append(known_args.n)
+            collection_list.append(known_args.n[1:-1])
     return collection_list
 
 def list_collections(collector_machine, username):
@@ -79,6 +79,11 @@ if __name__ == '__main__':
         logger.info('could not load file %s aint csv or json: ', args.input)
      
     f = open(args.output, 'w')
+    print('servers available (with less than 9 collections:')
+    for k,v in collections_by_server.items():
+        if len(v) < 9:
+            print(k)
+    print('also check out file {}'.format(args.output))
     f.write(json.dumps(collections_by_server, indent=4))
     f.close()
     
