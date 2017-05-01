@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #SBATCH --job-name=set_olympus_permissions
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
