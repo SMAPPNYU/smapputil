@@ -20,5 +20,4 @@ find /scratch/olympus -type f -exec chmod -R  750 {} \;
 
 # author @yvan 01-05-2017
 # this script sets the permissions on olympus and just makes sure they stay the way we want them
-# https://superuser.com/questions/102253/how-to-make-files-created-in-a-directory-owned-by-directory-group
 # find docs at https://github.com/SMAPPNYU/smapputil#set_olympus_permissions
