@@ -1,0 +1,2 @@
+smappdragon==0.0.43
+pysmap==0.0.32
