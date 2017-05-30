@@ -1323,7 +1323,7 @@ note: everything from the [cpu-jupyter](#cpu-jupyter) guide applies
 
 ## [olympus2scratch_ex](https://github.com/SMAPPNYU/smapputil/blob/master/sbatch/olympus2scratch_ex.sbatch)
 
-An example [slurm/sbatch](https://wikis.nyu.edu/display/NYUHPC/Slurm+Tutorial) script using [olympus2scratch](https://github.com/SMAPPNYU/smapputil/blob/master/py/olympus_2_scratch/olympus2scratch.py) to copy, decompress, and clean files from `/scratch/olympus/` to your personal scratch space `/scratch/$USER/`.
+An example [slurm/sbatch](https://wikis.nyu.edu/display/NYUHPC/Slurm+Tutorial) script using [olympus2scratch.py](#olympus2scratch) to copy, decompress, and clean files from `/scratch/olympus/` to your personal scratch space `/scratch/$USER/`.
 
 abstract/practical:
 ```
