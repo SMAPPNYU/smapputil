@@ -16,6 +16,7 @@
     - [csv_to_json](https://github.com/SMAPPNYU/smapputil#csv_to_json)
     - [date_filter_bson](https://github.com/SMAPPNYU/smapputil#date_filter_bson)
     - [list_collections](https://github.com/SMAPPNYU/smapputil#list_collections)
+    - [backup_crons](#backup_crons)
     - [query_user_tweets](#query_user_tweets)
     - [query_search_tweets](#query_search_tweets)
     - [query_user_objects](#query_user_objects)
@@ -384,6 +385,32 @@ note: logging is only used for errors and paramiko automatically taps into our l
 note: make sure you have `~/pylogs` directory before running this script.
 
 test: `python test/test_list_collections.py SERVER_IP_OR_NAME SERVER_USERNAME`
+
+## [backup_crons]()
+
+a way to backup the crons on all collector servers, very similar to list_collections
+
+abstract/practical:
+```
+
+```
+
+*inputs* a csv or json file that is a list of ip addresses or severnames
+
+csv should look like so:
+```txt
+sever1,user1
+server2,user2
+```
+json should look like:
+```json
+{
+    'server_one': 'user_one',
+    'server_two': 'user_two'
+}
+```
+
+*returns* a json file with servernames as keys and crontabs as the value
 
 ## [query_user_tweets](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_tweets.py)
 
