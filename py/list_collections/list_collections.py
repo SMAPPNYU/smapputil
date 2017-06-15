@@ -7,13 +7,13 @@ import argparse
 
 from os.path import expanduser
 
-def paramiko_list_crontab(collector_machine, username):
+def paramiko_list_crontab(collector_machine, username, key):
     logger = logging.getLogger(__name__)
     # login to paramiko and list the crontab
     ssh = paramiko.SSHClient()
     ssh.load_system_host_keys()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(collector_machine, username=username)
+    ssh.connect(collector_machine, username=username, key_filename=key)
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('crontab -l')
     # log any paramiko incident
     if ssh_stderr.read():
@@ -38,9 +38,9 @@ def build_collection_list(crontab_entries):
             collection_list.append(known_args.n[1:-1])
     return collection_list
 
-def list_collections(collector_machine, username):
+def list_collections(collector_machine, username, key):
     # get the crontab
-    paramiko_cron_output= paramiko_list_crontab(collector_machine, username)
+    paramiko_cron_output= paramiko_list_crontab(collector_machine, username, key)
     # read the crontab from stdout
     crontab = paramiko_cron_output.read()
     # parse the crontab for the names of the collections
@@ -53,6 +53,7 @@ def parse_args(args):
     parser.add_argument('-i', '--input', dest='input', required=True, help='Path to a file listing the servers you want to count.')
     parser.add_argument('-o', '--output', dest='output', required=True, help='Path to output file with servers and their collections.')
     parser.add_argument('-l', '--log', dest='log', default=expanduser('~/pylogs/list_collections.log'), help='This is the path to where your output log should be.')
+    parser.add_argument('-k', '--key', dest='key', default=None, help='optionally specify your key, this may be necessary on some systems with non default names')
     return parser.parse_args(args)
 
 if __name__ == '__main__':
@@ -67,13 +68,13 @@ if __name__ == '__main__':
         with open(expanduser(args.input), 'r') as data:
             line_dict = json.load(data)
             for server, user in line_dict.items():
-                collections_by_server[server] = list_collections(server, user)
+                collections_by_server[server] = list_collections(server, user, args.key)
 
     elif args.input.endswith('.csv'):
         with open(expanduser(args.input), 'r') as data:
             reader = csv.reader(data)
             for row in reader:
-                collections_by_server[row[0]] = list_collections(row[0], row[1])
+                collections_by_server[row[0]] = list_collections(row[0], row[1], args.key)
 
     else:
         logger.info('could not load file %s aint csv or json: ', args.input)
