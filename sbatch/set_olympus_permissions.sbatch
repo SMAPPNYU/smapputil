@@ -1,10 +1,16 @@
 #!/bin/bash
 
-#SBATCH --job-name=set_olympus_permissions
 #SBATCH --nodes=1
+#SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=1GB
-#SBATCH --time=1:00:00
+#SBATCH --time=100:00:00
+#SBATCH --mem=5GB
+#SBATCH --job-name=set_olympus_permissions
+#SBATCH --mail-type=END
+#SBATCH --mail-user=yns207@nyu.edu
+#SBATCH --output=/scratch/yns207/job_logs/job_output_%j.out
+#SBATCH --error=/scratch/yns207/job_logs/job_output_%j.err
+#SBATCH --get-user-env
 
 # set all files already in olympus
 # to have the smapp group
