@@ -8,8 +8,8 @@
 #SBATCH --job-name=set_olympus_permissions
 #SBATCH --mail-type=END
 #SBATCH --mail-user=yns207@nyu.edu
-#SBATCH --output=/scratch/yns207/job_logs/job_output_%j.out
-#SBATCH --error=/scratch/yns207/job_logs/job_output_%j.err
+#SBATCH --output=/scratch/yns207/job_logs/set_olympus_permissions_%j.out
+#SBATCH --error=/scratch/yns207/job_logs/set_olympus_permissions_%j.err
 #SBATCH --get-user-env
 
 # set all files already in olympus
