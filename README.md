@@ -355,12 +355,12 @@ a way to list the running collections on a machine by logging in and listing tha
 
 abrstact:
 ```python
-/path/to/scripts/env/bin/python /path/to/list_collections.py -i ~/serverlist.csv -o ~/pylogs/collections.json 
+/path/to/scripts/env/bin/python /path/to/list_collections.py -i ~/serverlist.csv -o ~/pylogs/collections.json -k optional_path_to_your_private_key 
 ```
 
 practical:
 ```python
-python ~/smapputilities/py/list_collections/list_collections.py -i ~/serverlist.json -o ~/pylogs/collections.json 
+python ~/smapputilities/py/list_collections/list_collections.py -i ~/serverlist.json -o ~/pylogs/collections.json -k ~/.ssh/id_rsa
 ```
 
 *inputs* a csv or json file that is a list of ip addresses or severnames
@@ -384,6 +384,8 @@ note: logging is only used for errors and paramiko automatically taps into our l
 
 note: make sure you have `~/pylogs` directory before running this script.
 
+note i did not add the keys to the files because iw anted to keep the file format simple, support for `-k` was mostly added to make running this script on hpc easier
+
 test: `python test/test_list_collections.py SERVER_IP_OR_NAME SERVER_USERNAME`
 
 ## [backup_crons]()
@@ -392,7 +394,7 @@ a way to backup the crons on all collector servers, very similar to list_collect
 
 abstract/practical:
 ```
-
+python backup_crons.py -i ~/smappconfig/list_collections.json -o ~/pylogs/list_cron_backup.json -k ~/.ssh/id_rsa
 ```
 
 *inputs* a csv or json file that is a list of ip addresses or severnames
@@ -411,6 +413,8 @@ json should look like:
 ```
 
 *returns* a json file with servernames as keys and crontabs as the value
+
+note i did not add the keys to the files because iw anted to keep the file format simple, support for `-k` was mostly added to make running this script on hpc easier
 
 ## [query_user_tweets](https://github.com/SMAPPNYU/smapputilities/blob/master/py/query_twitter/query_user_tweets.py)
 
