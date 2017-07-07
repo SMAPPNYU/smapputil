@@ -89,7 +89,6 @@ if __name__ == '__main__':
             # /share/apps/utils/rsync.sh -a /scratch/olympus/ yvan@192.241.158.221:/mnt/olympus-stage/ --include={"*.json",whale_test,metadata,filters} --exclude='*' --update
             run_cmd = '/share/apps/utils/rsync.sh -a {source} {uname}@{dest}:{dest_path} --include={{{params}}} --exclude="*" --update'.format(uname=row[0], source=row[3], dest=k, dest_path=row[2], params=incl) 
             logger.info('running: '+run_cmd)
-            print(run_cmd)
             process = subprocess.Popen([run_cmd], stdin=None, stdout=None, stderr=None, shell=True)
             out, err = process.communicate()
             logger.info('rsync subprocess output:\n {}'.format(out))
