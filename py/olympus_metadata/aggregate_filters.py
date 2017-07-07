@@ -95,4 +95,24 @@ main()
 This script reads filters.json files from /scratch/
 and returns a csv containing filter terms, and size metadata.
 
+After downloading this file to your HPC home (I suggest just git clone smapputil)
+
+
+```
+#!/bin/bash
+
+#SBATCH --job-name=filter_meta
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=12GB
+#SBATCH --time=30:00
+
+module purge
+module load python3/intel/3.5.3
+
+/share/apps/python3/3.5.3/intel/bin/python3 /home/$USER/smapputil/py/olympus_metadata/aggregate_filters.py
+```
+
+Author Leon Yin
+Last updated 2017-07-07
 '''
