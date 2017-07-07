@@ -6,6 +6,8 @@ import datetime
 
 import pandas as pd
 
+output_file = '/scratch/olympus/metadata/filter.csv'
+
 def convert_size(size_bytes):
     '''
     Bytes to a human-readable format.
@@ -58,8 +60,14 @@ def append_collection(t, f):
 
 
 def main():
+    '''
+    This is the main function that utilizes the functions above.
+    '''
+    # get the paths of all filter metadata files.
     files = glob.glob('/scratch/olympus/*/filters/*.json')
 
+    # initalize a list of dictionaries for all the metadata.
+    # then iterate through each metadate file.
     d_ = []
     for f in files:
         # read the json file into a list.
@@ -72,8 +80,19 @@ def main():
         d = [append_collection(t, f) for t in tweets if t['filter_type'] == 'track']
         d_ += d
 
+    # put the contents into a pandas dataframe.
     df = pd.DataFrame(d_)
+
+    # filter out columns we don't want.
     df = df[[c for c in df.columns if c not in ['_id', 'filter_type', 'active', 'date_removed']]]
-    df.to_csv('/scratch/olympus/metadata/filter.csv', index=False)
+    
+    # write the results to a csv.
+    df.to_csv(output_file, index=False)
 
 main()
+
+'''
+This script reads filters.json files from /scratch/
+and returns a csv containing filter terms, and size metadata.
+
+'''
