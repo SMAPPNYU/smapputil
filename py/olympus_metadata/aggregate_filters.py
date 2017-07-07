@@ -6,7 +6,7 @@ import datetime
 
 import pandas as pd
 
-output_file = '/scratch/olympus/metadata/filter.csv'
+output_file = '/scratch/olympus/filter_metadata/filter.csv'
 
 def convert_size(size_bytes):
     '''
