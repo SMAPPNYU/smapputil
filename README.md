@@ -1214,6 +1214,10 @@ note: cleaning scipt used is [smappdragon's tweet cleaner](https://github.com/SM
 
 ## [rsync_dash_changes](https://github.com/SMAPPNYU/smapputil/blob/master/py/rsync_dash_changes/rsync_dash_changes.py)
 
+generates and runs rsync commands as subprocesses to sync changes made on the dashboard to scatch BACK to collectors.
+
+logs into each collector, gather the namse fo collectiosn that should be collecting (fro mcron on collector) tnen builds rsync commands to sync from scratch to collector the metadata and filters for that collection.
+
 abstract/practical:
 ```
 python rsync_dash_changes.py -i dash_rsync_config.csv -l dash_rsync.log
