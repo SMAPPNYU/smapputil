@@ -1216,7 +1216,7 @@ note: cleaning scipt used is [smappdragon's tweet cleaner](https://github.com/SM
 
 generates and runs rsync commands as subprocesses to sync changes made on the dashboard to scatch BACK to collectors.
 
-logs into each collector, gather the namse fo collectiosn that should be collecting (fro mcron on collector) tnen builds rsync commands to sync from scratch to collector the metadata and filters for that collection.
+logs into each collector, gather the namse fo collectiosn that should be collecting (fro mcron on collector) tnen builds rsync commands to sync from scratch to collector the metadata and filters for that collection. i recommend doing this every 5 min on the cron.
 
 abstract/practical:
 ```
