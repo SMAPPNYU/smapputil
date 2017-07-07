@@ -1,0 +1,79 @@
+import os
+import json
+import glob
+import math
+import datetime
+
+import pandas as pd
+
+def convert_size(size_bytes):
+    '''
+    Bytes to a human-readable format.
+    '''
+    if size_bytes == 0:
+        return "0B"
+    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+    i = int(math.floor(math.log(size_bytes, 1024)))
+    p = math.pow(1024, i)
+    s = round(size_bytes / p, 2)
+    
+    return "%s %s" % (s, size_name[i])
+
+
+def return_size(f):
+    '''
+    Gets the size of tweet files in aggragate and individually.
+    Also gets the latest file date.
+    '''
+    # creates a regular expression for tweet files.
+    regex = f.replace('/filters/filters.json', '/data/*')
+    files_in_f = glob.glob(regex)
+    
+    # calculate the file sizes
+    bytes_ = sum([os.stat(f_).st_size for f_ in files_in_f])
+    bytes_human = convert_size(bytes_)
+    num_files = len(files_in_f)
+    avg_size = bytes_ / num_files
+    avg_size_human = convert_size(avg_size)
+    
+    # gets the latest file and the date it was updated.
+    newest = max(glob.iglob(regex), key=os.path.getctime)
+    latest_filedate = datetime.datetime.fromtimestamp(
+        os.path.getctime(newest)
+    )
+    
+    return (bytes_, bytes_human, num_files, 
+            avg_size, avg_size_human, latest_filedate)
+
+
+def append_collection(t, f):
+    '''
+    Gets metadata about a filter.json file.
+    '''
+    t['collection'] = f.split('/')[3]
+    t['collection_size_bytes'], t['collection_size'], t['num_files'], t['avg_file_bytes'], \
+    t['avg_file_size'], t['latest_update'] = return_size(f)
+    
+    return t
+
+
+def main():
+    files = glob.glob('/scratch/olympus/*/filters/*.json')
+
+    d_ = []
+    for f in files:
+        # read the json file into a list.
+        tweets = []
+        for line in open(f, 'r'):
+            tweets.append(json.loads(line))
+
+        # scrape the list, and collect info about the collection size, 
+        # and when it was last updated.
+        d = [append_collection(t, f) for t in tweets if t['filter_type'] == 'track']
+        d_ += d
+
+    df = pd.DataFrame(d_)
+    df = df[[c for c in df.columns if c not in ['_id', 'filter_type', 'active', 'date_removed']]]
+    df.to_csv('/scratch/olympus/metadata/filter.csv', index=False)
+
+main()
