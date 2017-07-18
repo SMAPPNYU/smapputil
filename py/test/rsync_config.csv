@@ -1,0 +1,12 @@
+username,ip_address,staging_olympus,actual_olympus
+yvan,192.241.158.221,/mnt/olympus-stage/,/scratch/olympus/
+yvan,198.211.114.27,/mnt/olympus-stage-socrates/,/scratch/olympus/
+yvan,162.243.163.92,/mnt/olympus-stage-byzantium/,/scratch/olympus/
+yvan,67.207.94.88,/mnt/olympus-stage-zoroaster/,/scratch/olympus/
+yvan,192.241.157.35,/mnt/olympus-stage-valacar/,/scratch/olympus/
+yvan,192.81.211.20,/mnt/olympus-stage-melkor/,/scratch/olympus/
+yvan,198.211.100.7,/mnt/olympus-stage-curumo/,/scratch/olympus/
+yvan,67.207.95.193,/mnt/olympus-stage-alatar/,/scratch/olympus/
+yvan,67.205.183.91,/mnt/olympus-stage-aiwendil/,/scratch/olympus/
+yvan,67.207.85.224,/mnt/olympus-stage-olorin/,/scratch/olympus/
+yvan,67.207.94.234,/mnt/olympus-stage-celeborn/,/scratch/olympus/

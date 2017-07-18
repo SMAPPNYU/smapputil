@@ -41,6 +41,7 @@
     - [launch_sbatch_job](#launch_sbatch_job)
     - [launch_parallel_sbatch_jobs](#launch_parallel_sbatch_jobs)
     - [olympus2scratch](#olympus2scratch)
+    - [rsync_dash_changes](#rsync_dash_changes)
 - [pbs](#pbs)
     - [pbs_merge_dataset_files](#pbs_merge_dataset_files)
 - [sbatch](#sbatch)
@@ -1210,6 +1211,28 @@ note: you will need to run this inside a job using either sbatch, or our [job sc
 note: do not try to use more CPUs than your job has allocated
 
 note: cleaning scipt used is [smappdragon's tweet cleaner](https://github.com/SMAPPNYU/smappdragon#tweet_cleaner)
+
+## [rsync_dash_changes](https://github.com/SMAPPNYU/smapputil/blob/master/py/rsync_dash_changes/rsync_dash_changes.py)
+
+generates and runs rsync commands as subprocesses to sync changes made on the dashboard to scatch BACK to collectors.
+
+logs into each collector, gather the namse fo collectiosn that should be collecting (fro mcron on collector) tnen builds rsync commands to sync from scratch to collector the metadata and filters for that collection. i recommend doing this every 5 min on the cron.
+
+abstract/practical:
+```
+python rsync_dash_changes.py -i dash_rsync_config.csv -l dash_rsync.log
+```
+`dash_rsync_config.csv` is a file that looks like so:
+```csv
+username,ip_address,staging_olympus,actual_olympus
+yvan,IPADDR,/mnt/olympus-stage/,/scratch/olympus/
+yvan,IPADDR,/mnt/olympus-stage-xyz/,/scratch/olympus/
+.
+.
+.
+```
+
+`dash_rsync.log` is the path/file you will want to put your logs at.
 
 # pbs
 
