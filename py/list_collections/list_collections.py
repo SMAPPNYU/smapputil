@@ -32,7 +32,7 @@ def build_collection_list(crontab_entries):
     # loop through each crontab entry 
     # and get the name of each collection
     for cron_entry in crontab_entries:
-        if ' -n ' in cron_entry:
+        if ' -n ' in cron_entry and '-op collect' in cron_entry:
             split_cron_entry = cron_entry.split(' ')
             known_args, unknown_args = cron_parser.parse_known_args(split_cron_entry)
             collection_list.append(known_args.n[1:-1])
