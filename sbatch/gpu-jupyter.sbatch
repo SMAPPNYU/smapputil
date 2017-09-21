@@ -8,8 +8,8 @@
 #SBATCH --gres=gpu:1
 
 module purge
-module load cuda
-module load cudnn
+module load cuda/8.0.44
+module load cudnn/8.0v5.1
 
 jupyter_dir=/home/$USER/
 cd $jupyter_dir
