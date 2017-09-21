@@ -474,7 +474,7 @@ practical:
 python query_search_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
 ```
 
-*input* input is json or csv, csv must be a one column csv with `id` as the column:
+*input* input is json or csv, csv must be a one column csv with `term` as the column header name:
 
 ```
 term
