@@ -35,7 +35,7 @@ def query_search_tweets(output, terms_list, auth_file):
         count = 0
         if not term == '':
             try:
-                for item in Cursor(api_pool.search, q=urllib.quote(term)).items():
+                for item in Cursor(api_pool.search, q=urllib.parse.quote(term)).items():
                     logger.debug('tweet text: %s', item.text) 
                     count = count + 1
                     tweet_item = json.loads(json.dumps(item._json))
