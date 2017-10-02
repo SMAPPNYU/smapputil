@@ -1408,7 +1408,7 @@ abstract/practical:
 sbatch set_olympus_permissions.sbatch
 ```
 
-## [remove_stale_slurm_files](https://github.com/SMAPPNYU/smapputil/blob/master/py/remove_stale_slurm_jobs/remove_stale_jobs.py)
+## [remove_stale_slurm_files](https://github.com/SMAPPNYU/smapputil/blob/master/py/remove_stale_slurm_jobs/remove_stale_jobs.py)<a id='slurm_out'></a>
 This script deletes `slurm-xxxx.out` files for jobs that have finished.
 The script parses the STDOUT for the `squeue -u $USER` commands into a Pandas dataframe.
 Using Pandas, ths script then filters out all running processes.
