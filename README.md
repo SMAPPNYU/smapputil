@@ -42,6 +42,7 @@
     - [launch_parallel_sbatch_jobs](#launch_parallel_sbatch_jobs)
     - [olympus2scratch](#olympus2scratch)
     - [rsync_dash_changes](#rsync_dash_changes)
+    - [remove stale slurm-out files](#slurm_out)
 - [pbs](#pbs)
     - [pbs_merge_dataset_files](#pbs_merge_dataset_files)
 - [sbatch](#sbatch)
@@ -474,7 +475,7 @@ practical:
 python query_search_tweets.py -i ~/input.json -o ~/output.json -a ~/auth.json -l ~/log.log
 ```
 
-*input* input is json or csv, csv must be a one column csv with `id` as the column:
+*input* input is json or csv, csv must be a one column csv with `term` as the column header name:
 
 ```
 term
@@ -1406,6 +1407,24 @@ abstract/practical:
 ```
 sbatch set_olympus_permissions.sbatch
 ```
+
+## [remove_stale_slurm_files](https://github.com/SMAPPNYU/smapputil/blob/master/py/remove_stale_slurm_jobs/remove_stale_jobs.py)<a id='slurm_out'></a>
+This script deletes `slurm-xxxx.out` files for jobs that have finished.
+The script parses the STDOUT for the `squeue -u $USER` commands into a Pandas dataframe.
+Using Pandas, ths script then filters out all running processes.
+The script then finds all `slurm-xxxxx.out` in your home directory, and removes all slurm out files that are not running processes.
+
+abstract/practical:
+```
+python remove_stale_jobs.py
+```
+
+Realistically you'd put this in a crontab (located in log-1 on HPC prince).
+a crontab entry might look like this:
+```
+0 12 * * * /home/ly501/anaconda3/bin/python /home/ly501/smapprepos/smapputils/py/remove_stale_jobs.py
+```
+
 
 # sh 
 
