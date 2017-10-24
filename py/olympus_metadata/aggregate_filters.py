@@ -8,8 +8,9 @@ import subprocess
 from shutil import copyfile
 
 import pandas as pd
+
+
 today = datetime.datetime.now().strftime('%Y_%m_%d')
-cols_ignore = ['_id', 'filter_type', 'active', 'date_removed', 'collection']
 
 root = '/scratch/olympus/filter_metadata/'
 output_file = os.path.join(root, 'filter.csv')
@@ -18,6 +19,8 @@ archive_file = os.path.join(root, 'archive/filter_{}.csv'.format(today))
 gdrive = ('gdrive:SMaPP_2017/SMAPP_ALL_MEMBERS/'
           'Documentation/Twitter_Collection_Terms/')                          
 gdrive_archive = os.path.join(gdrive, 'z_Archive')
+
+cols_ignore = ['_id', 'filter_type', 'active', 'date_removed', 'collection']
 
 
 def convert_size(size_bytes):
