@@ -362,7 +362,7 @@ abrstact:
 
 practical:
 ```python
-python ~/smapputilities/py/list_collections/list_collections.py -i ~/serverlist.json -o ~/pylogs/collections.json -k ~/.ssh/id_rsa
+python ~/smapputil/py/list_collections/list_collections.py -i ~/serverlist.csv -o ~/pylogs/collections.json -k ~/.ssh/id_rsa
 ```
 
 *inputs* a csv or json file that is a list of ip addresses or severnames
