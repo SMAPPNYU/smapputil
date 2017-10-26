@@ -17,7 +17,7 @@ from tweepy import Cursor, TweepError
 
 s3_bucket = 'smapp-nyu'
 s3_path = 'query_machine_stage'
-volume_size_gbs = 2
+volume_size_gbs = 1000
 droplet_reigon = 'nyc1'
 verbose = 1
 
