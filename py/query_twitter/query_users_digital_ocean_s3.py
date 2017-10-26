@@ -77,6 +77,13 @@ def create_and_attach_volume(context, size_gigabytes=800):
    
     return True
 
+def destroy(context):
+    '''
+    This is where it ends :)
+    '''
+    droplet = context['droplet']
+    droplet.destroy()
+
 def detach_and_destroy_volume(context):
     '''
     Remove all files from the volume, detaches the volume, then destroys it.
@@ -214,6 +221,7 @@ def build_context(args):
     my_droplets = manager.get_all_droplets()
     mydrop = [_ for _ in my_droplets if _.ip_address == get_ip_address()][0]
     
+    context['droplet'] = mydrop
     context['droplet_id'] = mydrop.id
     context['volume_name'] = mydrop.name + '-volume'
     context['volume_directory'] = '/mnt/' + context['volume_name']
@@ -268,4 +276,4 @@ if __name__ == '__main__':
         context['output_bz2'] = bzip(context)
         send_to_s3(context)
         detach_and_destroy_volume(context)
-
+        destroy(context)
