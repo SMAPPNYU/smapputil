@@ -212,7 +212,7 @@ def parse_args(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input.json, a [] list of twitter ids.')
     parser.add_argument('-a', '--auth', dest='auth', required=True, help='This is the path to your oauth.json file for twitter')
-    parser.add_argument('-s', '--auth', dest='volume_size_gbs', required=True, help='TThe size in gbs of the volume you want')
+    parser.add_argument('-s', '--auth', dest='volume_size_gbs', required=True, type=int, help='The size in gbs of the volume you want')
     
     return vars(parser.parse_args())
 
