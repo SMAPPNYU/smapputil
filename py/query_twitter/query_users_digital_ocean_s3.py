@@ -67,9 +67,9 @@ def create_and_attach_volume(context, size_gigabytes=800):
     
     for command in commands:
         command = command.format(VOL_NAME=context['volume_name'], 
-                                 USER=context['user']).split()
+                                 USER=context['user'])
         print(command)
-        p = Popen(command, stdin=PIPE, stderr=PIPE, universal_newlines=True)
+        p = Popen(command, stdin=PIPE, stderr=PIPE, shell=True, universal_newlines=True)
         sudo_prompt = p.communicate(context['sudo_password'] + '\n')[1]
         time.sleep(20)       
     if verbose:
