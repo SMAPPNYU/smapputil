@@ -35,7 +35,7 @@ def create_and_attach_volume(context, size_gigabytes=800):
         "sudo -S mkfs.ext4 -F /dev/disk/by-id/scsi-0DO_Volume_{VOL_NAME}",
         'sudo -S mkdir -p /mnt/{VOL_NAME}',
         'sudo -S mount -o discard,defaults /dev/disk/by-id/scsi-0DO_Volume_{VOL_NAME} /mnt/{VOL_NAME}',
-        "echo '/dev/disk/by-id/scsi-0DO_Volume_{VOL_NAME} /mnt/{VOL_NAME} ext4 defaults,nofail,discard 0 0' | sudo -S tee -a /etc/fstab",
+        """sudo -S sh -c 'echo "/dev/disk/by-id/scsi-0DO_Volume_{VOL_NAME} /mnt/{VOL_NAME} ext4 defaults,nofail,discard 0 0">>/etc/fstab' """,        
         'sudo -S chown {USER}:{USER} /mnt/{VOL_NAME}'
     ]
     
@@ -68,10 +68,10 @@ def create_and_attach_volume(context, size_gigabytes=800):
     for command in commands:
         command = command.format(VOL_NAME=context['volume_name'], 
                                  USER=context['user']).split()
+        print(command)
         p = Popen(command, stdin=PIPE, stderr=PIPE, universal_newlines=True)
-        time.sleep(.2)
         sudo_prompt = p.communicate(context['sudo_password'] + '\n')[1]
-        
+        time.sleep(20)       
     if verbose:
         print("Volume {} configred!".format(context['volume_name']))
    
@@ -213,7 +213,7 @@ def parse_args(args):
     parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input.json, a [] list of twitter ids.')
     parser.add_argument('-a', '--auth', dest='auth', required=True, help='This is the path to your oauth.json file for twitter')
     parser.add_argument('-s', '--volsize', dest='volume_size_gbs', required=True, type=int, help='The size in gbs of the volume you want')
-    
+    parser.add_argument('-d', '--debug', dest='debug', required=True,  type=int, help='debug')
     return vars(parser.parse_args())
 
 def build_context(args):
@@ -275,7 +275,7 @@ if __name__ == '__main__':
     #setup parser for command line arguments
     args = parse_args(sys.argv[1:])
     context = build_context(args)
-    if create_and_attach_volume(context):
+    if create_and_attach_volume(context) and not context['debug']:
         logging.basicConfig(filename=context['log'], level=logging.INFO)
         twitter_query(context)
         context['output_bz2'] = bzip(context)
