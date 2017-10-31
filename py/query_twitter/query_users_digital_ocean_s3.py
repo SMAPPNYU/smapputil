@@ -17,7 +17,6 @@ from tweepy import Cursor, TweepError
 
 s3_bucket = 'smapp-nyu'
 s3_path = 'query_machine_stage'
-volume_size_gbs = 1000
 droplet_reigon = 'nyc1'
 verbose = 1
 
@@ -33,9 +32,10 @@ def create_and_attach_volume(context, size_gigabytes=800):
     '''
     commands = [
         'sudo -S rm -rf /mnt/{VOL_NAME}',
+        "sudo -S mkfs.ext4 -F /dev/disk/by-id/scsi-0DO_Volume_{VOL_NAME}",
         'sudo -S mkdir -p /mnt/{VOL_NAME}',
         'sudo -S mount -o discard,defaults /dev/disk/by-id/scsi-0DO_Volume_{VOL_NAME} /mnt/{VOL_NAME}',
-        'echo /dev/disk/by-id/scsi-0DO_Volume_{VOL_NAME} /mnt/{VOL_NAME} ext4 defaults,nofail,discard 0 0 | sudo -S tee -a /etc/fstab',
+        "echo '/dev/disk/by-id/scsi-0DO_Volume_{VOL_NAME} /mnt/{VOL_NAME} ext4 defaults,nofail,discard 0 0' | sudo -S tee -a /etc/fstab",
         'sudo -S chown {USER}:{USER} /mnt/{VOL_NAME}'
     ]
     
@@ -77,12 +77,14 @@ def create_and_attach_volume(context, size_gigabytes=800):
    
     return True
 
+
 def destroy(context):
     '''
     This is where it ends :)
     '''
     droplet = context['droplet']
     droplet.destroy()
+
 
 def detach_and_destroy_volume(context):
     '''
@@ -127,6 +129,7 @@ def send_to_s3(context):
         s3_dest = os.path.join('s3://' + context['s3_bucket'], context['s3_path'])
         print("Sent file to {}".format(s3_dest))
 
+
 def bzip(context):
     f_out = context['output']
     command = ['/bin/bzip2', f_out]
@@ -152,6 +155,7 @@ def twitter_query(context):
 
     #query the tweets
     query_user_tweets(output, id_list, auth_file)
+
 
 def query_user_tweets(output, id_list, auth_file):
 
@@ -208,6 +212,7 @@ def parse_args(args):
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input.json, a [] list of twitter ids.')
     parser.add_argument('-a', '--auth', dest='auth', required=True, help='This is the path to your oauth.json file for twitter')
+    parser.add_argument('-s', '--auth', dest='volume_size_gbs', required=True, help='TThe size in gbs of the volume you want')
     
     return vars(parser.parse_args())
 
@@ -221,8 +226,8 @@ def build_context(args):
     my_droplets = manager.get_all_droplets()
     mydrop = [_ for _ in my_droplets if _.ip_address == get_ip_address()][0]
     
-    context['droplet'] = mydrop
     context['droplet_id'] = mydrop.id
+    context['droplet'] = mydrop
     context['volume_name'] = mydrop.name + '-volume'
     context['volume_directory'] = '/mnt/' + context['volume_name']
     context['droplet_reigon'] = droplet_reigon
@@ -230,7 +235,7 @@ def build_context(args):
         token= context['token'],
         name= context['volume_name'],
         region= context['droplet_reigon'],
-        size_gigabytes= volume_size_gbs
+        size_gigabytes= context['volume_size_gbs']
     )
     output_base = 'query_respondants_' + currentdate + '_' + \
         context['input'].split('/')[-1].replace('.csv', '.json')
@@ -277,3 +282,5 @@ if __name__ == '__main__':
         send_to_s3(context)
         detach_and_destroy_volume(context)
         destroy(context)
+
+
