@@ -249,10 +249,10 @@ def parse_args(args):
     parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input.json, a [] list of twitter ids.')
     parser.add_argument('-a', '--auth', dest='auth', required=True, help='This is the path to your oauth.json file for twitter')
     parser
-    parser.add_argument('-d', '--digital-ocean-token', dest='token', required=False, help='DO access token')
+    parser.add_argument('-d', '--digital-ocean-token', dest='token', required=False, help='DO access token', const=1, nargs='?', default=False)
     parser.add_argument('-b', '--s3-bucket', dest='s3_bucket', required=True, help='s3 bucket, ie s3://leonyin would be leonyin')
     parser.add_argument('-r', '--s3-root', dest='s3_root', required=True, help='the path in the bucket.')
-    parser.add_argument('-s', '--sudo', dest='sudo_password', required=False, help='sudo pw for machine')
+    parser.add_argument('-s', '--sudo', dest='sudo_password', nargs='?, default=False, help='sudo pw for machine')
 
     return vars(parser.parse_args())
 
