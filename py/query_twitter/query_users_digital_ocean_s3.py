@@ -15,8 +15,6 @@ from tkpool.tkpool.tweepypool import TweepyPool
 from tweepy import Cursor, TweepError
 
 
-s3_bucket = 'smapp-nyu'
-s3_path = 'query_machine_stage'
 verbose = 1
 
 
@@ -201,10 +199,10 @@ def build_context(args):
     '''
     context = args
     currentdate = datetime.datetime.now().strftime("%Y-%m-%d")
-    if 'token' not in context:
-        context['token'] = os.environ.get('DO_TOKEN')
 
     # digital ocean
+    if not context['token']:
+        context['token'] = os.environ.get('DO_TOKEN')
     manager = digitalocean.Manager(token=context['token'])
     my_droplets = manager.get_all_droplets()
     mydrop = [_ for _ in my_droplets if _.ip_address == get_ip_address()][0]
@@ -227,7 +225,7 @@ def build_context(args):
     
      # local stuff
     context['user'] = os.environ.get('USER')
-    if 'sudo_password' not in context:
+    if not context['sudo_password']:
         context['sudo_password'] = os.environ.get('SUDO')
     
     context['output'] = os.path.join(
@@ -275,7 +273,6 @@ if __name__ == '__main__':
     
     context['volume'] = check_vol_attached(context)
     if context['volume']:
-        clean_volume(context)
         twitter_query(context)
         context['output_bz2'] = bzip(context)
         send_to_s3(context)
@@ -289,3 +286,4 @@ and pools tokens.
 
 Leon Yin 2017-11-06
 '''
+
