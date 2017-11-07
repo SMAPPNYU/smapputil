@@ -54,7 +54,7 @@ def detach_and_destroy_volume(context):
     if verbose:
         print('Detaching volume...')
     V.detach(droplet_id = context['droplet_id'], 
-             region = context['droplet_reigon'])
+             region = context['droplet_region'])
     time.sleep(8)
     
     if verbose:
