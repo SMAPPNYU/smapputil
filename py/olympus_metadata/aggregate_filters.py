@@ -6,16 +6,31 @@ import glob
 import math
 import datetime
 import subprocess
-import logging
-import argparse
-from shutil import copyfile, chown
+from shutil import copyfile
 
 import pandas as pd
 import tweepy
 from tweepy.error import TweepError
 
+today = datetime.datetime.now().strftime('%Y_%m_%d')
 
-from config import *
+root = '/scratch/olympus/filter_metadata/'
+output_file = os.path.join(root, 'filter.csv')
+archive_file = os.path.join(root, 'archive/filter_{}.csv'.format(today))
+user_lookup_path = os.path.join(root, 'user_lookup.json')
+
+rclone_remote = 'smapp-drive'
+
+gdrive = ('{}:SMaPP_2017/SMAPP_ALL_MEMBERS/'
+          'Documentation/Twitter_Collection_Terms/'.format(rclone_remote))
+gdrive_archive = os.path.join(gdrive, 'z_Archive')
+
+cols_ignore = ['_id', 'active', 'date_removed', 'collection', 'turnoff_date']
+
+consumer_key = os.environ.get('TWEEPY_API_KEY')
+consumer_secret = os.environ.get('TWEEPY_API_SECRET')
+access_token = os.environ.get('TWEEPY_ACCESS_TOKEN')
+access_token_secret = os.environ.get('TWEEPY_TOKEN_SECRET')
 
 def convert_size(size_bytes):
     '''
@@ -125,8 +140,6 @@ def rclone(src, dest):
 def check_connection():
     '''
     check tweepy authentication by calling "me"!
-
-    calls global api
     '''
     try:
         api.me()
@@ -135,18 +148,14 @@ def check_connection():
         return False
 
 def get_username(user_id):
-    '''
-    gets users username with Tweepy
-    calls global api variable
-    '''
     try:
         u = api.get_user(user_id)
         return u.name
     except(TweepError):
-        return user_id
+        return None
 
 
-def update_user_ids(user_ids, logger):
+def update_user_ids(user_ids):
     '''
     checks if file exists, if not creates a new files
     checks if each user's id already exists, and if it doesn't,
@@ -158,33 +167,23 @@ def update_user_ids(user_ids, logger):
 
     else:
         user_lookup = {}
+
     for user_id in user_ids:
         if not user_id in user_lookup:
-            logger.info(("Getting username for {} and adding to the file").format(user_id))
             user_lookup[user_id] = get_username(user_id)
 
     return user_lookup
 
-def parse_args(args):
-    currentdate = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M")
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-l', '--log', dest='log', default=os.path.expanduser('~/pylogs/repair_pool'+currentdate+'.log'), help='This is the path where your output logging will go. This is a required parameter')
-    return parser.parse_args(args)
 
 def main():
     '''
     This is the main function that utilizes the functions above.
     '''
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    api = tweepy.API(auth)
 
-    args = parse_args(sys.argv[1:])
-    logging.basicConfig(filename=args.log, level=logging.INFO)
-
-    logger = logging.getLogger(__name__)
-    logger.info('Todays Date: %s', datetime.datetime.now().strftime("%Y-%m-%d_%H:%M"))
-
-    logger.info("Checking connection")
     if not check_connection():
-        logger.warning("There was an authentication error")
         sys.exit("authentication error")
 
 
@@ -194,8 +193,6 @@ def main():
     # initalize a list of dictionaries for all the metadata.
     # then iterate through each metadate file.
     d_ = []
-
-    logger.info("Reading the json file into a list")
     for f in files:
         # read the json file into a list.
         tweets = []
@@ -207,41 +204,35 @@ def main():
              if t['filter_type'] in ['track', 'follow']]
         d_ += d
 
-    logger.info('Putting the contents into a pandas dataframe')
     # put the contents into a pandas dataframe.
     df = pd.DataFrame(d_)
     df.sort_values(by='collection', inplace=True)
 
 
-
     user_ids = df[df["filter_type"] == "follow"]['value'].unique()
 
-    logger.info("Updating user ids")
-    user_lookup = update_user_ids(user_ids, logger)
+    user_lookup = update_user_ids(user_ids)
 
     with open(user_lookup_path, 'w') as f:
-        logger.info("Writing user lookup table to file")
         f.write(json.dumps(user_lookup))
+        chown(user_lookup_path, group="smapp")
 
-    logger.info("Replacing twitter user_ids with twitter usernames in table")
     df['value'].replace(user_lookup, inplace=True)
 
     # These are the columns we want!
     cols = ['collection'] + [c for c in df.columns if c not in cols_ignore]
 
-    logger.info("Writing results to a csv")
     # filter out columns we don't want, and write the results to a csv.
     df[cols].to_csv(output_file, index=False)
 
-    logger.info("Copying the file into the archive")
+    chown(output_file, group="smapp")
+
+
     # copy the file into the archive.
     copyfile(output_file, archive_file)
 
-    logger.info("Sending the files to Google Drive")
     # send the files to Google Drive.
     rclone(output_file, gdrive)
     rclone(archive_file, gdrive_archive)
-
-    logger.info("Finished successfully!")
 
 main()
