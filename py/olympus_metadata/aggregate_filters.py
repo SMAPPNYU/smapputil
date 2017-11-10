@@ -161,9 +161,9 @@ def update_user_ids(user_ids, logger):
         user_lookup = {}
 
     for user_id in user_ids:
-        if not user_id in user_lookup:
+        if not str(user_id) in user_lookup:
             logger.info("Getting username for {} and adding to the file".format(user_id))
-            user_lookup[user_id] = get_username(user_id)
+            user_lookup[str(user_id)] = get_username(user_id)
 
     return user_lookup
 
