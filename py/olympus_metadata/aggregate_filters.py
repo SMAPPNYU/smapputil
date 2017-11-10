@@ -143,6 +143,7 @@ def get_username(user_id):
         u = api.get_user(user_id)
         return u.name
     except(TweepError):
+        logger.warning(TweepError)
         return user_id
 
 
@@ -247,4 +248,3 @@ def main():
     logger.info("Finished successfully!")
 
 main()
-
