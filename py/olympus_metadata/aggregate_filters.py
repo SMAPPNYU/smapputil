@@ -6,7 +6,9 @@ import glob
 import math
 import datetime
 import subprocess
-from shutil import copyfile
+import logging
+import argparse
+from shutil import copyfile, chown
 
 import pandas as pd
 import tweepy
@@ -144,7 +146,7 @@ def get_username(user_id):
         return user_id
 
 
-def update_user_ids(user_ids):
+def update_user_ids(user_ids, logger):
     '''
     checks if file exists, if not creates a new files
     checks if each user's id already exists, and if it doesn't,
@@ -156,19 +158,34 @@ def update_user_ids(user_ids):
 
     else:
         user_lookup = {}
+
     for user_id in user_ids:
         if not user_id in user_lookup:
+            logger.info("Getting username for {} and adding to the file".format(user_id))
             user_lookup[user_id] = get_username(user_id)
 
     return user_lookup
 
+def parse_args(args):
+    currentdate = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-l', '--log', dest='log', default=os.path.expanduser('~/pylogs/repair_pool'+currentdate+'.log'), help='This is the path where your output logging will go. This is a required parameter')
+    return parser.parse_args(args)
 
 def main():
     '''
     This is the main function that utilizes the functions above.
     '''
 
+    args = parse_args(sys.argv[1:])
+    logging.basicConfig(filename=args.log, level=logging.INFO)
+
+    logger = logging.getLogger(__name__)
+    logger.info('Todays Date: %s', datetime.datetime.now().strftime("%Y-%m-%d_%H:%M"))
+
+    logger.info("Checking connection")
     if not check_connection():
+        logger.warning("There was an authentication error")
         sys.exit("authentication error")
 
 
@@ -178,6 +195,8 @@ def main():
     # initalize a list of dictionaries for all the metadata.
     # then iterate through each metadate file.
     d_ = []
+
+    logger.info("Reading the json file into a list")
     for f in files:
         # read the json file into a list.
         tweets = []
@@ -189,31 +208,43 @@ def main():
              if t['filter_type'] in ['track', 'follow']]
         d_ += d
 
+    logger.info('Putting the contents into a pandas dataframe')
     # put the contents into a pandas dataframe.
     df = pd.DataFrame(d_)
     df.sort_values(by='collection', inplace=True)
 
-
     user_ids = df[df["filter_type"] == "follow"]['value'].unique()
 
-    user_lookup = update_user_ids(user_ids)
+    logger.info("Updating user ids")
+    user_lookup = update_user_ids(user_ids, logger)
 
     with open(user_lookup_path, 'w') as f:
+        logger.info("Writing user lookup table to file")
         f.write(json.dumps(user_lookup))
+        chown(user_lookup_path, group="smapp")
 
+    logger.info("Replacing twitter user_ids with twitter usernames in table")
     df['value'].replace(user_lookup, inplace=True)
 
     # These are the columns we want!
     cols = ['collection'] + [c for c in df.columns if c not in cols_ignore]
 
+    logger.info("Writing results to a csv")
     # filter out columns we don't want, and write the results to a csv.
     df[cols].to_csv(output_file, index=False)
 
+    chown(output_file, group="smapp")
+
+    logger.info("Copying the file into the archive")
     # copy the file into the archive.
     copyfile(output_file, archive_file)
 
+    logger.info("Sending the files to Google Drive")
     # send the files to Google Drive.
     rclone(output_file, gdrive)
     rclone(archive_file, gdrive_archive)
 
+    logger.info("Finished successfully!")
+
 main()
+
