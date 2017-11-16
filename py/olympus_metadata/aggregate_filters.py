@@ -134,7 +134,7 @@ def check_connection():
     except(TweepError):
         return False
 
-def get_username(user_id):
+def get_username(user_id, logger):
     '''
     gets users username with Tweepy
     calls global api variable
@@ -142,9 +142,10 @@ def get_username(user_id):
     try:
         u = api.get_user(user_id)
         return u.name
-    except(TweepError):
+    except TweepError as e:
         logger.warning(TweepError)
-        return user_id
+        if e.api_code == 50:
+            return user_id
 
 
 def update_user_ids(user_ids, logger):
@@ -155,6 +156,7 @@ def update_user_ids(user_ids, logger):
     '''
     if os.path.exists(user_lookup_path):
         with open(user_lookup_path, 'r') as file:
+            #error checking for blank file?
             user_lookup = json.loads(file.read())
 
     else:
@@ -163,7 +165,7 @@ def update_user_ids(user_ids, logger):
     for user_id in user_ids:
         if not str(user_id) in user_lookup:
             logger.info("Getting username for {} and adding to the file".format(user_id))
-            user_lookup[str(user_id)] = get_username(user_id)
+            user_lookup[str(user_id)] = get_username(user_id, logger)
 
     return user_lookup
 
@@ -248,3 +250,4 @@ def main():
     logger.info("Finished successfully!")
 
 main()
+
