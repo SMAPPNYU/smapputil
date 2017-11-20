@@ -134,7 +134,7 @@ def check_connection():
     except(TweepError):
         return False
 
-def get_username(user_id):
+def get_username(user_id, logger):
     '''
     gets users username with Tweepy
     calls global api variable
@@ -163,7 +163,7 @@ def update_user_ids(user_ids, logger):
     for user_id in user_ids:
         if not str(user_id) in user_lookup:
             logger.info("Getting username for {} and adding to the file".format(user_id))
-            user_lookup[str(user_id)] = get_username(user_id)
+            user_lookup[str(user_id)] = get_username(user_id, logger)
 
     return user_lookup
 
