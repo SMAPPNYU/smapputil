@@ -142,9 +142,10 @@ def get_username(user_id, logger):
     try:
         u = api.get_user(user_id)
         return u.name
-    except(TweepError):
+    except TweepError as e:
         logger.warning(TweepError)
-        return user_id
+        if e.api_code == 50:
+            return user_id
 
 
 def update_user_ids(user_ids, logger):
