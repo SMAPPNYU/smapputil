@@ -57,13 +57,16 @@ def clean_dates(d):
     Some of these files have dates of different formats.
     This script makes them the same!
     input: d is a dictionary of filter metadata
-    '''
+    ''' 
+    
     if isinstance(d['date_added'], dict):
         d['date_added'] = datetime.datetime.fromtimestamp(
                   d["date_added"]["$date"] / 1000.0)
     elif d['date_added'] is None:
-        d['date_added'] = datetime.datetime(1950, 1, 1)
+        # this means that no date added is associated with the filter term
+        d['date_added'] = skip_date       
     elif not isinstance(d['date_added'], datetime.datetime):
+        ### rethink this format - let's say the except also returns an error? use skip_date instaed?
         try:
             d['date_added'] = datetime.datetime.strptime(
                 d["date_added"], "%a %b %d %H:%M:%S %z %Y")
@@ -89,10 +92,10 @@ def update_user_ids(user_ids, logger):
         user_lookup = {}
 
     for user_id in user_ids:
-        if not str(user_id) in user_lookup:
+        user_id = str(user_id)
+        if not user_id in user_lookup:
             logger.info("Looking up username for {}".format(user_id))
             username = get_username(user_id, logger)
-            user_id = str(user_id)
             user_lookup[user_id] = username
 
     return user_lookup
@@ -103,7 +106,7 @@ def get_username(user_id, logger):
     calls global api variable
     '''
     try:
-        u = api.get_user(user_id)
+        u = api.get_user(user_id=user_id)
         return u.name
     
     except TweepError as e:

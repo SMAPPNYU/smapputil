@@ -4,6 +4,8 @@ import tweepy
 
 
 today = datetime.datetime.now().strftime('%Y_%m_%d')
+skip_date = datetime.datetime(1950, 1, 1)
+error_default_date = datetime.datetime(1800, 1, 1)
 
 root = '/scratch/olympus/filter_metadata/'
 output_file_pattern = os.path.join(root, '{}.csv')
