@@ -43,6 +43,7 @@
     - [olympus2scratch](#olympus2scratch)
     - [rsync_dash_changes](#rsync_dash_changes)
     - [remove stale slurm-out files](#slurm_out)
+    - [olympus_metadata](#olympus_metadata)
 - [pbs](#pbs)
     - [pbs_merge_dataset_files](#pbs_merge_dataset_files)
 - [sbatch](#sbatch)
@@ -1213,6 +1214,14 @@ note: do not try to use more CPUs than your job has allocated
 
 note: cleaning scipt used is [smappdragon's tweet cleaner](https://github.com/SMAPPNYU/smappdragon#tweet_cleaner)
 
+## [olympus_metadata](https://github.com/SMAPPNYU/smapputil/blob/master/py/olympus_metadata/aggregate_filters.py)
+Generates three files (tracking_terms.csv, following_users.csv and collection_meta.csv) for analyzing collections in aggregate.
+
+Files are stored in Google as well as HPC here:<br>
+`/scratch/olympus/filter_metadata
+
+
+
 ## [rsync_dash_changes](https://github.com/SMAPPNYU/smapputil/blob/master/py/rsync_dash_changes/rsync_dash_changes.py)
 
 generates and runs rsync commands as subprocesses to sync changes made on the dashboard to scatch BACK to collectors.
@@ -1250,7 +1259,7 @@ qdel myjobid -> delete or cancel the job
 practical:
 ```sh
 qsub name_of_pbs_job_file.pbs
-# or if its a cront job
+# or if its a cron job
 /share/apps/admins/torque/qsub.sh /path/to/pbs_job_file.pbs
 ```
 
