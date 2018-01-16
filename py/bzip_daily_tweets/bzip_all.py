@@ -37,7 +37,7 @@ logging.basicConfig(filename=logfile, level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.info("Got {} uncompressed files".format(len(uncompressed_files)))
 for file in uncompressed_files:
-    logger.info("Decompressing {}".format(file))
+    logger.info("Compressing {}".format(file))
     file_bz2, code = bzip(file) # hopefully :)
     logger.info("File compression complete with code {}".format(code))
     chown(file_bz2, group='smapp')

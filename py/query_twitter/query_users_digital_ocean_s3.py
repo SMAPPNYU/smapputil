@@ -118,15 +118,17 @@ def twitter_query(context):
     output = context['output']
     input_file = context['input']
     auth_file = context['auth']
+    max_id = context['max_id']
+    since_id = context['since_id']
         
     id_list = get_id_list(input_file)
     logger.info('creating oauth pool...')
 
     #query the tweets
-    query_user_tweets(output, id_list, auth_file)
+    query_user_tweets(output, id_list, auth_file, max_id=max_id, since_id=since_id)
 
 
-def query_user_tweets(output, id_list, auth_file):
+def query_user_tweets(output, id_list, auth_file, max_id=10**20, since_id=0):
     '''
     queries twitter for users from id_list and authentication from auth_file.
     '''
@@ -146,7 +148,8 @@ def query_user_tweets(output, id_list, auth_file):
         if not userid == '':
             try:
                 count = 0
-                for item in Cursor(api_pool.user_timeline, user_id=userid, count=200).items():
+                for item in Cursor(api_pool.user_timeline, user_id=userid, count=200, 
+                                   max_id=max_id, since_id=since_id).items():
                     logger.debug('tweet text: %s', item.text) 
                     count = count + 1
                     tweet_item = json.loads(json.dumps(item._json))
@@ -264,6 +267,8 @@ def parse_args(args):
     parser.add_argument('-b', '--s3-bucket', dest='s3_bucket', required=True, help='s3 bucket, ie s3://leonyin would be leonyin')
     parser.add_argument('-r', '--s3-root', dest='s3_root', required=True, help='the path in the bucket.')
     parser.add_argument('-s', '--sudo', dest='sudo_password', nargs='?', default=False, help='sudo pw for machine')
+    parser.add_argument('-max', '--max-id', dest='max_id', required=True, help='Max Tweet ID for query.', default=10 **30)
+    parser.add_argument('-since', '--since-id', dest='since_id', nargs='?', default=False, help='Min Tweet ID for query', default=100)
 
     return vars(parser.parse_args())
 
