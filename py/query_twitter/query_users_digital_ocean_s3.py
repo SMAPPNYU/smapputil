@@ -1,3 +1,4 @@
+
 import argparse
 import datetime
 import logging
@@ -39,6 +40,7 @@ def detach_and_destroy_volume(context):
     '''
     Remove all files from the volume, detaches the volume, then destroys it.
     '''
+    logger = logging.getLogger(__name__)
     V = context['volume']
 
     command = 'sudo -S rm -rf /mnt/{}'.format(context['volume_name']).split()
@@ -49,29 +51,36 @@ def detach_and_destroy_volume(context):
     except Exception as e:
         if verbose:
             print('Issue clearing the Volume! {}'.format(e))
+            logger.info('Issue clearing the Volume! {}'.format(e))
+
         pass
     
     if verbose:
         print('Detaching volume...')
+        logger.info("Detaching volumne...")
     V.detach(droplet_id = context['droplet_id'], 
              region = context['droplet_region'])
     time.sleep(8)
     
     if verbose:
         print('Destorying volume...')
+        logger.info("Destroying volumne...")
     V.destroy()
     
     if verbose:
         print("Volume {} Destroyed!".format(context['volume_name']))
+        logger.info("Volume {} Destroyed!".format(context['volume_name']))
     
 
 def send_to_s3(context):
     '''
     Uses boto3 to send a the bzipped file to s3.
     '''
+    logger = logging.getLogger(__name__)
     f_out = context['output_bz2']
     if verbose:
         print("Sending file to s3".format(f_out))
+        logger.info("Sending file to s3".format(f_out))
     
     s3 = boto3.client('s3')
     s3.upload_file(f_out, context['s3_bucket'], context['s3_path'])
@@ -80,6 +89,7 @@ def send_to_s3(context):
     if verbose:
         s3_dest = os.path.join('s3://' + context['s3_bucket'], context['s3_path'])
         print("Sent file to {}".format(s3_dest))
+        logger.info("Sending file to s3".format(f_out))
 
 def bzip(context):
     '''
@@ -101,15 +111,14 @@ def twitter_query(context):
     '''
     Gets user ids, and feeds them into a function to query twitter.
     '''
+    logger = logging.getLogger(__name__)
     if verbose:
         print('Starting query!')
-    
+
     output = context['output']
     input_file = context['input']
     auth_file = context['auth']
-    
-    logger = logging.getLogger(__name__)
-    
+        
     id_list = get_id_list(input_file)
     logger.info('creating oauth pool...')
 
@@ -122,7 +131,6 @@ def query_user_tweets(output, id_list, auth_file):
     queries twitter for users from id_list and authentication from auth_file.
     '''
     logger = logging.getLogger(__name__)
-
     num_inputs_queried = 0
 
     #create the api pool
@@ -283,7 +291,5 @@ if __name__ == '__main__':
 This script assumes a volume is attached to a digitalocean machine.
 It then queries twitter for all timelines for a given user id,
 and pools tokens.
-
-Leon Yin 2017-11-06
+Leon Yin 2018-01-16
 '''
-
