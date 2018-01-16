@@ -213,12 +213,17 @@ def build_context(args):
         context['token'] = os.environ.get('DO_TOKEN')
     manager = digitalocean.Manager(token=context['token'])
     my_droplets = manager.get_all_droplets()
+    vols =  manager.get_all_volumes()
+
     mydrop = [_ for _ in my_droplets if _.ip_address == get_ip_address()][0]
 
     context['droplet'] = mydrop
     context['droplet_id'] = mydrop.id
+    context['droplet_region'] = mydrop.region['slug']
+
     context['volume_name'] = mydrop.name + '-volume'
     context['volume_directory'] = '/mnt/' + context['volume_name']
+
 
     output_base = 'query_respondants_' + currentdate + '_' + \
         context['input'].split('/')[-1].replace('.csv', '.json')
@@ -291,5 +296,5 @@ if __name__ == '__main__':
 This script assumes a volume is attached to a digitalocean machine.
 It then queries twitter for all timelines for a given user id,
 and pools tokens.
-Leon Yin 2018-01-16
+Leon Yin 2017-11-06
 '''
