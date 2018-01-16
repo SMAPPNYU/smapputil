@@ -58,21 +58,27 @@ def clean_dates(d):
     This script makes them the same!
     input: d is a dictionary of filter metadata
     ''' 
-    
-    if isinstance(d['date_added'], dict):
-        d['date_added'] = datetime.datetime.fromtimestamp(
-                  d["date_added"]["$date"] / 1000.0)
-    elif d['date_added'] is None:
-        # this means that no date added is associated with the filter term
-        d['date_added'] = skip_date       
-    elif not isinstance(d['date_added'], datetime.datetime):
-        ### rethink this format - let's say the except also returns an error? use skip_date instaed?
-        try:
+    if isinstance(d['date_added'], str):
+        try: # standard format
             d['date_added'] = datetime.datetime.strptime(
                 d["date_added"], "%a %b %d %H:%M:%S %z %Y")
         except:
-            d['date_added'] = datetime.datetime.strptime(
-                d["date_added"].split('T')[0], "%Y-%m-%d")
+            try: # known irregular format
+                d['date_added'] = datetime.datetime.strptime(
+                    d["date_added"].split('T')[0], "%Y-%m-%d")
+            except: # some other format of string
+                d['date_added'] = error_default_date
+    
+    elif isinstance(d['date_added'], dict):
+        # mongo artifact
+        d['date_added'] = datetime.datetime.fromtimestamp(
+                  d["date_added"]["$date"] / 1000.0)
+    
+    elif d['date_added'] is None:  # missing date
+        d['date_added'] = skip_date       
+    
+    else: # unknown error
+        d['date_added'] = error_default_date
 
     d['date_added'] = datetime.datetime.strftime(
             d['date_added'], '%Y-%m-%d')
