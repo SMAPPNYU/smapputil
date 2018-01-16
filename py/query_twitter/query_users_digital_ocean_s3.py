@@ -268,7 +268,7 @@ def parse_args(args):
     parser.add_argument('-r', '--s3-root', dest='s3_root', required=True, help='the path in the bucket.')
     parser.add_argument('-s', '--sudo', dest='sudo_password', nargs='?', default=False, help='sudo pw for machine')
     parser.add_argument('-max', '--max-id', dest='max_id', required=True, help='Max Tweet ID for query.', default=10 **30)
-    parser.add_argument('-since', '--since-id', dest='since_id', nargs='?', default=False, help='Min Tweet ID for query', default=100)
+    parser.add_argument('-since', '--since-id', dest='since_id', nargs='?', help='Min Tweet ID for query', default=100)
 
     return vars(parser.parse_args())
 
