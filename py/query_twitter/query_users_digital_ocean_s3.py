@@ -148,10 +148,10 @@ def query_user_tweets(output, id_list, auth_file, max_id=10**20, since_id=0):
         if not userid == '':
             try:
                 count = 0
-		if max_id and since_id:
-		    cursor = Cursor(api_pool.user_timeline, user_id=userid, count=200,
-                                    max_id=max_id, since_id=since_id)
-		else:
+                if max_id and since_id:
+                    cursor = Cursor(api_pool.user_timeline, user_id=userid, count=200,
+                                     max_id=max_id, since_id=since_id)
+                else:
                     cursor = Cursor(api_pool.user_timeline, user_id=userid, count=200)
                 for item in cursor.items():
                     logger.debug('tweet text: %s', item.text) 
