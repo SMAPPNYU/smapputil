@@ -124,7 +124,7 @@ def twitter_query(context):
     logger.info('creating oauth pool...')
 
     #query the tweets
-    query_user_friends(output, id_list, auth_file, max_id=max_id, since_id=since_id)
+    query_user_friends(output, id_list, auth_file)
 
 
 def query_user_friends(output, id_list, auth_file):
