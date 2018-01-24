@@ -134,7 +134,7 @@ def query_user_friends(output, id_list, auth_file):
     num_inputs_queried = 0
 
     #create the api pool
-    pi_pool = TweepyPool(auth_file)
+    api_pool = TweepyPool(auth_file)
 
     write_fd = open(output, 'w+')
 
