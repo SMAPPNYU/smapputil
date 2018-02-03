@@ -74,7 +74,8 @@ def twitter_query(context):
 
 
 def query_user_friends_ids(filename, user_id, api_pool, cursor):
-    '''Queries twitter for friends ids from id_list.
+    '''
+    Queries twitter for friends ids from id_list.
     '''
     log("Working on {}".format(user_id))
     creds = api_pool.get_current_api_creds()
@@ -93,7 +94,8 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
         out = twitterreq(the_url, 
                          creds = creds,
                          parameters = parameters)
-        if out.code == 200:
+        resp_code = out.code
+        if resp_code  == 200:
             response = json.loads(out.read().decode('utf-8'))
             new_ids = response["ids"]            
             
@@ -108,26 +110,25 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
             ids.extend(new_ids)
             log("user id: {} cursor: {} total ids:{}".format(user_id, cursor, len(ids)))
 
-        elif out.code in [404, 400, 410, 422]:
+        elif resp_code in [404, 400, 410, 422]: # error with data, log it, leave.
             df = pd.DataFrame([out.code])
             df.columns = ['follower.user.id']
             if cursor == -1: 
                 df.to_csv(filename, index=False)
             else: 
-                df.to_csv(filename, index=False, header=False, mode='a')
-            
-            cursor = response["next_cursor"] # want to record this
-            log("user id: {} cursor: {} total ids:{}".format(user_id, cursor, len(ids)))
+                df.to_csv(filename, index=False, header=False, mode='a')            
+            log("user id: {} has error".format(user_id, resp_code ))
+            cursor = 0
 
-        elif out.code in [420, 429, 401, 406]:
+        elif resp_code in [420, 429, 401, 406]: # rate limited, try again
             api_pool.find_next_token()
             creds = api_pool.get_current_api_creds()
 
-        elif out.code in [500, 502, 503, 504]
-            time.sleep(20)
-        
-        else:
-            log(out.code)
+        elif out.code in [500, 502, 503, 504]: # server error, wait.
+        	time.sleep(100)
+
+        else: # some other error, just break...
+            log('{} {}'.format(user_id, out.code))
             break
 
 def get_id_list(file_input):
