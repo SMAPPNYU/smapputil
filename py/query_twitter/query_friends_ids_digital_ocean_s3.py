@@ -19,21 +19,6 @@ import s3
 verbose = 1
 
 
-def log(msg):
-    logger = logging.getLogger(__name__)
-    if verbose: print(msg)
-    logger.info(msg)
-
-
-def get_ip_address():
-    '''
-    Gets the IP address of this machine.
-    '''
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    return s.getsockname()[0]
-
-
 def destroy_droplet(context):
     '''
     This is where it ends :)
@@ -46,10 +31,8 @@ def detach_and_destroy_volume(context):
     '''
     Remove all files from the volume, detaches the volume, then destroys it.
     '''
-
     V = context['volume']
     command = 'sudo -S rm -rf /mnt/{}'.format(context['volume_name']).split()
-    
     try:
         p = Popen(command, stdin=PIPE, stderr=PIPE, universal_newlines=True)
         time.sleep(.2)
@@ -57,11 +40,9 @@ def detach_and_destroy_volume(context):
     except Exception as e:
         log('Issue clearing the Volume! {}'.format(e))
         pass
-    
     log("Detaching volumne...")
     V.detach(droplet_id = context['droplet_id'], 
-    	     region = context['droplet_region'])
-    
+             region = context['droplet_region'])
     log("Destroying volumne...")
     time.sleep(8)
     V.destroy()
@@ -75,26 +56,25 @@ def twitter_query(context):
     log('Starting query!')
     input_file = context['input']
     auth_file = context['auth']
+    log('Getting inputs to query...')
     id_list = get_id_list(input_file)
     
-    log('creating oauth pool...')
+    log('Creating oauth pool...')
     api_pool = kids_pool(auth_file, start_idx=0, verbose=verbose)
-
     for user_id in id_list:
-        log('query {}'.format(user_id))
+        log('Querying user_id: {}'.format(user_id))
         filename = os.path.join(context['volume_directory'], user_id + '.csv')
-        s3_path =  os.path.join('s3://' + context['s3_bucket'], 
-                                context['s3_key'] + '_' + user_id + '.csv')
-        if not s3.exists(s3_path):
+        s3_filename = os.path.join(context['s3_path'], user_id + '.csv')
+        if not s3.exists(s3_filename):
             query_user_friends_ids(filename, user_id, api_pool, cursor=-1)
-            s3.disk_2_s3(filename, s3_path)
+            log('Sending file to s3: {}'.format(s3_filename))
+            s3.disk_2_s3(filename, s3_filename )
             s3.disk_2_s3(context['log'], context['s3_log'])
             os.remove(filename)
 
 
 def query_user_friends_ids(filename, user_id, api_pool, cursor):
-    '''
-    queries twitter for users from id_list and authentication from auth_file.
+    '''Queries twitter for friends ids from id_list.
     '''
     log("Working on {}".format(user_id))
     creds = api_pool.get_current_api_creds()
@@ -119,29 +99,40 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
             
             df = pd.DataFrame(new_ids)
             df.columns = ['follower.user.id']
-
             if cursor == -1: 
-            	df.to_csv(filename, index=False)
+                df.to_csv(filename, index=False)
             else: 
-            	df.to_csv(filename, index=False, header=False, mode='a')
+                df.to_csv(filename, index=False, header=False, mode='a')
             
             cursor = response["next_cursor"] # want to record this
             ids.extend(new_ids)
             log("user id: {} cursor: {} total ids:{}".format(user_id, cursor, len(ids)))
-        
-        elif out.code in [420, 429]:
+
+        elif out.code in [404, 400, 410, 422]:
+            df = pd.DataFrame([out.code])
+            df.columns = ['follower.user.id']
+            if cursor == -1: 
+                df.to_csv(filename, index=False)
+            else: 
+                df.to_csv(filename, index=False, header=False, mode='a')
+            
+            cursor = response["next_cursor"] # want to record this
+            log("user id: {} cursor: {} total ids:{}".format(user_id, cursor, len(ids)))
+
+        elif out.code in [420, 429, 401, 406]:
             api_pool.find_next_token()
             creds = api_pool.get_current_api_creds()
+
+        elif out.code in [500, 502, 503, 504]
+            time.sleep(20)
         
         else:
             log(out.code)
             break
 
-
 def get_id_list(file_input):
     '''
-    opens list of user ids to query.
-    from the -i arg
+    Opens list of user ids to query.
     '''
     filename, file_extension = os.path.splitext(file_input)
     id_list = []
@@ -174,6 +165,23 @@ def check_vol_attached(context):
     else:
         return myvol[0]
 
+def get_ip_address():
+    '''
+    Gets the IP address of this machine.
+    '''
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    return s.getsockname()[0]
+
+
+def log(msg):
+    '''
+    Records messages and prints if verbose.
+    '''
+    logger = logging.getLogger(__name__)
+    if verbose: print(msg)
+    logger.info(msg)
+
 
 def build_context(args):
     '''
@@ -201,17 +209,16 @@ def build_context(args):
     context['droplet_region'] = mydrop.region['slug']
     context['volume_name'] = mydrop.name + '-volume'
     context['volume_directory'] = '/mnt/' + context['volume_name']
-    context['s3_key'] = os.path.join(context['s3_root'], output_base)
-    context['s3_log'] = os.path.join('s3://' + context['s3_root'], output_base + '.log')
+    context['s3_path'] = os.path.join('s3://' + context['s3_bucket'], context['s3_key'])
+    context['s3_log'] = os.path.join(context['s3_path'], output_base + '.log')
     context['log'] = os.path.join(context['volume_directory'], output_base + '.log')
 
-    
     return context
 
 
 def parse_args(args):
     '''
-    Which arguments we'll need
+    Parses the input arguments.
     '''
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input.json, a [] list of twitter ids.')
@@ -219,7 +226,7 @@ def parse_args(args):
     parser.add_argument('-f', '--filebase', dest='filebase', required=False, default='twitter_query', help='the_base_of_the_file')
     parser.add_argument('-d', '--digital-ocean-token', dest='token', required=False, help='DO access token', const=1, nargs='?', default=False)
     parser.add_argument('-b', '--s3-bucket', dest='s3_bucket', required=True, help='s3 bucket, ie s3://leonyin would be leonyin')
-    parser.add_argument('-r', '--s3-root', dest='s3_root', required=True, help='the path in the bucket.')
+    parser.add_argument('-r', '--s3-key', dest='s3_key', required=True, help='the path in the bucket.')
     parser.add_argument('-s', '--sudo', dest='sudo_password', nargs='?', default=False, help='sudo pw for machine')
     
     return vars(parser.parse_args())
