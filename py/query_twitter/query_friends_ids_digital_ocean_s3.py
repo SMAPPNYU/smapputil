@@ -1,3 +1,4 @@
+
 import os
 import sys
 import csv
@@ -84,12 +85,12 @@ def twitter_query(context):
         log('query {}'.format(user_id))
         filename = os.path.join(context['volume_directory'], user_id + '.csv')
         s3_path =  os.path.join('s3://' + context['s3_bucket'], 
-        	                    context['s3_key'] + '_' + user_id + '.csv')
+                                context['s3_key'] + '_' + user_id + '.csv')
         if not s3.exists(s3_path):
             query_user_friends_ids(filename, user_id, api_pool, cursor=-1)
             s3.disk_2_s3(filename, s3_path)
-        	s3.disk_2_s3(context['log'], context['s3_log'])
-        	os.remove(filename)
+            s3.disk_2_s3(context['log'], context['s3_log'])
+            os.remove(filename)
 
 
 def query_user_friends_ids(filename, user_id, api_pool, cursor):
