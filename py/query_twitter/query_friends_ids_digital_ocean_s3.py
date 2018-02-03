@@ -61,7 +61,7 @@ def twitter_query(context):
     
     log('Creating oauth pool...')
     api_pool = kids_pool(auth_file, start_idx=0, verbose=verbose)
-    for user_id in id_list:
+    for i, user_id in enumerate(id_list):
         log('Querying user_id: {}'.format(user_id))
         filename = os.path.join(context['volume_directory'], user_id + '.csv')
         s3_filename = os.path.join(context['s3_path'], user_id + '.csv')
@@ -71,6 +71,7 @@ def twitter_query(context):
             s3.disk_2_s3(filename, s3_filename )
             s3.disk_2_s3(context['log'], context['s3_log'])
             os.remove(filename)
+        log('>>> {} out of {}'.format(i, len(id_list)))
 
 
 def query_user_friends_ids(filename, user_id, api_pool, cursor):
@@ -108,30 +109,31 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
             
             cursor = response["next_cursor"] # want to record this
             ids.extend(new_ids)
-            log("user id: {} cursor: {} total ids:{}".format(user_id, cursor, len(ids)))
+            log("User id: {} Cursor: {} Total_IDs:{}".format(user_id, cursor, len(ids)))
 
-        elif resp_code in [404, 400, 410, 422]: # error with data, log it, leave.
+        elif resp_code in [404, 400, 410, 422, 401]: # error with data, log it, leave.
             df = pd.DataFrame([out.code])
             df.columns = ['follower.user.id']
             if cursor == -1: 
                 df.to_csv(filename, index=False)
             else: 
                 df.to_csv(filename, index=False, header=False, mode='a')            
-            log("user id: {} has error".format(user_id, resp_code ))
+            log("User id: {} fruitless with error {}".format(user_id, resp_code))
             cursor = 0
 
-        elif resp_code in [420, 429, 401, 406]: # rate limited, try again
-            log('{} {}'.format(user_id, resp_code ))
+        elif resp_code in [420, 429, 406]: # rate limited, try again
+            log("User id: {} rate limited with error {}".format(user_id, resp_code))
             time.sleep(901)
             api_pool.find_next_token()
             creds = api_pool.get_current_api_creds()
 
-        elif resp_code  in [500, 502, 503, 504]: # server error, wait.
-            log('{} {}'.format(user_id, resp_code ))
+        elif resp_code in [500, 502, 503, 504]: # server error, wait.
+            log("User id: {} server error {}".format(user_id, resp_code))
             time.sleep(100)
 
         else: # some other error, just break...
-            log('{} {}'.format(user_id, resp_code ))
+            log("User id: {} unknown error {}".format(user_id, resp_code))
+
             break
 
 def get_id_list(file_input):
