@@ -77,7 +77,7 @@ def twitter_query(context):
             s3.disk_2_s3(context['log'], context['s3_log'])
             os.remove(filename)
         else: log('{} already queried!!!'.format(user_id))
-        log('>>> {} out of {}'.format(i + offset, len(id_list) - offset))
+        log('>>> {} out of {}'.format(i + offset, len(id_list)))
         time.sleep(.1)
 
 
