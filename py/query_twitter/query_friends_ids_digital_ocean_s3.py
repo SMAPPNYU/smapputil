@@ -121,14 +121,17 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
             cursor = 0
 
         elif resp_code in [420, 429, 401, 406]: # rate limited, try again
+            log('{} {}'.format(user_id, resp_code ))
+            time.sleep(901)
             api_pool.find_next_token()
             creds = api_pool.get_current_api_creds()
 
-        elif out.code in [500, 502, 503, 504]: # server error, wait.
-        	time.sleep(100)
+        elif resp_code  in [500, 502, 503, 504]: # server error, wait.
+            log('{} {}'.format(user_id, resp_code ))
+            time.sleep(100)
 
         else: # some other error, just break...
-            log('{} {}'.format(user_id, out.code))
+            log('{} {}'.format(user_id, resp_code ))
             break
 
 def get_id_list(file_input):
