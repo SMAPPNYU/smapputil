@@ -197,7 +197,6 @@ def build_context(args):
     mydrop = [_ for _ in my_droplets if _.ip_address == get_ip_address()][0]
     
     context['user'] = os.environ.get('USER')
-    context['log'] = os.path.join(context['volume_directory'], output_base + '.log')
     context['droplet'] = mydrop
     context['droplet_id'] = mydrop.id
     context['droplet_region'] = mydrop.region['slug']
@@ -205,6 +204,8 @@ def build_context(args):
     context['volume_directory'] = '/mnt/' + context['volume_name']
     context['s3_key'] = os.path.join(context['s3_root'], output_base)
     context['s3_log'] = os.path.join('s3://' + context['s3_root'], output_base + '.log')
+    context['log'] = os.path.join(context['volume_directory'], output_base + '.log')
+
     
     return context
 
