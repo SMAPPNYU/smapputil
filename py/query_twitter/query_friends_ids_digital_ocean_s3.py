@@ -1,3 +1,4 @@
+
 import os
 import sys
 import csv
@@ -58,20 +59,26 @@ def twitter_query(context):
     auth_file = context['auth']
     log('Getting inputs to query...')
     id_list = get_id_list(input_file)
+    offset = context['start_idx_input']
+    cursor = context['cursor']
+    start_idx = context['start_idx_api']
     
     log('Creating oauth pool...')
-    api_pool = kids_pool(auth_file, start_idx=0, verbose=verbose)
-    for i, user_id in enumerate(id_list):
+    api_pool = kids_pool(auth_file, start_idx=start_idx, verbose=verbose)
+    
+    for i, user_id in enumerate( id_list[ offset : ] ):
         log('Querying user_id: {}'.format(user_id))
         filename = os.path.join(context['volume_directory'], user_id + '.csv')
         s3_filename = os.path.join(context['s3_path'], user_id + '.csv')
         if not s3.exists(s3_filename):
-            query_user_friends_ids(filename, user_id, api_pool, cursor=-1)
+            query_user_friends_ids(filename, user_id, api_pool, cursor=cursor)
             log('Sending file to s3: {}'.format(s3_filename))
-            s3.disk_2_s3(filename, s3_filename )
+            s3.disk_2_s3(filename, s3_filename)
             s3.disk_2_s3(context['log'], context['s3_log'])
             os.remove(filename)
-        log('>>> {} out of {}'.format(i, len(id_list)))
+        else: log('{} already queried!!!'.format(user_id))
+        log('>>> {} out of {}'.format(i + offset, len(id_list) - offset))
+        time.sleep(.1)
 
 
 def query_user_friends_ids(filename, user_id, api_pool, cursor):
@@ -99,14 +106,15 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
         if resp_code  == 200:
             response = json.loads(out.read().decode('utf-8'))
             new_ids = response["ids"]            
-            
-            df = pd.DataFrame(new_ids)
+            if len(new_ids) == 0:
+                df = pd.DataFrame([''])
+            else:
+                df = pd.DataFrame(new_ids)
             df.columns = ['follower.user.id']
             if cursor == -1: 
                 df.to_csv(filename, index=False)
             else: 
                 df.to_csv(filename, index=False, header=False, mode='a')
-            
             cursor = response["next_cursor"] # want to record this
             ids.extend(new_ids)
             log("User id: {} Cursor: {} Total_IDs:{}".format(user_id, cursor, len(ids)))
@@ -171,6 +179,7 @@ def check_vol_attached(context):
     else:
         return myvol[0]
 
+
 def get_ip_address():
     '''
     Gets the IP address of this machine.
@@ -234,7 +243,10 @@ def parse_args(args):
     parser.add_argument('-b', '--s3-bucket', dest='s3_bucket', required=True, help='s3 bucket, ie s3://leonyin would be leonyin')
     parser.add_argument('-r', '--s3-key', dest='s3_key', required=True, help='the path in the bucket.')
     parser.add_argument('-s', '--sudo', dest='sudo_password', nargs='?', default=False, help='sudo pw for machine')
-    
+    parser.add_argument('--start-idx-api', dest='start_idx_api', type=int, default=0, help='the first token to use')
+    parser.add_argument('--start-idx-input', dest='start_idx_input', type=int, default=0, help='the first input to query')
+    parser.add_argument('--cursor', dest='cursor', type=int, default=-1, help='the cursor to query')
+
     return vars(parser.parse_args())
 
 
@@ -242,14 +254,12 @@ if __name__ == '__main__':
     args = parse_args(sys.argv[1:])
     context = build_context(args)
     logging.basicConfig(filename=context['log'], level=logging.INFO)
-
     context['volume'] = check_vol_attached(context)
     if context['volume']:
         twitter_query(context)
         s3.disk_2_s3(context['log'], context['s3_log'])
         detach_and_destroy_volume(context)
         destroy_droplet(context)
-
 
 '''
 This script assumes a volume is attached to a digitalocean machine.
