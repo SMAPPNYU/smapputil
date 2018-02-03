@@ -127,7 +127,7 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
             
             cursor = response["next_cursor"] # want to record this
             ids.extend(new_ids)
-            log("user id: {} cursor: {} total ids:{}".format(ser_id, cursor, len(ids)))
+            log("user id: {} cursor: {} total ids:{}".format(user_id, cursor, len(ids)))
         
         elif out.code in [420, 429]:
             api_pool.find_next_token()
