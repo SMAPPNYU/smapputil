@@ -1,4 +1,3 @@
-
 import os
 import sys
 import csv
@@ -157,7 +156,7 @@ def get_id_list(file_input):
             for rowdict in list(csv.DictReader(f)):
                 if rowdict:
                     id_list.append(rowdict['id'])
-        log('launching query for %s inputs', len(id_list))
+        log('launching query for {} inputs'.format(len(id_list)))
     return id_list
 
 
