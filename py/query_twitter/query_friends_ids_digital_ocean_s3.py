@@ -1,5 +1,4 @@
-
-import os
+mport os
 import sys
 import csv
 import json
@@ -28,46 +27,24 @@ def destroy_droplet(context):
     droplet.destroy()
 
 
-def detach_and_destroy_volume(context):
-    '''
-    Remove all files from the volume, detaches the volume, then destroys it.
-    '''
-    V = context['volume']
-    command = 'sudo -S rm -rf /mnt/{}'.format(context['volume_name']).split()
-    try:
-        p = Popen(command, stdin=PIPE, stderr=PIPE, universal_newlines=True)
-        time.sleep(.2)
-        sudo_prompt = p.communicate(context['sudo_password'] + '\n')[1]
-    except Exception as e:
-        log('Issue clearing the Volume! {}'.format(e))
-        pass
-    log("Detaching volumne...")
-    V.detach(droplet_id = context['droplet_id'], 
-             region = context['droplet_region'])
-    log("Destroying volumne...")
-    time.sleep(8)
-    V.destroy()
-    log("Volume {} Destroyed!".format(context['volume_name']))
-
-
 def twitter_query(context):
     '''
     Gets user ids, and feeds them into a function to query twitter.
     '''
-    log('Starting query!')
     input_file = context['input']
     auth_file = context['auth']
-    log('Getting inputs to query...')
     id_list = get_id_list(input_file)
     offset = context['start_idx_input']
-    cursor = context['cursor']
     start_idx = context['start_idx_api']
     
     log('Creating oauth pool...')
     api_pool = kids_pool(auth_file, start_idx=start_idx, verbose=verbose)
     
     for i, user_id in enumerate( id_list[ offset : ] ):
-        log('Querying user_id: {}'.format(user_id))
+        if i == 0: # first cursor.
+            cursor = context['cursor']
+        else:
+            cursor = -1
         filename = os.path.join(context['volume_directory'], user_id + '.csv')
         s3_filename = os.path.join(context['s3_path'], user_id + '.csv')
         if not s3.exists(s3_filename):
@@ -103,11 +80,11 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
                          creds = creds,
                          parameters = parameters)
         resp_code = out.code
-        if resp_code  == 200:
+        if resp_code == 200:
             response = json.loads(out.read().decode('utf-8'))
             new_ids = response["ids"]            
             if len(new_ids) == 0:
-                df = pd.DataFrame([''])
+                df = pd.DataFrame([None])
             else:
                 df = pd.DataFrame(new_ids)
             df.columns = ['follower.user.id']
@@ -161,23 +138,8 @@ def get_id_list(file_input):
             for rowdict in list(csv.DictReader(f)):
                 if rowdict:
                     id_list.append(rowdict['id'])
-        log('launching query for {} inputs'.format(len(id_list)))
+        log('{} inputs to query.'.format(len(id_list)))
     return id_list
-
-
-def check_vol_attached(context):
-    '''
-    Checks to see if a digital ocean volume is attached to the machine.
-    Returns False if not, otherwise returns a 
-    '''
-    manager = digitalocean.Manager(token=context['token'])
-    vols =  manager.get_all_volumes()
-    myvol = [v for v in vols if context['droplet_id'] in v.droplet_ids]
-    
-    if not myvol: # check if volume is attached.
-        return False
-    else:
-        return myvol[0]
 
 
 def get_ip_address():
@@ -221,13 +183,10 @@ def build_context(args):
     context['user'] = os.environ.get('USER')
     context['droplet'] = mydrop
     context['droplet_id'] = mydrop.id
-    context['droplet_region'] = mydrop.region['slug']
-    context['volume_name'] = mydrop.name + '-volume'
-    context['volume_directory'] = '/mnt/' + context['volume_name']
+    context['volume_directory'] = 'pylogs/' #+ context['volume_name']
     context['s3_path'] = os.path.join('s3://' + context['s3_bucket'], context['s3_key'])
     context['s3_log'] = os.path.join(context['s3_path'], output_base + '.log')
     context['log'] = os.path.join(context['volume_directory'], output_base + '.log')
-
     return context
 
 
@@ -254,12 +213,11 @@ if __name__ == '__main__':
     args = parse_args(sys.argv[1:])
     context = build_context(args)
     logging.basicConfig(filename=context['log'], level=logging.INFO)
-    context['volume'] = check_vol_attached(context)
-    if context['volume']:
-        twitter_query(context)
-        s3.disk_2_s3(context['log'], context['s3_log'])
-        detach_and_destroy_volume(context)
-        destroy_droplet(context)
+    
+    twitter_query(context)
+    s3.disk_2_s3(context['log'], context['s3_log'])
+    detach_and_destroy_volume(context)
+    destroy_droplet(context)
 
 '''
 This script assumes a volume is attached to a digitalocean machine.
