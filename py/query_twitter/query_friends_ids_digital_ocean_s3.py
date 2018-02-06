@@ -185,7 +185,7 @@ def build_context(args):
     context['droplet_id'] = mydrop.id
     context['volume_directory'] = 'pylogs/' #+ context['volume_name']
     context['s3_path'] = os.path.join('s3://' + context['s3_bucket'], context['s3_key'])
-    context['s3_log'] = os.path.join(context['s3_path'], output_base + '.log')
+    context['s3_log'] = os.path.join('s3://' + context['s3_bucket'],'logs', output_base + '.log')
     context['log'] = os.path.join(context['volume_directory'], output_base + '.log')
     return context
 
@@ -216,7 +216,6 @@ if __name__ == '__main__':
     
     twitter_query(context)
     s3.disk_2_s3(context['log'], context['s3_log'])
-    detach_and_destroy_volume(context)
     destroy_droplet(context)
 
 '''
