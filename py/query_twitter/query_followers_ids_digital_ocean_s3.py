@@ -95,6 +95,7 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
             cursor = response["next_cursor"] # want to record this
             ids.extend(new_ids)
             log("User id: {} Cursor: {} Total_IDs:{}".format(user_id, cursor, len(ids)))
+            time.sleep(1)
 
         elif resp_code in [404, 400, 410, 422, 401]: # error with data, log it, leave.
             df = pd.DataFrame([out.code])
@@ -112,7 +113,7 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
             api_pool.find_next_token()
             creds = api_pool.get_current_api_creds()
 
-        elif resp_code in [500, 502, 503, 504]: # server error, wait.
+        elif resp_code in [500, 502, 503, 504, 104]: # server error, wait.
             log("User id: {} server error {}".format(user_id, resp_code))
             time.sleep(100)
 
