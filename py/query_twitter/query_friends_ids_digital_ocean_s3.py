@@ -26,6 +26,16 @@ def destroy_droplet(context):
     droplet = context['droplet']
     droplet.destroy()
 
+def get_user_id_file(user_id, context):
+    '''
+    File locations for user_id csv files.
+    '''
+    filename = os.path.join(context['volume_directory'], user_id + '.csv')
+    s3_filename = os.path.join(context['s3_path'], user_id, 
+        user_id + '__' + context['currentdate'] + '.csv')
+    s3_id_key = os.path.join(context['s3_path'], user_id)
+
+    return filename, s3_filename, s3_id_key
 
 def twitter_query(context):
     '''
@@ -45,9 +55,8 @@ def twitter_query(context):
             cursor = context['cursor']
         else:
             cursor = -1
-        filename = os.path.join(context['volume_directory'], user_id + '.csv')
-        s3_filename = os.path.join(context['s3_path'], user_id + '.csv')
-        if not s3.exists(s3_filename):
+        filename, s3_filename, s3_id_key = get_user_id_file(user_id, context)
+        if not s3.exists(s3_id_key):
             query_user_friends_ids(filename, user_id, api_pool, cursor=cursor)
             log('Sending file to s3: {}'.format(s3_filename))
             s3.disk_2_s3(filename, s3_filename)
@@ -67,7 +76,7 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
     function = 'friends/ids'
     the_url = "https://api.twitter.com/1.1/{}.json".format(function)
     
-    ids = []
+    id_count = 0
     while cursor != 0: 
         api_pool.set_increment()
         if api_pool.get_current_api_calls() % 15 == 0:
@@ -87,19 +96,19 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
                 df = pd.DataFrame([None])
             else:
                 df = pd.DataFrame(new_ids)
-            df.columns = ['follower.user.id']
+            df.columns = ['user.id']
             if cursor == -1: 
                 df.to_csv(filename, index=False)
             else: 
                 df.to_csv(filename, index=False, header=False, mode='a')
             cursor = response["next_cursor"] # want to record this
-            ids.extend(new_ids)
-            log("User id: {} Cursor: {} Total_IDs:{}".format(user_id, cursor, len(ids)))
+            id_count += len(new_ids)
+            log("User id: {} Cursor: {} Total_IDs:{}".format(user_id, cursor, id_count))
             time.sleep(1)
 
         elif resp_code in [404, 400, 410, 422, 401]: # error with data, log it, leave.
             df = pd.DataFrame([out.code])
-            df.columns = ['follower.user.id']
+            df.columns = ['user.id']
             if cursor == -1: 
                 df.to_csv(filename, index=False)
             else: 
@@ -182,6 +191,7 @@ def build_context(args):
     mydrop = [_ for _ in my_droplets if _.ip_address == get_ip_address()][0]
     
     context['user'] = os.environ.get('USER')
+    context['currentdate'] = currentdate
     context['droplet'] = mydrop
     context['droplet_id'] = mydrop.id
     context['volume_directory'] = 'pylogs/' #+ context['volume_name']
@@ -225,4 +235,3 @@ It then queries twitter for all timelines for a given user id,
 and pools tokens.
 Leon Yin 2018-02-02
 '''
-
