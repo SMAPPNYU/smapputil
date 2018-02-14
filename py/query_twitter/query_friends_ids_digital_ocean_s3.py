@@ -1,4 +1,4 @@
-import os
+mport os
 import sys
 import csv
 import json
@@ -7,8 +7,9 @@ import socket
 import argparse
 import datetime
 import logging
-from subprocess import Popen, PIPE
+from socket import error as SocketError
 
+from subprocess import Popen, PIPE
 import pandas as pd
 import digitalocean
 
@@ -51,7 +52,7 @@ def twitter_query(context):
     api_pool = kids_pool(auth_file, start_idx=start_idx, verbose=verbose)
     
     for i, user_id in enumerate( id_list[ offset : ] ):
-        if i == 0: # first cursor.
+        if i == 0: # first cursor, only if flag is set.
             cursor = context['cursor']
         else:
             cursor = -1
@@ -64,7 +65,7 @@ def twitter_query(context):
             os.remove(filename)
         else: log('{} already queried!!!'.format(user_id))
         log('>>> {} out of {}'.format(i + offset, len(id_list)))
-        time.sleep(.1)
+        time.sleep(1)
 
 
 def query_user_friends_ids(filename, user_id, api_pool, cursor):
@@ -84,11 +85,17 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
             creds = api_pool.get_current_api_creds()
         
         parameters = [('user_id', user_id),
-                      ('cursor', cursor)] 
-        out = twitterreq(the_url, 
-                         creds = creds,
-                         parameters = parameters)
-        resp_code = out.code
+                      ('cursor', cursor)]
+        try:
+            out = twitterreq(the_url, 
+                             creds = creds,
+                             parameters = parameters)
+            resp_code = out.code
+
+        except SocketError as e: #connection reset by peer
+            log(e)
+            resp_code = 104
+        
         if resp_code == 200:
             response = json.loads(out.read().decode('utf-8'))
             new_ids = response["ids"]            
@@ -106,7 +113,7 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
             log("User id: {} Cursor: {} Total_IDs:{}".format(user_id, cursor, id_count))
             time.sleep(1)
 
-        elif resp_code in [404, 400, 410, 422, 401]: # error with data, log it, leave.
+        elif resp_code in [404, 400, 410, 422, 401]: # error with data, log it, 401 means private user!
             df = pd.DataFrame([out.code])
             df.columns = ['user.id']
             if cursor == -1: 
@@ -122,15 +129,15 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
             api_pool.find_next_token()
             creds = api_pool.get_current_api_creds()
 
-        elif resp_code in [500, 502, 503, 504, 104]: # server error, wait.
+        elif resp_code in [500, 502, 503, 504, 104]: # server error, wait, try again.
             log("User id: {} server error {}".format(user_id, resp_code))
-            time.sleep(100)
+            time.sleep(60 * 60)
 
         else: # some other error, just break...
             log("User id: {} unknown error {}".format(user_id, resp_code))
-
             break
 
+        
 def get_id_list(file_input):
     '''
     Opens list of user ids to query.
@@ -177,6 +184,8 @@ def build_context(args):
     '''
     context = args
     currentdate = datetime.datetime.now().strftime("%Y-%m-%d")
+    currentyear = datetime.datetime.now().strftime("%Y")
+    currentmonth = datetime.datetime.now().strftime("%m")
     output_base = context['filebase'] + '_' + currentdate + '_' + \
         context['input'].split('/')[-1].replace('.csv', '')
 
@@ -194,10 +203,25 @@ def build_context(args):
     context['currentdate'] = currentdate
     context['droplet'] = mydrop
     context['droplet_id'] = mydrop.id
-    context['volume_directory'] = 'pylogs/' #+ context['volume_name']
-    context['s3_path'] = os.path.join('s3://' + context['s3_bucket'], context['s3_key'])
-    context['s3_log'] = os.path.join('s3://' + context['s3_bucket'],'logs', output_base + '.log')
-    context['log'] = os.path.join(context['volume_directory'], output_base + '.log')
+    context['volume_directory'] = 'pylogs/'
+    
+    context['s3_path'] = os.path.join(
+        's3://' + context['s3_bucket'], context['s3_key']
+    )
+    context['s3_log'] = os.path.join(
+        's3://' + context['s3_bucket'], 'logs', output_base + '.log'
+    )
+    context['s3_log_done'] = os.path.join(
+        's3://' + context['s3_bucket'], 'logs', 
+        currentyear, currentmonth, output_base + '.log'
+    )
+    context['s3_auth'] = os.path.join(
+        's3://' + context['s3_bucket'], 'tokens/used', 
+        os.path.basename(context['auth'])
+    )
+    context['log'] = os.path.join(
+        context['volume_directory'], output_base + '.log'
+    )
     return context
 
 
@@ -226,12 +250,12 @@ if __name__ == '__main__':
     logging.basicConfig(filename=context['log'], level=logging.INFO)
     
     twitter_query(context)
-    s3.disk_2_s3(context['log'], context['s3_log'])
+    s3.mv(context['s3_log'], context['s3_log_done'])
     destroy_droplet(context)
 
 '''
 This script assumes a volume is attached to a digitalocean machine.
 It then queries twitter for all timelines for a given user id,
 and pools tokens.
-Leon Yin 2018-02-02
+Leon Yin 2018-02-14
 '''
