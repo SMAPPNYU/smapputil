@@ -56,7 +56,7 @@ def build_context(args):
     currentmonth = datetime.datetime.now().strftime("%m")
     
     input_name = os.path.splitext(os.path.basename(context['input']))[0]
-    output_base = ( context['filebase'] + '__' currentdate + '__' +
+    output_base = ( context['filebase'] + '__' + currentdate + '__' +
         context['input'].split('/')[-1].replace('.csv', '.json') )
 
     # local and digital ocean
@@ -148,14 +148,14 @@ def get_id_list(file_input):
         id_data = open(file_input).read()
         id_list = json.loads(id_data)
     elif file_extension == '.csv':
-        logger.info('loading csv...')
+        log('loading csv...')
         count = 0
         with open(file_input) as f:
             for rowdict in list(csv.DictReader(f)):
                 # if list is not empty
                 if rowdict:
                     id_list.append(rowdict['id'])
-        log('launching query for %s inputs', len(id_list))
+        log('launching query for {} inputs'.format(len(id_list)))
     return id_list
 
 
@@ -174,7 +174,6 @@ def twitter_query(context):
         
     id_list = get_id_list(input_file)
     log('creating oauth pool...')
-
     query_user_tweets(output, id_list, auth_file, max_id=max_id, since_id=since_id)
 
 
@@ -183,12 +182,8 @@ def query_user_tweets(output, id_list, auth_file, max_id=-1, since_id=-1):
     queries twitter for users from id_list and authentication from auth_file.
     '''
     num_inputs_queried = 0
-
-    #create the api pool
     api_pool = TweepyPool(auth_file)
-
     write_fd = open(output, 'w+')
-
     for userid in id_list:
         num_inputs_queried = num_inputs_queried + 1
         # even though the count is 200 we can cycle through 3200 items.
@@ -219,7 +214,6 @@ def query_user_tweets(output, id_list, auth_file, max_id=-1, since_id=-1):
                                     count=200)
 
                 for item in cursor.items():
-                    logger.debug('tweet text: %s', item.text) 
                     count = count + 1
                     tweet_item = json.loads(json.dumps(item._json))
                     tweet_item['smapp_timestamp'] = (datetime.datetime.
@@ -227,9 +221,9 @@ def query_user_tweets(output, id_list, auth_file, max_id=-1, since_id=-1):
                     write_fd.write(json.dumps(tweet_item))
                     write_fd.write('\n')
             except TweepError as e:
-                log('tweepy error: %s', e)
-            log('counted %s objects for input %s', count, userid)
-        log('number of inputs queried so far: %s', num_inputs_queried)
+                log('tweepy error: {}'.format(e))
+            log('counted {} objects for input {}'.format(count, userid))
+        log('number of inputs queried so far: {}'.format(num_inputs_queried))
         s3.disk_2_s3(context['log'], context['s3_log'])
     write_fd.close()
 
