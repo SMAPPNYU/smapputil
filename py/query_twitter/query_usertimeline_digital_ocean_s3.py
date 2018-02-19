@@ -137,7 +137,7 @@ def check_vol_attached(context):
         return myvol[0]
 
 
-def get_id_list(file_input):
+def get_id_list(file_input, offset):
     '''
     opens list of user ids to query.
     from the -i arg
@@ -157,7 +157,7 @@ def get_id_list(file_input):
                 if rowdict:
                     id_list.append(rowdict['id'])
         log('launching query for {} inputs'.format(len(id_list)))
-    return id_list
+    return id_list[offset:]
 
 
 def twitter_query(context):
@@ -171,8 +171,9 @@ def twitter_query(context):
     auth_file = context['auth']
     max_id = context['max_id']
     since_id = context['since_id']
+    offset = context['offset']
         
-    id_list = get_id_list(input_file)
+    id_list = get_id_list(input_file, offset)
     log('creating oauth pool...')
     query_user_tweets(output, id_list, auth_file, max_id=max_id, since_id=since_id)
 
@@ -184,7 +185,7 @@ def query_user_tweets(output, id_list, auth_file, max_id=-1, since_id=-1):
     num_inputs_queried = 0
     api_pool = TweepyPool(auth_file)
     write_fd = open(output, 'w+')
-    for userid in id_list[ context['offset'] : ]:
+    for userid in id_list:
         num_inputs_queried = num_inputs_queried + 1
         # even though the count is 200 we can cycle through 3200 items.
         # if you put a count variable in this cursor it will iterate up 
