@@ -40,6 +40,7 @@ def parse_args(args):
     parser.add_argument('--sudo', dest='sudo_password', nargs='?', default=False, help='sudo pw for machine')
     parser.add_argument('-max', '--max-id', dest='max_id', required=False, help='Max Tweet ID for query.', default=False)
     parser.add_argument('-since', '--since-id', dest='since_id', nargs='?', help='Min Tweet ID for query', default=False)
+    parser.add_argument('-=start-idx-input', dest='offset', nargs='?', help='Min Tweet ID for query', default=0)
 
     return vars(parser.parse_args())
 
@@ -163,8 +164,7 @@ def twitter_query(context):
     '''
     Gets user ids, and feeds them into a function to query twitter.
     '''
-    if verbose:
-        print('Starting query!')
+    log('Starting query!')
 
     output = context['output']
     input_file = context['input']
@@ -184,7 +184,7 @@ def query_user_tweets(output, id_list, auth_file, max_id=-1, since_id=-1):
     num_inputs_queried = 0
     api_pool = TweepyPool(auth_file)
     write_fd = open(output, 'w+')
-    for userid in id_list:
+    for userid in id_list[ context['offset'] : ]:
         num_inputs_queried = num_inputs_queried + 1
         # even though the count is 200 we can cycle through 3200 items.
         # if you put a count variable in this cursor it will iterate up 
@@ -320,3 +320,4 @@ if __name__ == '__main__':
         detach_and_destroy_volume(context)
         destroy_droplet(context)
 
+ 
