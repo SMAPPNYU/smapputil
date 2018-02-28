@@ -231,14 +231,17 @@ def query_user_meta(user_id, api_pool, context):
         else: # some other error, just break...
             log("Iternation: {} unknown error {}".format(i, resp_code))
             break
+        # send an update to s3 after each iteration!
+        s3.disk_2_s3(context['log'], context['s3_log'])
 
 
 def prep_s3(context):
     '''
     Uploads the api tokens, claiming them from further use.
     '''
+    log("So it begins...")
+    s3.disk_2_s3(context['log'], context['s3_log'])
     s3.disk_2_s3(context['auth'], context['s3_auth'])
-
 
 def settle_affairs_in_s3(context):
     '''
