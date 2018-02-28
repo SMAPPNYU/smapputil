@@ -41,7 +41,7 @@ def parse_args(args):
     parser.add_argument('-max', '--max-id', dest='max_id', required=False, help='Max Tweet ID for query.', default=False)
     parser.add_argument('-since', '--since-id', dest='since_id', nargs='?', help='Min Tweet ID for query', default=False)
     parser.add_argument('--start-idx-input', dest='offset', type=int, default=0, help='Start index offset')
-
+    parser.add_argument('--query-date', dest='query_date', default=datetime.datetime.now().strftime("%Y-%m-%d"), help='YYYY-MM-DD')
     return vars(parser.parse_args())
 
 
@@ -52,7 +52,7 @@ def build_context(args):
     '''
     context = args
 
-    currentdate = datetime.datetime.now().strftime("%Y-%m-%d")
+    currentdate = args.query_date
     currentyear = datetime.datetime.now().strftime("%Y")
     currentmonth = datetime.datetime.now().strftime("%m")
     
@@ -184,7 +184,7 @@ def query_user_tweets(output, id_list, auth_file, max_id=-1, since_id=-1):
     '''
     num_inputs_queried = 0
     api_pool = TweepyPool(auth_file)
-    write_fd = open(output, 'w+')
+    write_fd = open(output, 'a+')
     for userid in id_list:
         num_inputs_queried = num_inputs_queried + 1
         # even though the count is 200 we can cycle through 3200 items.
@@ -229,26 +229,24 @@ def query_user_tweets(output, id_list, auth_file, max_id=-1, since_id=-1):
     write_fd.close()
 
 
-def bzip(context):
-    '''
-    Bzips a file.
-    When this is successful, the original file will have disappeared.
-    When that happens this returns the new file name with the .bz2 extension.
-    '''
+def pbzip2(context):
     f_out = context['output']
-    command = ['/bin/bzip2', f_out]
-    process = Popen(command, stdin=PIPE, stderr=PIPE)
-    
-    while os.path.isfile(f_out):
-        time.sleep(1)
-        
-    return f_out + '.bz2'
+    log("bzipping {}".format(f_out))
+    command = ['/bin/pbzip2', '-v', '-f', f_out]
+    process = Popen(command, shell=False, stdout=PIPE, stdin=PIPE)
+    for line in iter(process.stdout.readline, b''): 
+        log(line)
+    returncode = process.wait() 
+    log("return code for {}".format(returncode))
+    return file + '.bz2'
 
 
 def prep_s3(context):
     '''
     Uploads the api tokens, claiming them from further use.
     '''
+    log("So it begins...")
+    s3.disk_2_s3(context['log'], context['s3_log'])
     s3.disk_2_s3(context['auth'], context['s3_auth'])
 
 
@@ -260,7 +258,11 @@ def settle_affairs_in_s3(context):
     '''
     s3.disk_2_s3(context['output_bz2'], context['s3_path'])
     s3.rm(context['s3_auth'])
-    s3.mv(context['s3_log'], context['s3_log_done'])
+    
+    try: 
+        s3.mv(context['s3_log'], context['s3_log_done'])
+    except:
+        log("moving the log failed!")
 
 
 def detach_and_destroy_volume(context):
@@ -276,7 +278,6 @@ def detach_and_destroy_volume(context):
         sudo_prompt = p.communicate(context['sudo_password'] + '\n')[1]
     except Exception as e:
         log('Issue clearing the Volume! {}'.format(e))
-
         pass
 
     log("Detaching volumne...")
@@ -316,7 +317,7 @@ if __name__ == '__main__':
     if context['volume']:
         prep_s3(context)
         twitter_query(context)
-        context['output_bz2'] = bzip(context)
+        context['output_bz2'] = pbzip2(context)
         settle_affairs_in_s3(context)
         detach_and_destroy_volume(context)
         destroy_droplet(context)
