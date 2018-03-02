@@ -206,9 +206,9 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
                 response = json.loads(out.read().decode('utf-8'))
                 new_ids = response["ids"]            
                 if len(new_ids) == 0:
-                    df = pd.DataFrame([None])
+                    df = pd.DataFrame([None], dtype=str)
                 else:
-                    df = pd.DataFrame(new_ids)
+                    df = pd.DataFrame(new_ids, dtype=str)
                 df.columns = ['user.id']
                 if cursor == -1: 
                     df.to_csv(filename, index=False)
