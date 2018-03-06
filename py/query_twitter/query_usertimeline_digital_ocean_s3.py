@@ -52,7 +52,7 @@ def build_context(args):
     '''
     context = args
 
-    currentdate = args.query_date
+    currentdate = args['query_date']
     currentyear = datetime.datetime.now().strftime("%Y")
     currentmonth = datetime.datetime.now().strftime("%m")
     
