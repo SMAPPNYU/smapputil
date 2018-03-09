@@ -232,13 +232,13 @@ def query_user_tweets(output, id_list, auth_file, max_id=-1, since_id=-1):
 def pbzip2(context):
     f_out = context['output']
     log("bzipping {}".format(f_out))
-    command = ['/bin/pbzip2', '-v', '-f', f_out]
+    command = ['/usr/bin/pbzip2', '-v', '-f', f_out]
     process = Popen(command, shell=False, stdout=PIPE, stdin=PIPE)
     for line in iter(process.stdout.readline, b''): 
         log(line)
     returncode = process.wait() 
     log("return code for {}".format(returncode))
-    return file + '.bz2'
+    return f_out + '.bz2'
 
 
 def prep_s3(context):
