@@ -230,7 +230,8 @@ def query_user_followers_ids(filename, user_id, api_pool, cursor):
             if cursor == -1: 
                 df.to_csv(filename, index=False)
             else: 
-                df.to_csv(filename, index=False, header=False, mode='a')            
+                if len(df) > 1:
+                    df.to_csv(filename, index=False, header=False, mode='a')            
             log("User id: {} fruitless with error {}".format(user_id, resp_code))
             cursor = 0
 
