@@ -17,7 +17,7 @@ def bzip(f):
     if os.path.exists(f_out):
         os.remove(f_out)
         
-    command = ['time', '/bin/bzip2', f]
+    command = ['time', ' /share/apps/pbzip2/1.1.13/intel/bin/pbzip2','-v', '-f',  f]
     process = Popen(command, stdout=PIPE, bufsize=1)
     with process.stdout:
         for line in iter(process.stdout.readline, b''): 
