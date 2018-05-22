@@ -5,6 +5,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=24GB
 #SBATCH --time=50:00:00
+#SBATCH --output=/state/partition1/job-%j/slurm-%j.out
 
 module purge
 module load rclone/1.35
