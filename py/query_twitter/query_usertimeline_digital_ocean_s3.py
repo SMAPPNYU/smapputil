@@ -210,12 +210,12 @@ def query_user_tweets(output, id_list, auth_file, max_id=-1, since_id=-1):
                     cursor = Cursor(api_pool.user_timeline, 
                                     user_id=userid, 
                                     count=200, 
-                                    since_id=since_id
+                                    since_id=since_id,
                                     tweet_mode='extended')
                 else:
                     cursor = Cursor(api_pool.user_timeline, 
                                     user_id=userid, 
-                                    count=200
+                                    count=200,
                                     tweet_mode='extended')
 
                 for item in cursor.items():
