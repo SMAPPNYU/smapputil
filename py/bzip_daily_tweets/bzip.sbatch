@@ -7,4 +7,4 @@
 #SBATCH --time=100:00:00
 
 module purge
-/home/ly501/anaconda3/bin/python /home/ly501/smapprepos/smapputil/py/bzip_daily_tweets/bzip_all.py
+/home/nhb228/anaconda3/bin/python /home/nhb228/smapprepos/smapputil/py/bzip_daily_tweets/bzip_all.py

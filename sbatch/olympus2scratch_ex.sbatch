@@ -6,7 +6,7 @@
 #SBATCH --mem=16GB
 #SBATCH --time=48:00:00
 
-/home/$USER/anaconda3/bin/python /home/$USER/smapputil/py/olympus_2_scratch/olympus2scratch.py -c us_geobox -n 12
+/home/$USER/anaconda3/bin/python /home/$USER/smapprepos/smapputil/py/olympus_2_scratch/olympus2scratch.py -c random_collection_4  -n 12
 
 :'
 Change the -c flag from us_geobox to the collection of interest.

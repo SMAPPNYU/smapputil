@@ -198,21 +198,25 @@ def query_user_tweets(output, id_list, auth_file, max_id=-1, since_id=-1):
                                     user_id=userid, 
                                     count=200, 
                                     max_id=max_id, 
-                                    since_id=since_id)
+                                    since_id=since_id,
+                                    tweet_mode='extended')
                 elif max_id:
                     cursor = Cursor(api_pool.user_timeline, 
                                     user_id=userid, 
                                     count=200, 
-                                    max_id=max_id)
+                                    max_id=max_id,
+                                    tweet_mode='extended')
                 elif since_id:
                     cursor = Cursor(api_pool.user_timeline, 
                                     user_id=userid, 
                                     count=200, 
-                                    since_id=since_id)
+                                    since_id=since_id
+                                    tweet_mode='extended')
                 else:
                     cursor = Cursor(api_pool.user_timeline, 
                                     user_id=userid, 
-                                    count=200)
+                                    count=200
+                                    tweet_mode='extended')
 
                 for item in cursor.items():
                     count = count + 1
