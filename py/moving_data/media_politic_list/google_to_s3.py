@@ -1,3 +1,16 @@
+'''
+This is a short script to copy files from Google Sheets to s3.
+Specifically, this is to copy the media politic list created by Gregory Eady et al to s3.
+The from where and to where is in config.py, on GitHub we have an example in config_example.py
+Copy that, and make the read config file.
+
+You'll need to install two packages:
+`pip install s34me googlespreadsheets`
+
+By Leon Yin
+2018-07-25
+'''
+
 import s3
 from googlespreadsheets import GoogleSheets
 
