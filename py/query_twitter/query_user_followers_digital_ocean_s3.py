@@ -1,9 +1,8 @@
 '''
-Queries twitter for user metadata of friends for a given user id
+Wueries twitter for user metadata of followers for a given user id
 and pools tokens.
 
 This script assumes a volume is attached to a digitalocean machine.
-
 
 One json file will be returned by a query. 
 Each Json will have the user metadata from multiple input users.
@@ -80,7 +79,7 @@ def build_context(args):
     # AWS s3
     context['s3_path'] = os.path.join(
         's3://', context['s3_bucket'], context['s3_key'], 
-        'output/user_friends/', currentyear, currentmonth,
+        'output/user_followers/', currentyear, currentmonth,
         output_base + '.bz2'
     )
     context['s3_log'] = os.path.join(
@@ -88,7 +87,7 @@ def build_context(args):
     )
     context['s3_log_done'] = os.path.join(
         's3://' + context['s3_bucket'], context['s3_key'],
-        'logs/user_friends/', currentyear, currentmonth, 
+        'logs/user_followers/', currentyear, currentmonth, 
         output_base + '.log'
     )
     context['s3_auth'] = os.path.join(
@@ -133,7 +132,7 @@ def twitter_query(context):
             if not user_id == '':
                 try:
                     count = 0
-                    for item in Cursor(api_pool.friends, id=user_id, count=5000).items():
+                    for item in Cursor(api_pool.followers, id=user_id, count=5000).items():
                         log('user id: {},  and screen_name {}'.format(item.id, item.screen_name)) 
                         count = count + 1
                         tweet_item = json.loads(json.dumps(item._json))
