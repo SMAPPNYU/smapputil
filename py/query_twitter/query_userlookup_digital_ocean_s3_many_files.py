@@ -154,7 +154,7 @@ def process_row(row, context):
         context
     )
     with open(filename, 'w+') as f:
-        f.write(json.dumps(user_meta))
+        f.write(json.dumps(user_meta) + '\n')
 
     # move to s3.
     s3.disk_2_s3(filename, s3_filename)

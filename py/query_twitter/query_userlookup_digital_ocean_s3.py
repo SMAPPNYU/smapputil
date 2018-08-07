@@ -136,7 +136,7 @@ def process_row(row, context):
     user_meta['smapp_timestamp'] = (datetime.datetime.
         utcnow().strftime('%Y-%m-%d %H:%M:%S +0000'))
     with open(context['output'], 'a+') as f:
-        f.write(json.dumps(user_meta))
+        f.write(json.dumps(user_meta) + '\n')
 
 
 def query_user_meta(user_id, api_pool, context):
