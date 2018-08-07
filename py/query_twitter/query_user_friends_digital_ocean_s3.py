@@ -143,7 +143,7 @@ def twitter_query(context):
                     log('tweepy error: {}'.format(e))
                 
                 # update the logs and send to s3
-                log('counted {} objects for input {}'.format(count, userid))
+                log('counted {} objects for input {}'.format(count, user_id))
                 s3.disk_2_s3(context['log'], context['s3_log'])
 
             log('number of inputs queried so far: {}'.format(num_inputs_queried))
