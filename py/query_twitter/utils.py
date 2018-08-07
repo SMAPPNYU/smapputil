@@ -52,7 +52,7 @@ def prep_s3(context):
     '''
     Uploads the api tokens, claiming them from further use.
     '''
-    log(">>> Start {}".format(datetime.dateteime.now()))
+    log(">>> Start {}".format(datetime.datetime.now()))
     s3.disk_2_s3(context['log'], context['s3_log'])
     s3.disk_2_s3(context['auth'], context['s3_auth'])
 
