@@ -1,15 +1,16 @@
 '''
-Queries twitter for user metadata of followers of the input users.
+Queries Twitter for user metadata for input users.
+Output is many json files (one per input user) where each file has new line delimited
+json objects of user metadata
 
-The output is one json file of user metadata per input user.
-So for 60 inputs, we get 60 json files.
+This script does not need a volume attached to a digitalocean machine.
 
-There's no need to attach a volume for this query.
-Tokens are pooled using tkpool.
+This script pools tokens using the kidspool class -- which should be in the directory where this lives.
+We use the Twitter restful API (not tweepy) via twitter_api, to interact with Twitter.
 
-https://developer.twitter.com/en/docs/accounts-and-users/follow-search-get-users/api-reference/get-followers-ids
+https://developer.twitter.com/en/docs/accounts-and-users/follow-search-get-users/api-reference/get-users-lookup
 
-Leon Yin 2017-11-06
+Leon Yin 2018-02-14
 updated 2018-08-06
 '''
 
@@ -31,9 +32,8 @@ import digitalocean
 
 from kidspool.kidspool import kids_pool
 from twitter_api.twitter_api import twitterreq
-from utils import prep_s3, settle_affairs_in_s3, destroy_droplet, get_id_list, get_ip_address, log, check_vol_attached
 
-
+from utils import *
         
 def parse_args(args):
     '''
@@ -48,7 +48,7 @@ def parse_args(args):
     parser.add_argument('-r', '--s3-key', dest='s3_key', required=True, help='the path in the bucket.')
     parser.add_argument('--start-idx-api', dest='start_idx_api', type=int, default=0, help='the first token to use')
     parser.add_argument('--start-idx-input', dest='start_idx_input', type=int, default=0, help='the first input to query')
-    parser.add_argument('--cursor', dest='cursor', type=int, default=-1, help='the cursor to query')
+    parser.add_argument('--query-date', dest='query_date', default=datetime.datetime.now().strftime("%Y-%m-%d"), help='YYYY-MM-DD')
 
     return vars(parser.parse_args())
 
@@ -60,11 +60,12 @@ def build_context(args):
     '''
     context = args
     
-    currentdate = datetime.datetime.now().strftime("%Y-%m-%d")
+    currentdate = context['query_date']
     currentyear = datetime.datetime.now().strftime("%Y")
     currentmonth = datetime.datetime.now().strftime("%m")
-    context['currentyear'], context['currentmonth'] = currentyear, currentmonth
-
+    output_base = ( context['filebase'] + '__' + currentdate + '__' +
+        context['input'].split('/')[-1].replace('.csv', '') )
+    
     # local stuff
     context['currentdate'] = currentdate
     context['volume_directory'] = 'pylogs/'
@@ -85,14 +86,14 @@ def build_context(args):
     # s3 stuff
     context['s3_path'] = os.path.join(
         's3://' + context['s3_bucket'], context['s3_key'],
-        'outputs/follower_ids/',
+        'output/user_meta' # , currentyear, currentmonth,
     )
     context['s3_log'] = os.path.join(
         's3://' + context['s3_bucket'], 'logs', output_base + '.log'
     )
     context['s3_log_done'] = os.path.join(
         's3://' + context['s3_bucket'], context['s3_key'],
-        'logs/follower_ids/', currentyear, currentmonth, 
+        'logs/user_meta', currentyear, currentmonth, 
         output_base + '.log'
     )
     context['s3_auth'] = os.path.join(
@@ -101,19 +102,6 @@ def build_context(args):
     )
 
     return context
-
-
-def get_user_id_file(user_id, context):
-    '''
-    File locations for user_id csv files.
-    '''
-    filename = os.path.join(context['volume_directory'], user_id + '.csv')
-    s3_filename = os.path.join(context['s3_path'], user_id, 
-        context['currentyear'], context['currentmonth'],
-        user_id  + '.csv')    
-    s3_id_key = os.path.join(context['s3_path'], user_id)
-
-    return filename, s3_filename, s3_id_key
 
 
 def twitter_query(context):
@@ -128,45 +116,71 @@ def twitter_query(context):
     
     log('Creating oauth pool...')
     api_pool = kids_pool(auth_file, start_idx=start_idx, verbose=verbose)
-    
-    for i, user_id in enumerate( id_list[ offset : ] ):
-        if i == 0: # first cursor, only if flag is set.
-            cursor = context['cursor']
-        else:
-            cursor = -1
-        filename, s3_filename, s3_id_key = get_user_id_file(user_id, context)
-        if not s3.exists(s3_id_key):
-            query_user_followers_ids(filename, user_id, api_pool, cursor=cursor)
-            log('Sending file to s3: {}'.format(s3_filename))
-            s3.disk_2_s3(filename, s3_filename)
-            s3.disk_2_s3(context['log'], context['s3_log'])
-            os.remove(filename)
-            # send an update to s3 after each iteration!
-            s3.disk_2_s3(context['log'], context['s3_log'])
-        else: 
-            log('{} already queried!!!'.format(user_id))
-        log('>>> {} out of {}'.format(i + offset, len(id_list)))
-        time.sleep(1)
+    query_user_meta(id_list[ offset : ], api_pool, context)
 
 
-def query_user_followers_ids(filename, user_id, api_pool, cursor):
+def get_user_id_file(user_id, context):
+    '''
+    File locations for user_id csv files.
+    '''
+    filename = os.path.join(context['volume_directory'], user_id + '.json')
+    s3_filename = os.path.join(context['s3_path'], user_id + '.json')
+    s3_id_key = os.path.join(context['s3_path'], user_id)
+
+    return filename, s3_filename, s3_id_key
+
+
+def user_not_downloaded(u_id, context):
+    '''
+    Check if the user_id has already been processed.
+    '''
+    filename, s3_filename, s3_id_key = get_user_id_file(
+        str(u_id), context)
+    if not s3.file_exists(s3_filename):
+        return True
+    return False
+
+
+def process_row(row, context):
+    '''
+    Parses JSON response from Twitter API.
+    Writes to local disk and then sents to s3.
+    '''
+    user_meta = row.copy()
+    user_meta['smapp_timestamp'] = (datetime.datetime.
+        utcnow().strftime('%Y-%m-%d %H:%M:%S +0000'))
+    filename, s3_filename, s3_id_key = get_user_id_file(
+        str(user_meta['id']), 
+        context
+    )
+    with open(filename, 'w+') as f:
+        f.write(json.dumps(user_meta))
+
+    # move to s3.
+    s3.disk_2_s3(filename, s3_filename)
+    os.remove(filename)
+
+
+def query_user_meta(user_id, api_pool, context):
     '''
     Queries twitter for followers ids from id_list.
     '''
-    log("Working on {}".format(user_id))
     creds = api_pool.get_current_api_creds()
-    function = 'followers/ids'
+    function = 'users/lookup'
     the_url = "https://api.twitter.com/1.1/{}.json".format(function)
-    
+
+    # filter users ABD
+    user_id = [u_id for u_id in user_id if user_not_downloaded(u_id, context)]
+
+    # chunk the user_ids into lists of 100 per API call.
     id_count = 0
-    while cursor != 0: 
+    for i, user_chunks in enumerate(chunker(user_id, 100)):
         api_pool.set_increment()
-        if api_pool.get_current_api_calls() % 15 == 0:
+        if api_pool.get_current_api_calls() % 300 == 0:
             api_pool.find_next_token()
             creds = api_pool.get_current_api_creds()
         
-        parameters = [('user_id', user_id),
-                      ('cursor', cursor)]
+        parameters = [('user_id', ','.join(user_chunks))]
         try:
             out = twitterreq(the_url, creds=creds, parameters=parameters)
             resp_code = out.code
@@ -177,20 +191,10 @@ def query_user_followers_ids(filename, user_id, api_pool, cursor):
         if resp_code == 200:
             try:
                 response = json.loads(out.read().decode('utf-8'))
-                new_ids = response["ids"]            
-                if len(new_ids) == 0:
-                    df = pd.DataFrame([None])
-                else:
-                    df = pd.DataFrame(new_ids, dtype=str)
-                df.columns = ['user.id']
-                if cursor == -1: 
-                    df.to_csv(filename, index=False)
-                else: 
-                    df.to_csv(filename, index=False, header=False, mode='a')
-                cursor = response["next_cursor"] # want to record this
-                id_count += len(new_ids)
-                log("User id: {} Next_Cursor: {} Total_IDs:{}".format(
-                    user_id, cursor, id_count))
+                for row in response:
+                    process_row(row, context)
+                id_count += len(response)
+                log("Iternation: {} Total_IDs: {}".format(i, id_count))
                 time.sleep(1)
             
             except SocketError as e: # 104 sometimes shows up when we read the out.
@@ -198,30 +202,26 @@ def query_user_followers_ids(filename, user_id, api_pool, cursor):
                 time.sleep(60 * 60)
         
         elif resp_code in [404, 400, 410, 422, 401]: # error with data, log it, 401 means private user!
-            df = pd.DataFrame([out.code])
-            df.columns = ['user.id']
-            if cursor == -1: 
-                df.to_csv(filename, index=False)
-            else: 
-                if len(df) > 1:
-                    df.to_csv(filename, index=False, header=False, mode='a')            
-            log("User id: {} fruitless with error {}".format(user_id, resp_code))
-            cursor = 0
+            
+            log("Iteration: {} fruitless with error {}".format(i, resp_code))
 
         elif resp_code in [420, 429, 406]: # rate limited, try again
-            log("User id: {} rate limited with error {}".format(user_id, resp_code))
+            log("Iternation: {} rate limited with error {}".format(i, resp_code))
             time.sleep(901)
             api_pool.find_next_token()
             creds = api_pool.get_current_api_creds()
 
         elif resp_code in [500, 502, 503, 504, 104]: # server error, wait, try again.
-            log("User id: {} server error {}".format(user_id, resp_code))
+            log("Iternation: {} server error {}".format(i, resp_code))
             time.sleep(60 * 60)
 
         else: # some other error, just break...
-            log("User id: {} unknown error {}".format(user_id, resp_code))
+            log("Iternation: {} unknown error {}".format(i, resp_code))
             break
-       
+
+        # send an update to s3 after each iteration!
+        s3.disk_2_s3(context['log'], context['s3_log'])
+
 
 if __name__ == '__main__':
     '''

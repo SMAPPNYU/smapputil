@@ -1,9 +1,17 @@
 '''
-This script does not need a volume attached to a digitalocean machine.
-It then queries Twitter for all friend/follower ids for a given user id,
-and pools tokens using the kidspool class -- which should be in the directory where this lives.
+Queries Twitter for user metadata for input users.
+Output is one json file that is new line delimited
+json objects of user metadata
+
+This script assumes a volume is attached to a digitalocean machine.
+
+This script pools tokens using the kidspool class -- which should be in the directory where this lives.
 We use the Twitter restful API (not tweepy) via twitter_api, to interact with Twitter.
+
+https://developer.twitter.com/en/docs/accounts-and-users/follow-search-get-users/api-reference/get-users-lookup
+
 Leon Yin 2018-02-14
+updated 2018-08-06
 '''
 
 import os
@@ -17,16 +25,15 @@ import argparse
 import datetime
 import logging
 
+import s3
 from subprocess import Popen, PIPE
 import pandas as pd
 import digitalocean
 
 from kidspool.kidspool import kids_pool
 from twitter_api.twitter_api import twitterreq
-import s3
 
-verbose = 1
-
+from utils import *
         
 def parse_args(args):
     '''
@@ -57,14 +64,10 @@ def build_context(args):
     currentyear = datetime.datetime.now().strftime("%Y")
     currentmonth = datetime.datetime.now().strftime("%m")
     output_base = ( context['filebase'] + '__' + currentdate + '__' +
-        context['input'].split('/')[-1].replace('.csv', '') )
+        context['input'].split('/')[-1].replace('.csv', '.json') )
     
     # local stuff
     context['currentdate'] = currentdate
-    context['volume_directory'] = 'pylogs/'
-    context['log'] = os.path.join(
-        context['volume_directory'], output_base + '.log'
-    )
 
     # digital ocean
     if not context['token']: 
@@ -74,18 +77,33 @@ def build_context(args):
     vols =  manager.get_all_volumes()
     mydrop = [_ for _ in my_droplets if _.ip_address == get_ip_address()][0]
     context['droplet'] = mydrop
-    context['droplet_id'] = mydrop.id
+    context['droplet_id'] = mydrop.
+    context['droplet_region'] = mydrop.region['slug']
+    
+    context['volume_directory'] = os.path.join(
+        '/mnt/' + mydrop.name + '-volume'
+    )
+    context['output'] = os.path.join(
+        context['volume_directory'], output_base
+    )
+    context['log'] = os.path.join(
+        context['volume_directory'], output_base.replace('.json', '.log')
+    )
     
     # s3 stuff
     context['s3_path'] = os.path.join(
-        's3://' + context['s3_bucket'], context['s3_key']
+        's3://' + context['s3_bucket'], context['s3_key'],
+        'output/user_meta', currentyear, currentmonth,
+        output_base + '.bz2'
     )
     context['s3_log'] = os.path.join(
-        's3://' + context['s3_bucket'], 'logs', output_base + '.log'
+        's3://' + context['s3_bucket'], 'logs', 
+        output_base.replace('.json', '.log')
     )
     context['s3_log_done'] = os.path.join(
-        's3://' + context['s3_bucket'], 'logs/z_archive',
-        currentyear, currentmonth, output_base + '.log'
+        's3://' + context['s3_bucket'], context['s3_key'],
+        'logs/user_meta', currentyear, currentmonth, 
+        output_base.replace('.json', '.log')
     )
     context['s3_auth'] = os.path.join(
         's3://' + context['s3_bucket'], 'tokens/used', 
@@ -93,56 +111,6 @@ def build_context(args):
     )
 
     return context
-
-
-def get_ip_address():
-    '''
-    Gets the IP address of this machine.
-    '''
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    return s.getsockname()[0]
-
-
-def log(msg):
-    '''
-    Records messages and prints if verbose.
-    '''
-    logger = logging.getLogger(__name__)
-    if verbose: print(msg)
-    logger.info(msg)
-
-
-def get_id_list(file_input):
-    '''
-    Opens list of user ids to query.
-    '''
-    filename, file_extension = os.path.splitext(file_input)
-    id_list = []
-    if file_extension == '.json':
-        log('loading json...')
-        id_data = open(file_input).read()
-        id_list = json.loads(id_data)
-    elif file_extension == '.csv':
-        log('loading csv...')
-        count = 0
-        with open(file_input) as f:
-            for rowdict in list(csv.DictReader(f)):
-                if rowdict:
-                    id_list.append(rowdict['id'])
-        log('{} inputs to query.'.format(len(id_list)))
-    return [str(_) for _ in id_list]
-
-
-def get_user_id_file(user_id, context):
-    '''
-    File locations for user_id csv files.
-    '''
-    filename = os.path.join(context['volume_directory'], user_id + '.json')
-    s3_filename = os.path.join(context['s3_path'], user_id + '.json')
-    s3_id_key = os.path.join(context['s3_path'], user_id)
-
-    return filename, s3_filename, s3_id_key
 
 
 def twitter_query(context):
@@ -160,22 +128,21 @@ def twitter_query(context):
     query_user_meta(id_list[ offset : ], api_pool, context)
 
 
+    log('Sending file to s3.')
+    s3.disk_2_s3(filename, s3_filename)
+    os.remove(filename)      
+
+
 def process_row(row, context):
+    '''
+    Parses JSON response from Twitter API.
+    Writes to local disk and then sents to s3.
+    '''
     user_meta = row.copy()
     user_meta['smapp_timestamp'] = (datetime.datetime.
         utcnow().strftime('%Y-%m-%d %H:%M:%S +0000'))
-    filename, s3_filename, s3_id_key = get_user_id_file(str(user_meta['id']), context)
-    with open(filename, 'w+') as f:
+    with open(context['output'], 'a+') as f:
         f.write(json.dumps(user_meta))
-    s3.disk_2_s3(filename, s3_filename)
-    os.remove(filename)
-
-
-def chunker(seq, n):
-    '''
-    Chunks an iterator (seq) into length (n).
-    '''
-    return (seq[pos:pos + n] for pos in range(0, len(seq), n))
 
 
 def query_user_meta(user_id, api_pool, context):
@@ -185,11 +152,12 @@ def query_user_meta(user_id, api_pool, context):
     creds = api_pool.get_current_api_creds()
     function = 'users/lookup'
     the_url = "https://api.twitter.com/1.1/{}.json".format(function)
-    
+
+    # chunk the user_ids into lists of 100 per API call.
     id_count = 0
     for i, user_chunks in enumerate(chunker(user_id, 100)):
         api_pool.set_increment()
-        if api_pool.get_current_api_calls() % 15 == 0:
+        if api_pool.get_current_api_calls() % 300 == 0:
             api_pool.find_next_token()
             creds = api_pool.get_current_api_creds()
         
@@ -231,34 +199,9 @@ def query_user_meta(user_id, api_pool, context):
         else: # some other error, just break...
             log("Iternation: {} unknown error {}".format(i, resp_code))
             break
+
         # send an update to s3 after each iteration!
         s3.disk_2_s3(context['log'], context['s3_log'])
-
-
-def prep_s3(context):
-    '''
-    Uploads the api tokens, claiming them from further use.
-    '''
-    log("So it begins...")
-    s3.disk_2_s3(context['log'], context['s3_log'])
-    s3.disk_2_s3(context['auth'], context['s3_auth'])
-
-def settle_affairs_in_s3(context):
-    '''
-    Removes the api tokens, freeing them for further use.
-    Moves the log file into archive.
-    '''
-    s3.rm(context['s3_auth'])
-    s3.mv(context['s3_log'], context['s3_log_done'])
-
-
-def destroy_droplet(context):
-    '''
-    Destroys the DO droplet running the script.
-    This is where it ends :)
-    '''
-    droplet = context['droplet']
-    droplet.destroy()
 
 
 if __name__ == '__main__':
@@ -272,8 +215,15 @@ if __name__ == '__main__':
     args = parse_args(sys.argv[1:])
     context = build_context(args)
     logging.basicConfig(filename=context['log'], level=logging.INFO)
-    prep_s3(context)
-    twitter_query(context)
-    settle_affairs_in_s3(context)
-    destroy_droplet(context)
+    context['volume'] = check_vol_attached(context)
+     if context['volume']: # check if volume is attached
+        if not s3.file_exists(context['s3_path']): # check if file exists
+            prep_s3(context)
+            twitter_query(context)
+            context['output_bz2'] = pbzip2(context)
+            s3.disk_2_s3(context['output_bz2'], context['s3_path'])
+            settle_affairs_in_s3(context)
+            detach_and_destroy_volume(context)
+            destroy_droplet(context)
+
 

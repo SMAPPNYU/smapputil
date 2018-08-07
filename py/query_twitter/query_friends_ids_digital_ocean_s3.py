@@ -1,9 +1,14 @@
 '''
 This script does not need a volume attached to a digitalocean machine.
-It then queries Twitter for all friend/follower ids for a given user id,
+
+Query Twitter for all friend/follower ids for a given user id,
 and pools tokens using the kidspool class -- which should be in the directory where this lives.
 We use the Twitter restful API (not tweepy) via twitter_api, to interact with Twitter.
+
+https://developer.twitter.com/en/docs/accounts-and-users/follow-search-get-users/api-reference/get-friends-ids
+
 Leon Yin 2018-02-14
+updated 2018-08-06
 '''
 
 import os
@@ -17,15 +22,15 @@ import argparse
 import datetime
 import logging
 
+import s3
 from subprocess import Popen, PIPE
 import pandas as pd
 import digitalocean
 
 from kidspool.kidspool import kids_pool
 from twitter_api.twitter_api import twitterreq
-import s3
+from utils import prep_s3, settle_affairs_in_s3, destroy_droplet, get_id_list, get_ip_address, log
 
-verbose = 1
 
         
 def parse_args(args):
@@ -56,8 +61,7 @@ def build_context(args):
     currentdate = datetime.datetime.now().strftime("%Y-%m-%d")
     currentyear = datetime.datetime.now().strftime("%Y")
     currentmonth = datetime.datetime.now().strftime("%m")
-    output_base = ( context['filebase'] + '__' + currentdate + '__' +
-        context['input'].split('/')[-1].replace('.csv', '') )
+    context['currentyear'], context['currentmonth'] = currentyear, currentmonth
     
     # local stuff
     context['currentdate'] = currentdate
@@ -78,14 +82,16 @@ def build_context(args):
     
     # s3 stuff
     context['s3_path'] = os.path.join(
-        's3://' + context['s3_bucket'], context['s3_key']
+        's3://' + context['s3_bucket'], context['s3_key'],
+        'outputs/friends_ids/',
     )
     context['s3_log'] = os.path.join(
         's3://' + context['s3_bucket'], 'logs', output_base + '.log'
     )
     context['s3_log_done'] = os.path.join(
-        's3://' + context['s3_bucket'], 'logs/z_archive',
-        currentyear, currentmonth, output_base + '.log'
+        's3://' + context['s3_bucket'], context['s3_key'],
+        'logs/friends_ids/', currentyear, currentmonth, 
+        output_base + '.log'
     )
     context['s3_auth'] = os.path.join(
         's3://' + context['s3_bucket'], 'tokens/used', 
@@ -94,53 +100,14 @@ def build_context(args):
 
     return context
 
-
-def get_ip_address():
-    '''
-    Gets the IP address of this machine.
-    '''
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    return s.getsockname()[0]
-
-
-def log(msg):
-    '''
-    Records messages and prints if verbose.
-    '''
-    logger = logging.getLogger(__name__)
-    if verbose: print(msg)
-    logger.info(msg)
-
-
-def get_id_list(file_input):
-    '''
-    Opens list of user ids to query.
-    '''
-    filename, file_extension = os.path.splitext(file_input)
-    id_list = []
-    if file_extension == '.json':
-        log('loading json...')
-        id_data = open(file_input).read()
-        id_list = json.loads(id_data)
-    elif file_extension == '.csv':
-        log('loading csv...')
-        count = 0
-        with open(file_input) as f:
-            for rowdict in list(csv.DictReader(f)):
-                if rowdict:
-                    id_list.append(rowdict['id'])
-        log('{} inputs to query.'.format(len(id_list)))
-    return id_list
-
-
 def get_user_id_file(user_id, context):
     '''
     File locations for user_id csv files.
     '''
     filename = os.path.join(context['volume_directory'], user_id + '.csv')
     s3_filename = os.path.join(context['s3_path'], user_id, 
-        user_id + '__' + context['currentdate'] + '.csv')
+        context['currentyear'], context['currentmonth'],
+        user_id  + '.csv')
     s3_id_key = os.path.join(context['s3_path'], user_id)
 
     return filename, s3_filename, s3_id_key
@@ -171,7 +138,10 @@ def twitter_query(context):
             s3.disk_2_s3(filename, s3_filename)
             s3.disk_2_s3(context['log'], context['s3_log'])
             os.remove(filename)
-        else: log('{} already queried!!!'.format(user_id))
+            # send an update to s3 after each iteration!
+            s3.disk_2_s3(context['log'], context['s3_log'])
+        else: 
+            log('{} already queried!!!'.format(user_id))
         log('>>> {} out of {}'.format(i + offset, len(id_list)))
         time.sleep(1)
 
@@ -247,31 +217,6 @@ def query_user_friends_ids(filename, user_id, api_pool, cursor):
         else: # some other error, just break...
             log("User id: {} unknown error {}".format(user_id, resp_code))
             break
-
-
-def prep_s3(context):
-    '''
-    Uploads the api tokens, claiming them from further use.
-    '''
-    s3.disk_2_s3(context['auth'], context['s3_auth'])
-
-
-def settle_affairs_in_s3(context):
-    '''
-    Removes the api tokens, freeing them for further use.
-    Moves the log file into archive.
-    '''
-    s3.rm(context['s3_auth'])
-    s3.mv(context['s3_log'], context['s3_log_done'])
-
-
-def destroy_droplet(context):
-    '''
-    Destroys the DO droplet running the script.
-    This is where it ends :)
-    '''
-    droplet = context['droplet']
-    droplet.destroy()
 
 
 if __name__ == '__main__':

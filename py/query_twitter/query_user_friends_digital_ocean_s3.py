@@ -1,3 +1,15 @@
+'''
+This script assumes a volume is attached to a digitalocean machine.
+
+It then queries twitter for user metadata of followers for a given user id
+and pools tokens.
+
+One json file will be returned by a query. 
+Each Json will have the user metadata from multiple input users.
+
+Leon Yin 2017-11-06
+updated 2018-08-06
+'''
 
 import argparse
 import datetime
@@ -15,186 +27,24 @@ import digitalocean
 from tkpool.tkpool.tweepypool import TweepyPool
 from tweepy import Cursor, TweepError
 
+from utils import *
 
-verbose = 1
 
-
-def get_ip_address():
+def parse_args(args):
     '''
-    Gets the IP address of this machine.
+    Which arguments we'll need
     '''
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    return s.getsockname()[0]
+    parser = argparse.ArgumentParser()
 
+    parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input.json, a [] list of twitter ids.')
+    parser.add_argument('-a', '--auth', dest='auth', required=True, help='This is the path to your oauth.json file for twitter')
+    parser.add_argument('-f', '--filebase', dest='filebase', required=False, default='twitter_query', help='the_base_of_the_file')
+    parser.add_argument('--digital-ocean-token', dest='token', required=False, help='DO access token', const=1, nargs='?', default=False)
+    parser.add_argument('--s3-bucket', dest='s3_bucket', required=True, help='s3 bucket, ie s3://leonyin would be leonyin')
+    parser.add_argument('--s3-key', dest='s3_key', required=True, help='the path in the bucket.')
+    parser.add_argument('--sudo', dest='sudo_password', nargs='?', default=False, help='sudo pw for machine')
 
-def destroy_droplet(context):
-    '''
-    This is where it ends :)
-    '''
-    droplet = context['droplet']
-    droplet.destroy()
-
-
-def detach_and_destroy_volume(context):
-    '''
-    Remove all files from the volume, detaches the volume, then destroys it.
-    '''
-    logger = logging.getLogger(__name__)
-    V = context['volume']
-
-    command = 'sudo -S rm -rf /mnt/{}'.format(context['volume_name']).split()
-    try:
-        p = Popen(command, stdin=PIPE, stderr=PIPE, universal_newlines=True)
-        time.sleep(.2)
-        sudo_prompt = p.communicate(context['sudo_password'] + '\n')[1]
-    except Exception as e:
-        if verbose:
-            print('Issue clearing the Volume! {}'.format(e))
-            logger.info('Issue clearing the Volume! {}'.format(e))
-
-        pass
-    
-    if verbose:
-        print('Detaching volume...')
-        logger.info("Detaching volumne...")
-    V.detach(droplet_id = context['droplet_id'], 
-             region = context['droplet_region'])
-    time.sleep(8)
-    
-    if verbose:
-        print('Destorying volume...')
-        logger.info("Destroying volumne...")
-    V.destroy()
-    
-    if verbose:
-        print("Volume {} Destroyed!".format(context['volume_name']))
-        logger.info("Volume {} Destroyed!".format(context['volume_name']))
-    
-
-def send_to_s3(context):
-    '''
-    Uses boto3 to send a the bzipped file to s3.
-    '''
-    logger = logging.getLogger(__name__)
-    f_out = context['output_bz2']
-    if verbose:
-        print("Sending file to s3".format(f_out))
-        logger.info("Sending file to s3".format(f_out))
-    
-    s3 = boto3.client('s3')
-    s3.upload_file(f_out, context['s3_bucket'], context['s3_path'])
-    s3.upload_file(context['log'], context['s3_bucket'], context['s3_log'])
-    
-    if verbose:
-        s3_dest = os.path.join('s3://' + context['s3_bucket'], context['s3_path'])
-        print("Sent file to {}".format(s3_dest))
-        logger.info("Sending file to s3".format(f_out))
-
-def bzip(context):
-    '''
-    Bzips a file.
-    When this is successful, the original file will have disappeared.
-    When that happens this returns the new file name with the .bz2 extension.
-    '''
-    f_out = context['output']
-    command = ['/bin/bzip2', f_out]
-    process = Popen(command, stdin=PIPE, stderr=PIPE)
-    
-    while os.path.isfile(f_out):
-        time.sleep(1)
-        
-    return f_out + '.bz2'
-
-
-def twitter_query(context):
-    '''
-    Gets user ids, and feeds them into a function to query twitter.
-    '''
-    logger = logging.getLogger(__name__)
-    if verbose:
-        print('Starting query!')
-
-    output = context['output']
-    input_file = context['input']
-    auth_file = context['auth']
-
-        
-    id_list = get_id_list(input_file)
-    logger.info('creating oauth pool...')
-
-    #query the tweets
-    query_user_friends(output, id_list, auth_file)
-
-
-def query_user_friends(output, id_list, auth_file):
-
-    logger = logging.getLogger(__name__)
-
-    num_inputs_queried = 0
-
-    #create the api pool
-    api_pool = TweepyPool(auth_file)
-
-    write_fd = open(output, 'w+')
-
-    for userid in id_list:
-        num_inputs_queried = num_inputs_queried + 1
-        if not userid == '':
-            try:
-                count = 0
-                for item in Cursor(api_pool.friends, id=userid, count=5000).items():
-                    logger.debug('user id: {},  and screen_name {}'.format(item.id, item.screen_name)) 
-                    count = count + 1
-                    tweet_item = json.loads(json.dumps(item._json))
-                    tweet_item['smapp_original_user_id'] = userid
-                    tweet_item['smapp_timestamp'] = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S +0000')
-                    write_fd.write(json.dumps(tweet_item))
-                    write_fd.write('\n')
-            except TweepError as e:
-                logger.info('tweepy error: %s', e)
-            logger.info('counted %s objects for input %s', count, userid)
-        logger.info('number of inputs queried so far: %s', num_inputs_queried)
-    write_fd.close()
-
-def get_id_list(file_input):
-    '''
-    opens list of user ids to query.
-    from the -i arg
-    '''
-    logger = logging.getLogger(__name__)
-    filename, file_extension = os.path.splitext(file_input)
-    id_list = []
-    if file_extension == '.json':
-        logger.info('loading json...')
-        id_data = open(file_input).read()
-        id_list = json.loads(id_data)
-    elif file_extension == '.csv':
-        logger.info('loading csv...')
-        count = 0
-        with open(file_input) as f:
-            for rowdict in list(csv.DictReader(f)):
-                # if list is not empty
-                if rowdict:
-                    id_list.append(rowdict['id'])
-        logger.info('launching query for %s inputs', len(id_list))
-    return id_list
-
-
-def check_vol_attached(context):
-    '''
-    Checks to see if a digital ocean volume is attached to the machine.
-    Returns False if not, otherwise returns a 
-    '''
-    manager = digitalocean.Manager(token=context['token'])
-    
-    vols =  manager.get_all_volumes()
-    myvol = [v for v in vols if context['droplet_id'] in v.droplet_ids]
-    
-    if not myvol: # check if volume is attached.
-        return False
-    else:
-        return myvol[0]
+    return vars(parser.parse_args())
 
 
 def build_context(args):
@@ -204,6 +54,8 @@ def build_context(args):
     '''
     context = args
     currentdate = datetime.datetime.now().strftime("%Y-%m-%d")
+    currentyear = datetime.datetime.now().strftime("%Y")
+    currentmonth = datetime.datetime.now().strftime("%m")
 
     # digital ocean
     if not context['token']:
@@ -227,10 +79,14 @@ def build_context(args):
 
     # AWS s3
     context['s3_path'] = os.path.join(
-        context['s3_root'], output_base + '.bz2'
+        's3://', context['s3_bucket'], context['s3_key'], 
+        'output/user_friends/', currentyear, currentmonth,
+        output_base + '.bz2'
     )
     context['s3_log'] = os.path.join(
-        context['s3_root'], output_base.replace('.json', '.log')
+        's3://', context['s3_bucket'], context['s3_key'], 
+        'output/user_friends/',  currentyear, currentmonth,
+        output_base.replace('.json', '.log')
     )
     
      # local stuff
@@ -248,22 +104,44 @@ def build_context(args):
     return context
 
 
-def parse_args(args):
+def twitter_query(context):
     '''
-    Which arguments we'll need
+    Gets user ids, and feeds them into a function to query twitter.
     '''
-    parser = argparse.ArgumentParser()
+    output = context['output']
+    input_file = context['input']
+    auth_file = context['auth']
 
-    parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input.json, a [] list of twitter ids.')
-    parser.add_argument('-a', '--auth', dest='auth', required=True, help='This is the path to your oauth.json file for twitter')
+    log('creating oauth pool...')
+    id_list = get_id_list(input_file)
 
-    parser.add_argument('--digital-ocean-token', dest='token', required=False, help='DO access token', const=1, nargs='?', default=False)
-    parser.add_argument('--s3-bucket', dest='s3_bucket', required=True, help='s3 bucket, ie s3://leonyin would be leonyin')
-    parser.add_argument('--s3-root', dest='s3_root', required=True, help='the path in the bucket.')
-    parser.add_argument('--sudo', dest='sudo_password', nargs='?', default=False, help='sudo pw for machine')
-    parser.add_argument('--file_root', dest='file_root', nargs='?', default='twitter_query__', help='sudo pw for machine')
+    log('creating oauth pool...')
+    api_pool = TweepyPool(auth_file)
 
-    return vars(parser.parse_args())
+    log('starting query...')
+    num_inputs_queried = 0
+    with open(output, 'w+') as write_fd:
+        for user_id in id_list:
+            num_inputs_queried = num_inputs_queried + 1
+            if not user_id == '':
+                try:
+                    count = 0
+                    for item in Cursor(api_pool.friends, id=user_id, count=5000).items():
+                        log('user id: {},  and screen_name {}'.format(item.id, item.screen_name)) 
+                        count = count + 1
+                        tweet_item = json.loads(json.dumps(item._json))
+                        tweet_item['smapp_original_user_id'] = user_id
+                        tweet_item['smapp_timestamp'] = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S +0000')
+                        write_fd.write(json.dumps(tweet_item) + '\n')
+                except TweepError as e:
+                    log('tweepy error: {}'.format(e))
+                
+                # update the logs and send to s3
+                log('counted {} objects for input {}'.format(count, userid))
+                s3.disk_2_s3(context['log'], context['s3_log'])
+
+            log('number of inputs queried so far: {}'.format(num_inputs_queried))
+            s3.disk_2_s3(context['log'], context['s3_log'])
 
 
 if __name__ == '__main__':
@@ -284,15 +162,11 @@ if __name__ == '__main__':
     
     context['volume'] = check_vol_attached(context)
     if context['volume']:
+        prep_s3(context)
         twitter_query(context)
-        context['output_bz2'] = bzip(context)
-        send_to_s3(context)
+        context['output_bz2'] = pbzip2(context)
+        s3.disk_2_s3(context['output_bz2'], context['s3_path'])
+        settle_affairs_in_s3(context)
         detach_and_destroy_volume(context)
         destroy_droplet(context)
 
-'''
-This script assumes a volume is attached to a digitalocean machine.
-It then queries twitter for all timelines for a given user id,
-and pools tokens.
-Leon Yin 2017-11-06
-'''

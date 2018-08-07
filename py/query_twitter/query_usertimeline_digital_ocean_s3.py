@@ -1,8 +1,13 @@
 '''
+Queries twitter for all timelines for input users.
+This will return one bzipped json file for all input users.
+
 This script assumes a volume is attached to a digitalocean machine.
-It then queries twitter for all timelines for a given user id,
-and pools tokens.
+
+https://developer.twitter.com/en/docs/tweets/timelines/api-reference/get-statuses-user_timeline
+
 Leon Yin 2018-02-14
+updated 2018-08-06
 '''
 
 import argparse
@@ -21,8 +26,7 @@ import digitalocean
 from tkpool.tkpool.tweepypool import TweepyPool
 from tweepy import Cursor, TweepError
 
-
-verbose = 1
+from utils import *
 
 
 def parse_args(args):
@@ -84,15 +88,17 @@ def build_context(args):
     )
     # AWS s3
     context['s3_path'] = os.path.join(
-        's3://' + context['s3_bucket'], context['s3_key'], output_base + '.bz2'
+        's3://' + context['s3_bucket'], context['s3_key'], 
+        'output/user_timeline', currentyear, currentmonth, 
+        output_base + '.bz2'
     )
     context['s3_log'] = os.path.join(
         's3://' + context['s3_bucket'], 'logs', 
         output_base.replace('.json', '.log')
     )
     context['s3_log_done'] = os.path.join(
-        's3://' + context['s3_bucket'], 'logs/z_archive', 
-        currentyear, currentmonth,
+        's3://' + context['s3_bucket'], context['s3_key'],
+        'logs/user_timeline', currentyear, currentmonth,
         output_base.replace('.json', '.log')
     )
     context['s3_auth'] = os.path.join(
@@ -101,63 +107,6 @@ def build_context(args):
     )
     
     return context
-
-
-def get_ip_address():
-    '''
-    Gets the IP address of this machine.
-    '''
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    return s.getsockname()[0]
-
-
-def log(msg):
-    '''
-    Records messages and prints if verbose.
-    '''
-    logger = logging.getLogger(__name__)
-    if verbose: print(msg)
-    logger.info(msg)
-
-
-def check_vol_attached(context):
-    '''
-    Checks to see if a digital ocean volume is attached to the machine.
-    Returns False if not, otherwise returns a 
-    '''
-    manager = digitalocean.Manager(token=context['token'])
-    
-    vols =  manager.get_all_volumes()
-    myvol = [v for v in vols if context['droplet_id'] in v.droplet_ids]
-    
-    if not myvol: # check if volume is attached.
-        return False
-    else:
-        return myvol[0]
-
-
-def get_id_list(file_input, offset):
-    '''
-    opens list of user ids to query.
-    from the -i arg
-    '''
-    filename, file_extension = os.path.splitext(file_input)
-    id_list = []
-    if file_extension == '.json':
-        log('loading json...')
-        id_data = open(file_input).read()
-        id_list = json.loads(id_data)
-    elif file_extension == '.csv':
-        log('loading csv...')
-        count = 0
-        with open(file_input) as f:
-            for rowdict in list(csv.DictReader(f)):
-                # if list is not empty
-                if rowdict:
-                    id_list.append(rowdict['id'])
-        log('launching query for {} inputs'.format(len(id_list)))
-    return id_list[offset:]
 
 
 def twitter_query(context):
@@ -233,74 +182,6 @@ def query_user_tweets(output, id_list, auth_file, max_id=-1, since_id=-1):
     write_fd.close()
 
 
-def pbzip2(context):
-    f_out = context['output']
-    log("bzipping {}".format(f_out))
-    command = ['/usr/bin/pbzip2', '-v', '-f', f_out]
-    process = Popen(command, shell=False, stdout=PIPE, stdin=PIPE)
-    for line in iter(process.stdout.readline, b''): 
-        log(line)
-    returncode = process.wait() 
-    log("return code for {}".format(returncode))
-    return f_out + '.bz2'
-
-
-def prep_s3(context):
-    '''
-    Uploads the api tokens, claiming them from further use.
-    '''
-    log("So it begins...")
-    s3.disk_2_s3(context['log'], context['s3_log'])
-    s3.disk_2_s3(context['auth'], context['s3_auth'])
-
-
-def settle_affairs_in_s3(context):
-    '''
-    Uploads the twitter query to S3.
-    Removes the api tokens, freeing them for further use.
-    Moves the log file into archive.
-    '''
-    s3.disk_2_s3(context['output_bz2'], context['s3_path'])
-    s3.rm(context['s3_auth'])
-    
-    try: 
-        s3.mv(context['s3_log'], context['s3_log_done'])
-    except:
-        log("moving the log failed!")
-
-
-def detach_and_destroy_volume(context):
-    '''
-    Remove all files from the volume, detaches the volume, then destroys it.
-    '''
-    V = context['volume']
-
-    command = 'sudo -S rm -rf {}'.format(context['volume_directory']).split()
-    try:
-        p = Popen(command, stdin=PIPE, stderr=PIPE, universal_newlines=True)
-        time.sleep(.2)
-        sudo_prompt = p.communicate(context['sudo_password'] + '\n')[1]
-    except Exception as e:
-        log('Issue clearing the Volume! {}'.format(e))
-        pass
-
-    log("Detaching volumne...")
-    V.detach(droplet_id = context['droplet_id'], 
-             region = context['droplet_region'])
-    time.sleep(10)
-    log("Destroying volumne...")
-    V.destroy()
-    log("Volume {} Destroyed!".format(context['volume_directory']))
-
-
-def destroy_droplet(context):
-    '''
-    This is where it ends :)
-    '''
-    droplet = context['droplet']
-    droplet.destroy()
-
-
 if __name__ == '__main__':
     '''
     Parse the input flags,
@@ -318,12 +199,14 @@ if __name__ == '__main__':
     logging.basicConfig(filename=context['log'], level=logging.INFO)
     
     context['volume'] = check_vol_attached(context)
-    if context['volume']:
-        prep_s3(context)
-        twitter_query(context)
-        context['output_bz2'] = pbzip2(context)
-        settle_affairs_in_s3(context)
-        detach_and_destroy_volume(context)
-        destroy_droplet(context)
+    if context['volume']: # check if volume is attached
+        if not s3.file_exists(context['s3_path']): # check if file exists
+            prep_s3(context)
+            twitter_query(context)
+            context['output_bz2'] = pbzip2(context)
+            s3.disk_2_s3(context['output_bz2'], context['s3_path'])
+            settle_affairs_in_s3(context)
+            detach_and_destroy_volume(context)
+            destroy_droplet(context)
 
  
