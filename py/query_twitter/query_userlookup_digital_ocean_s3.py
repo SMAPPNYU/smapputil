@@ -77,12 +77,11 @@ def build_context(args):
     vols =  manager.get_all_volumes()
     mydrop = [_ for _ in my_droplets if _.ip_address == get_ip_address()][0]
     context['droplet'] = mydrop
-    context['droplet_id'] = mydrop.
+    context['droplet_id'] = mydrop.id
     context['droplet_region'] = mydrop.region['slug']
-    
-    context['volume_directory'] = os.path.join(
-        '/mnt/' + mydrop.name + '-volume'
-    )
+    context['volume_name'] = mydrop.name + '-volume'
+    context['volume_directory'] = '/mnt/' + context['volume_name']
+
     context['output'] = os.path.join(
         context['volume_directory'], output_base
     )
