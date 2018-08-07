@@ -87,7 +87,7 @@ def build_context(args):
     # s3 stuff
     context['s3_path'] = os.path.join(
         's3://' + context['s3_bucket'], context['s3_key'],
-        'outputs/follower_ids/',
+        'output/follower_ids/',
     )
     context['s3_log'] = os.path.join(
         's3://' + context['s3_bucket'], 'logs', output_base + '.log'
