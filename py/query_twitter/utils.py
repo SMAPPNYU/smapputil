@@ -3,6 +3,7 @@ import json
 import time
 import socket
 import datetime
+import logging
 from subprocess import Popen, PIPE
 
 import digitalocean
