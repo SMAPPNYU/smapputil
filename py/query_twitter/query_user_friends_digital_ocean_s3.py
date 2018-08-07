@@ -73,7 +73,7 @@ def build_context(args):
     context['volume_directory'] = '/mnt/' + context['volume_name']
 
 
-    output_base = context['filebase'] + currentdate + '_' + \
+    output_base = context['filebase'] + '_' + currentdate + '_' + \
         context['input'].split('/')[-1].replace('.csv', '.json')
 
     # AWS s3
@@ -83,9 +83,16 @@ def build_context(args):
         output_base + '.bz2'
     )
     context['s3_log'] = os.path.join(
-        's3://', context['s3_bucket'], context['s3_key'], 
-        'output/user_friends/',  currentyear, currentmonth,
-        output_base.replace('.json', '.log')
+        's3://' + context['s3_bucket'], 'logs', output_base + '.log'
+    )
+    context['s3_log_done'] = os.path.join(
+        's3://' + context['s3_bucket'], context['s3_key'],
+        'logs/user_friends/', currentyear, currentmonth, 
+        output_base + '.log'
+    )
+    context['s3_auth'] = os.path.join(
+        's3://' + context['s3_bucket'], 'tokens/used', 
+        os.path.basename(context['auth'])
     )
     
      # local stuff
