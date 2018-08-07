@@ -27,7 +27,7 @@ def get_ip_address():
     s.connect(("8.8.8.8", 80))
     return s.getsockname()[0]
 
-def get_id_list(file_input):
+def get_id_list(file_input, offset=0):
     '''
     opens list of user ids to query.
     from the -i arg
@@ -47,7 +47,7 @@ def get_id_list(file_input):
                 if rowdict:
                     id_list.append(rowdict['id'])
         log('launching query for %s inputs', len(id_list))
-    return id_list
+    return id_list[offset:]
 
 def prep_s3(context):
     '''
