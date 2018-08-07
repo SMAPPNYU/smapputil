@@ -96,7 +96,7 @@ def detach_and_destroy_volume(context):
     '''
     V = context['volume']
 
-    command = 'sudo -S rm -rf /mnt/{}'.format(context['volume_name']).split()
+    command = 'sudo -S rm -rf {}'.format(context['volume_directory']).split()
     try:
         p = Popen(command, stdin=PIPE, stderr=PIPE, universal_newlines=True)
         time.sleep(.2)
@@ -114,7 +114,7 @@ def detach_and_destroy_volume(context):
     log("Destroying volumne...")
     V.destroy()
     
-    log("Volume {} Destroyed!".format(context['volume_name']))
+    log("Volume {} Destroyed!".format(context['volume_directory']))
 
 
 def bzip(context):
