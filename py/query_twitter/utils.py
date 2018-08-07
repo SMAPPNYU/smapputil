@@ -47,7 +47,7 @@ def get_id_list(file_input, offset=0):
                 # if list is not empty
                 if rowdict:
                     id_list.append(rowdict['id'])
-        log('launching query for %s inputs', len(id_list))
+        log('launching query for {} inputs'.format(len(id_list)))
     return id_list[offset:]
 
 def prep_s3(context):
