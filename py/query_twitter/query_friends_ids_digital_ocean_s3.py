@@ -64,7 +64,7 @@ def build_context(args):
     context['currentyear'], context['currentmonth'] = currentyear, currentmonth
     output_base = ( context['filebase'] + '__' + currentdate + '__' +
         context['input'].split('/')[-1].replace('.csv', '') )
-    
+
     # local stuff
     context['currentdate'] = currentdate
     context['volume_directory'] = 'pylogs/'
@@ -126,7 +126,7 @@ def twitter_query(context):
     start_idx = context['start_idx_api']
     
     log('Creating oauth pool...')
-    api_pool = kids_pool(auth_file, start_idx=start_idx, verbose=verbose)
+    api_pool = kids_pool(auth_file, start_idx=start_idx, verbose=1)
     
     for i, user_id in enumerate( id_list[ offset : ] ):
         if i == 0: # first cursor, only if flag is set.
