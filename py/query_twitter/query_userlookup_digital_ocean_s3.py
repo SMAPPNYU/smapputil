@@ -127,11 +127,6 @@ def twitter_query(context):
     query_user_meta(id_list[ offset : ], api_pool, context)
 
 
-    log('Sending file to s3.')
-    s3.disk_2_s3(filename, s3_filename)
-    os.remove(filename)      
-
-
 def process_row(row, context):
     '''
     Parses JSON response from Twitter API.
