@@ -195,7 +195,6 @@ if __name__ == '__main__':
     '''
     args = parse_args(sys.argv[1:])
     context = build_context(args)
-    
     logging.basicConfig(filename=context['log'], level=logging.INFO)
     
     context['volume'] = check_vol_attached(context)
@@ -205,8 +204,8 @@ if __name__ == '__main__':
             twitter_query(context)
             context['output_bz2'] = pbzip2(context)
             s3.disk_2_s3(context['output_bz2'], context['s3_path'])
-            settle_affairs_in_s3(context)
-            detach_and_destroy_volume(context)
-            destroy_droplet(context)
+        settle_affairs_in_s3(context)
+        detach_and_destroy_volume(context)
+    destroy_droplet(context)
 
  
