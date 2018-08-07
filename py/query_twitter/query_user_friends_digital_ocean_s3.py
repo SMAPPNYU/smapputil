@@ -69,12 +69,11 @@ def build_context(args):
     context['droplet'] = mydrop
     context['droplet_id'] = mydrop.id
     context['droplet_region'] = mydrop.region['slug']
-
     context['volume_name'] = mydrop.name + '-volume'
     context['volume_directory'] = '/mnt/' + context['volume_name']
 
 
-    output_base = context['file_root'] + currentdate + '_' + \
+    output_base = context['filebase'] + currentdate + '_' + \
         context['input'].split('/')[-1].replace('.csv', '.json')
 
     # AWS s3
