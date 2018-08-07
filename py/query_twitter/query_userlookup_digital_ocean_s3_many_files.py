@@ -86,14 +86,14 @@ def build_context(args):
     # s3 stuff
     context['s3_path'] = os.path.join(
         's3://' + context['s3_bucket'], context['s3_key'],
-        'output/user_meta' # , currentyear, currentmonth,
+        'output/user_meta_many/' # , currentyear, currentmonth,
     )
     context['s3_log'] = os.path.join(
         's3://' + context['s3_bucket'], 'logs', output_base + '.log'
     )
     context['s3_log_done'] = os.path.join(
         's3://' + context['s3_bucket'], context['s3_key'],
-        'logs/user_meta', currentyear, currentmonth, 
+        'logs/user_meta_many/', currentyear, currentmonth, 
         output_base + '.log'
     )
     context['s3_auth'] = os.path.join(

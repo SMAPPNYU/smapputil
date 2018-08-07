@@ -64,6 +64,8 @@ def build_context(args):
     currentyear = datetime.datetime.now().strftime("%Y")
     currentmonth = datetime.datetime.now().strftime("%m")
     context['currentyear'], context['currentmonth'] = currentyear, currentmonth
+    output_base = ( context['filebase'] + '__' + currentdate + '__' +
+        context['input'].split('/')[-1].replace('.csv', '') )
 
     # local stuff
     context['currentdate'] = currentdate
@@ -182,7 +184,7 @@ def query_user_followers_ids(filename, user_id, api_pool, cursor):
                     df = pd.DataFrame([None])
                 else:
                     df = pd.DataFrame(new_ids, dtype=str)
-                df.columns = ['user.id']
+                df.columns = ['user_id_followers']
                 if cursor == -1: 
                     df.to_csv(filename, index=False)
                 else: 

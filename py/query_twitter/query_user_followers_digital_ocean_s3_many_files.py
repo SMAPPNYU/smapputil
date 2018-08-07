@@ -59,7 +59,9 @@ def build_context(args):
     currentyear = datetime.datetime.now().strftime("%Y")
     currentmonth = datetime.datetime.now().strftime("%m")
     context['currentyear'], context['currentmonth'] = currentyear, currentmonth
-
+    output_base = ( context['filebase'] + '__' + currentdate + '__' +
+        context['input'].split('/')[-1].replace('.csv', '') )
+    
     # digital ocean
     if not context['token']:
         context['token'] = os.environ.get('DO_TOKEN')
