@@ -72,6 +72,9 @@ def build_context(args):
     context['droplet_region'] = mydrop.region['slug']
     context['volume_name'] = mydrop.name + '-volume'
     context['volume_directory'] = '/mnt/' + context['volume_name']
+    
+    context['input'] = download_from_s3(context['input']) if 's3://' in context['input'] else context['input']
+    context['auth'] = download_from_s3(context['auth']) if 's3://' in context['auth'] else context['auth']
 
 
     output_base = context['filebase'] + '_' + currentdate + '_' + \

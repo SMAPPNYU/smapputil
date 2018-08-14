@@ -82,6 +82,9 @@ def build_context(args):
     context['droplet'] = mydrop
     context['droplet_id'] = mydrop.id
     
+    context['input'] = download_from_s3(context['input']) if 's3://' in context['input'] else context['input']
+    context['auth'] = download_from_s3(context['auth']) if 's3://' in context['auth'] else context['auth']
+    
     # s3 stuff
     context['s3_path'] = os.path.join(
         's3://' + context['s3_bucket'], context['s3_key'],

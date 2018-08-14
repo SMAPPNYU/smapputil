@@ -70,10 +70,13 @@ def build_context(args):
     context['droplet'] = mydrop
     context['droplet_id'] = mydrop.id
     context['droplet_region'] = mydrop.region['slug']
-    context['volume_directory'] = pylogs
+    context['volume_directory'] = 'pylogs/'
 
     output_base = context['file_root'] + currentdate + '_' + \
         context['input'].split('/')[-1].replace('.csv', '.json')
+    
+     context['input'] = download_from_s3(context['input']) if 's3://' in context['input'] else context['input']
+    context['auth'] = download_from_s3(context['auth']) if 's3://' in context['auth'] else context['auth']
 
     # AWS s3
     context['s3_path'] = os.path.join(
