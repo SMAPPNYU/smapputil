@@ -31,7 +31,7 @@ import digitalocean
 
 from kidspool.kidspool import kids_pool
 from twitter_api.twitter_api import twitterreq
-from utils import prep_s3, settle_affairs_in_s3, destroy_droplet, get_id_list, get_ip_address, log, check_vol_attached
+from utils import *
 
 
         
