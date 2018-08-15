@@ -1,5 +1,5 @@
 '''
-Wueries twitter for user metadata of followers for a given user id
+Queries twitter for user metadata of followers for a given user id
 and pools tokens.
 
 This script assumes a volume is attached to a digitalocean machine.
@@ -36,13 +36,11 @@ def parse_args(args):
     '''
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input.json, a [] list of twitter ids.')
-    parser.add_argument('-a', '--auth', dest='auth', required=True, help='This is the path to your oauth.json file for twitter')
-    parser.add_argument('-f', '--filebase', dest='filebase', required=False, default='twitter_query', help='the_base_of_the_file')
+    parser.add_argument('-s3', '--s3-input', dest='s3_input', required=True, help='This is a path to your input cvs on s3. is s3://smapp-dev/project-quries/myproject/input/users_to_query.csv')
+    parser.add_argument('-f', '--filebase', dest='filebase', required=False, default='user_followers', help='the_base_of_the_file')
     parser.add_argument('--digital-ocean-token', dest='token', required=False, help='DO access token', const=1, nargs='?', default=False)
-    parser.add_argument('--s3-bucket', dest='s3_bucket', required=True, help='s3 bucket, ie s3://leonyin would be leonyin')
-    parser.add_argument('--s3-key', dest='s3_key', required=True, help='the path in the bucket.')
     parser.add_argument('--sudo', dest='sudo_password', nargs='?', default=False, help='sudo pw for machine')
+    parser.add_argument('-n', '--n-tokens', dest='n_tokens', type=int, default=60, help='the number of tokens to use')
 
     return vars(parser.parse_args())
 
@@ -56,7 +54,10 @@ def build_context(args):
     currentdate = datetime.datetime.now().strftime("%Y-%m-%d")
     currentyear = datetime.datetime.now().strftime("%Y")
     currentmonth = datetime.datetime.now().strftime("%m")
-
+    input_filename = os.path.basename(context['s3_input'])
+    output_base = context['filebase'] + '__' + currentdate + '__' + \
+                  input_filename.replace('.csv', '.json') 
+    
     # digital ocean
     if not context['token']:
         context['token'] = os.environ.get('DO_TOKEN')
@@ -71,27 +72,28 @@ def build_context(args):
     context['droplet_region'] = mydrop.region['slug']
     context['volume_name'] = mydrop.name + '-volume'
     context['volume_directory'] = '/mnt/' + context['volume_name']
-
-
-    output_base = context['filebase'] + '_' + currentdate + '_' + \
-        context['input'].split('/')[-1].replace('.csv', '.json')
     
-    context['input'] = download_from_s3(context['input']) if 's3://' in context['input'] else context['input']
-    context['auth'] = download_from_s3(context['auth']) if 's3://' in context['auth'] else context['auth']
-
     # AWS s3
+    if 's3://' not in context['s3_input']:
+        raise "Improperly formatted -s3 or --s3-input flag"
+    context['input'] = download_from_s3(context['s3_input'], new_dir='pylogs/')
+    context['auth'] = 'pylogs/{}__{}__tokens.json'.format(mydrop.id, currentdate)
+    context['s3_bucket'] = s3.get_bucket(context['s3_input'])
+    context['s3_key'] = context['s3_input'].split('input/')[0]
+    
     context['s3_path'] = os.path.join(
-        's3://', context['s3_bucket'], context['s3_key'], 
+        context['s3_key'], 
         'output/user_followers/', currentyear, currentmonth,
         output_base + '.bz2'
     )
     context['s3_log'] = os.path.join(
-        's3://' + context['s3_bucket'], 'logs', output_base + '.log'
+        's3://' + context['s3_bucket'], 'logs', 
+        output_base.replace('.json', '.log')
     )
     context['s3_log_done'] = os.path.join(
-        's3://' + context['s3_bucket'], context['s3_key'],
+        context['s3_key'],
         'logs/user_followers/', currentyear, currentmonth, 
-        output_base + '.log'
+        output_base.replace('.json', '.log')
     )
     context['s3_auth'] = os.path.join(
         's3://' + context['s3_bucket'], 'tokens/used', 
@@ -102,12 +104,12 @@ def build_context(args):
     context['user'] = os.environ.get('USER')
     if not context['sudo_password']:
         context['sudo_password'] = os.environ.get('SUDO')
-    
     context['output'] = os.path.join(
         context['volume_directory'], output_base
     )
     context['log'] = os.path.join(
-        context['volume_directory'], output_base.replace('.json', '.log')
+        context['volume_directory'], 
+        output_base.replace('.json', '.log')
     )
     
     return context
@@ -171,6 +173,7 @@ if __name__ == '__main__':
     
     context['volume'] = check_vol_attached(context)
     if context['volume']:
+        create_token_files(context)
         prep_s3(context)
         twitter_query(context)
         context['output_bz2'] = pbzip2(context)

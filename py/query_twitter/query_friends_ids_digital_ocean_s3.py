@@ -38,16 +38,13 @@ def parse_args(args):
     Parses the input arguments.
     '''
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input(csv or json), a [] list of twitter ids.')
-    parser.add_argument('-a', '--auth', dest='auth', required=True, help='This is the path to your oauth.json file for twitter')
+    parser.add_argument('-s3', '--s3-input', dest='s3_input', required=True, help='This is a path to your input cvs on s3. is s3://smapp-dev/project-quries/myproject/input/users_to_query.csv')
     parser.add_argument('-f', '--filebase', dest='filebase', required=False, default='twitter_query', help='the_base_of_the_file')
     parser.add_argument('-d', '--digital-ocean-token', dest='token', required=False, help='DO access token', const=1, nargs='?', default=False)
-    parser.add_argument('-b', '--s3-bucket', dest='s3_bucket', required=True, help='s3 bucket, ie s3://leonyin would be leonyin')
-    parser.add_argument('-r', '--s3-key', dest='s3_key', required=True, help='the path in the bucket.')
     parser.add_argument('--start-idx-api', dest='start_idx_api', type=int, default=0, help='the first token to use')
     parser.add_argument('--start-idx-input', dest='start_idx_input', type=int, default=0, help='the first input to query')
     parser.add_argument('--cursor', dest='cursor', type=int, default=-1, help='the cursor to query')
-
+    parser.add_argument('-n', '--n-tokens', dest='n_tokens', type=int, default=60, help='the number of tokens to use')
     return vars(parser.parse_args())
 
 
@@ -62,8 +59,9 @@ def build_context(args):
     currentyear = datetime.datetime.now().strftime("%Y")
     currentmonth = datetime.datetime.now().strftime("%m")
     context['currentyear'], context['currentmonth'] = currentyear, currentmonth
-    output_base = ( context['filebase'] + '__' + currentdate + '__' +
-        context['input'].split('/')[-1].replace('.csv', '') )
+    input_filename = os.path.basename(context['s3_input'])
+    output_base = context['filebase'] + '__' + currentdate + '__' + \
+                  input_filename.replace('.csv', '') 
 
     # local stuff
     context['currentdate'] = currentdate
@@ -82,19 +80,23 @@ def build_context(args):
     context['droplet'] = mydrop
     context['droplet_id'] = mydrop.id
     
-    context['input'] = download_from_s3(context['input']) if 's3://' in context['input'] else context['input']
-    context['auth'] = download_from_s3(context['auth']) if 's3://' in context['auth'] else context['auth']
-    
-    # s3 stuff
+    # AWS s3
+    if 's3://' not in context['s3_input']:
+        raise "Improperly formatted -s3 or --s3-input flag"
+    context['input'] = download_from_s3(context['s3_input'], new_dir='pylogs/')
+    context['auth'] = 'pylogs/{}__{}__tokens.json'.format(mydrop.id, currentdate)
+    context['s3_bucket'] = s3.get_bucket(context['s3_input'])
+    context['s3_key'] = context['s3_input'].split('input/')[0]
     context['s3_path'] = os.path.join(
-        's3://' + context['s3_bucket'], context['s3_key'],
+        context['s3_key'],
         'output/friends_ids/',
     )
     context['s3_log'] = os.path.join(
-        's3://' + context['s3_bucket'], 'logs', output_base + '.log'
+        's3://' + context['s3_bucket'], 'logs',
+        output_base + '.log'
     )
     context['s3_log_done'] = os.path.join(
-        's3://' + context['s3_bucket'], context['s3_key'],
+        'context['s3_key'],
         'logs/friends_ids/', currentyear, currentmonth, 
         output_base + '.log'
     )
@@ -105,17 +107,17 @@ def build_context(args):
 
     return context
 
-def get_user_id_file(user_id, context):
-    '''
-    File locations for user_id csv files.
-    '''
-    filename = os.path.join(context['volume_directory'], user_id + '.csv')
-    s3_filename = os.path.join(context['s3_path'], user_id, 
-        context['currentyear'], context['currentmonth'],
-        user_id  + '.csv')
-    s3_id_key = os.path.join(context['s3_path'], user_id)
+# def get_user_id_file(user_id, context):
+#     '''
+#     File locations for user_id csv files.
+#     '''
+#     filename = os.path.join(context['volume_directory'], user_id + '.csv')
+#     s3_filename = os.path.join(context['s3_path'], user_id, 
+#         context['currentyear'], context['currentmonth'],
+#         user_id  + '.csv')
+#     s3_id_key = os.path.join(context['s3_path'], user_id)
 
-    return filename, s3_filename, s3_id_key
+#     return filename, s3_filename, s3_id_key
 
 
 def twitter_query(context):
@@ -235,6 +237,7 @@ if __name__ == '__main__':
     args = parse_args(sys.argv[1:])
     context = build_context(args)
     logging.basicConfig(filename=context['log'], level=logging.INFO)
+    create_token_files(context)
     prep_s3(context)
     twitter_query(context)
     settle_affairs_in_s3(context)

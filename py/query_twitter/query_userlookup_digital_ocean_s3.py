@@ -47,7 +47,8 @@ def parse_args(args):
     parser.add_argument('--start-idx-input', dest='start_idx_input', type=int, default=0, required=False, help='the first input to query')
     parser.add_argument('-n', '--n-tokens', dest='n_tokens', type=int, default=60, required=False, help='the number of tokens to use')
     parser.add_argument('--query-date', dest='query_date', default=datetime.datetime.now().strftime("%Y-%m-%d"), help='YYYY-MM-DD')
-    parser.add_argument('-l', '--local-storage', dest='local_storage', required=False, help='DO access token', required=False, nargs='?', default='pylogs/')
+    parser.add_argument('-l', '--local-storage', dest='local_storage', required=False, help='DO access token', nargs='?', default='pylogs/')
+    parser.add_argument('--sudo', dest='sudo_password', nargs='?', default=False, help='sudo pw for machine')
 
     return vars(parser.parse_args())
 
@@ -63,8 +64,8 @@ def build_context(args):
     currentyear = datetime.datetime.now().strftime("%Y")
     currentmonth = datetime.datetime.now().strftime("%m")
     input_filename = os.path.basename(context['s3_input'])
-    output_base = ( context['filebase'] + '__' + currentdate + '__' + 
-                   input_filename.replace('.csv', '.json') )
+    output_base = context['filebase'] + '__' + currentdate + '__' + \
+                  input_filename.replace('.csv', '.json') 
     
     # local stuff
     context['currentdate'] = currentdate
@@ -81,22 +82,14 @@ def build_context(args):
     context['droplet_region'] = mydrop.region['slug']
     context['volume_name'] = mydrop.name + '-volume'
     context['volume_directory'] = '/mnt/' + context['volume_name']
-
-    context['output'] = os.path.join(
-        context['volume_directory'], output_base
-    )
-    context['log'] = os.path.join(
-        context['volume_directory'], output_base.replace('.json', '.log')
-    )
-    
-    context['input'] = download_from_s3(context['input'], new_dir='pylogs/') \
-                       if 's3://' in context['input'] else context['input']
+   
+    # AWS s3
+    if 's3://' not in context['s3_input']:
+        raise "Improperly formatted -s3 or --s3-input flag"
+    context['input'] = download_from_s3(context['s3_input'], new_dir='pylogs/')
     context['auth'] = 'pylogs/{}__{}__tokens.json'.format(mydrop.id, currentdate)
-    
-    # s3 stuff
     context['s3_bucket'] = s3.get_bucket(context['s3_input'])
     context['s3_key'] = context['s3_input'].split('input/')[0]
-    
     context['s3_path'] = os.path.join(
         context['s3_key'],
         'output/user_meta', currentyear, currentmonth,
@@ -115,6 +108,17 @@ def build_context(args):
         's3://' + context['s3_bucket'], 'tokens/used', 
         os.path.basename(context['auth'])
     )
+    
+    # local stuff
+    if not context['sudo_password']:
+        context['sudo_password'] = os.environ.get('SUDO')    
+    context['output'] = os.path.join(
+        context['volume_directory'], output_base
+    )
+    context['log'] = os.path.join(
+        context['volume_directory'], 
+        output_base.replace('.json', '.log')
+    )    
 
     return context
 

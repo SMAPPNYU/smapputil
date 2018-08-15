@@ -35,17 +35,16 @@ def parse_args(args):
     '''
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input(csv or json), a [] list of twitter ids.')
-    parser.add_argument('-a', '--auth', dest='auth', required=True, help='This is the path to your oauth.json file for twitter')
+    parser.add_argument('-s3', '--s3-input', dest='s3_input', required=True, help='This is a path to your input cvs on s3. is s3://smapp-dev/project-quries/myproject/input/users_to_query.csv')
     parser.add_argument('-d', '--digital-ocean-token', dest='token', required=False, help='DO access token', const=1, nargs='?', default=False)
-    parser.add_argument('-f', '--filebase', dest='filebase', required=False, default='query_usertimeline', help='the_base_of_the_file')
-    parser.add_argument('-b', '--s3-bucket', dest='s3_bucket', required=True, help='s3 bucket, ie s3://leonyin would be leonyin')
-    parser.add_argument('--s3-key', dest='s3_key', required=False, help='the path in the bucket.', default='query_machine_stage')
+    parser.add_argument('-f', '--filebase', dest='filebase', required=False, default='usertimeline', help='the_base_of_the_file')
     parser.add_argument('--sudo', dest='sudo_password', nargs='?', default=False, help='sudo pw for machine')
     parser.add_argument('-max', '--max-id', dest='max_id', required=False, help='Max Tweet ID for query.', default=False)
     parser.add_argument('-since', '--since-id', dest='since_id', nargs='?', help='Min Tweet ID for query', default=False)
     parser.add_argument('--start-idx-input', dest='offset', type=int, default=0, help='Start index offset')
     parser.add_argument('--query-date', dest='query_date', default=datetime.datetime.now().strftime("%Y-%m-%d"), help='YYYY-MM-DD')
+    parser.add_argument('-n', '--n-tokens', dest='n_tokens', type=int, default=60, help='the number of tokens to use')
+    
     return vars(parser.parse_args())
 
 
@@ -59,10 +58,9 @@ def build_context(args):
     currentdate = args['query_date']
     currentyear = datetime.datetime.now().strftime("%Y")
     currentmonth = datetime.datetime.now().strftime("%m")
-    
-    input_name = os.path.splitext(os.path.basename(context['input']))[0]
-    output_base = ( context['filebase'] + '__' + currentdate + '__' +
-        context['input'].split('/')[-1].replace('.csv', '.json') )
+    input_filename = os.path.basename(context['s3_input'])
+    output_base = context['filebase'] + '__' + currentdate + '__' + \
+                  input_filename.replace('.csv', '.json')   
 
     # local and digital ocean
     if not context['sudo_password']:
@@ -84,15 +82,20 @@ def build_context(args):
         context['volume_directory'], output_base
     )
     context['log'] = os.path.join(
-        context['volume_directory'], output_base.replace('.json', '.log')
+        context['volume_directory'], 
+        output_base.replace('.json', '.log')
     )
     
-    context['input'] = download_from_s3(context['input']) if 's3://' in context['input'] else context['input']
-    context['auth'] = download_from_s3(context['auth']) if 's3://' in context['auth'] else context['auth']
-    
     # AWS s3
+    if 's3://' not in context['s3_input']:
+        raise "Improperly formatted -s3 or --s3-input flag"
+    context['input'] = download_from_s3(context['s3_input'], new_dir='pylogs/')
+    context['auth'] = 'pylogs/{}__{}__tokens.json'.format(mydrop.id, currentdate)
+    context['s3_bucket'] = s3.get_bucket(context['s3_input'])
+    context['s3_key'] = context['s3_input'].split('input/')[0]
+    
     context['s3_path'] = os.path.join(
-        's3://' + context['s3_bucket'], context['s3_key'], 
+        context['s3_key', 
         'output/user_timeline', currentyear, currentmonth, 
         output_base + '.bz2'
     )
@@ -101,7 +104,7 @@ def build_context(args):
         output_base.replace('.json', '.log')
     )
     context['s3_log_done'] = os.path.join(
-        's3://' + context['s3_bucket'], context['s3_key'],
+        context['s3_key',
         'logs/user_timeline', currentyear, currentmonth,
         output_base.replace('.json', '.log')
     )
@@ -204,6 +207,7 @@ if __name__ == '__main__':
     context['volume'] = check_vol_attached(context)
     if context['volume']: # check if volume is attached
         if not s3.file_exists(context['s3_path']): # check if file exists
+            create_token_files(context)
             prep_s3(context)
             twitter_query(context)
             context['output_bz2'] = pbzip2(context)

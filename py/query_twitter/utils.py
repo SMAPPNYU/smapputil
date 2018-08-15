@@ -8,6 +8,7 @@ import logging
 import random
 from subprocess import Popen, PIPE
 
+import pandas as pd
 import digitalocean
 import s3
 
@@ -153,6 +154,11 @@ def chunker(seq, n):
     return (seq[pos:pos + n] for pos in range(0, len(seq), n))
 
 
+def load_tokens_s3(s3_path):
+    tokens = s3.read_json(s3_path, lines=True)
+    return tokens
+
+
 def download_from_s3(s3_input, new_dir='pylogs/'):
     input_filebase = os.path.basename(s3_input)
     new_file = os.path.join(new_dir, input_filebase)
@@ -174,7 +180,7 @@ def get_free_tokens(s3_used_token_pattern, s3_all_token_pattern):
     df_all = load_tokens_s3(all_tokens[0])
     
     df_used = pd.DataFrame()
-    for s3_path in tqdm(used_token_files):
+    for s3_path in used_token_files:
         toks = load_tokens_s3(s3_path)
         toks['s3_path'] = s3_path
         df_used = df_used.append(toks)
@@ -202,7 +208,17 @@ def create_token_files(context,
         time.sleep(60 * sleep_mins)
     
     log('Enough Tokens!')                   
-    df_token_temp = df_free.sample(tokens_per_file, random_state=303)
-    df_token_temp.to_json(output, orient='records', lines=True)
+    df_token_temp = df_free.sample(n_tokens_per_file)
+    df_token_temp.to_json(context['auth'], orient='records', lines=True)
+    
+def get_user_id_file(user_id, context):
+    '''
+    File locations for user_id csv files.
+    '''
+    filename = os.path.join(context['volume_directory'], user_id + '.json')
+    s3_filename = os.path.join(context['s3_path'], user_id + '.json')
+    s3_id_key = os.path.join(context['s3_path'], user_id)
+
+    return filename, s3_filename, s3_id_key
 
     
