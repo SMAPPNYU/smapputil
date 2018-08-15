@@ -43,7 +43,7 @@ def parse_args(args):
     parser.add_argument('-s3', '--s3-input', dest='s3_input', required=True, help='This is a path to your input cvs on s3. is s3://smapp-dev/project-quries/myproject/input/users_to_query.csv')
     parser.add_argument('-f', '--filebase', dest='filebase', required=False, default='userlookup', help='the_base_of_the_file')
     parser.add_argument('-d', '--digital-ocean-token', dest='token', required=False, help='DO access token', const=1, nargs='?', default=False)
-    parser.add_argument('--start-idx-api', dest='start_idx_api', type=int, default=0, required=False, help='the first token to use'required=False)
+    parser.add_argument('--start-idx-api', dest='start_idx_api', type=int, default=0, required=False, help='the first token to use')
     parser.add_argument('--start-idx-input', dest='start_idx_input', type=int, default=0, required=False, help='the first input to query')
     parser.add_argument('-n', '--n-tokens', dest='n_tokens', type=int, default=60, required=False, help='the number of tokens to use')
     parser.add_argument('--query-date', dest='query_date', default=datetime.datetime.now().strftime("%Y-%m-%d"), help='YYYY-MM-DD')
