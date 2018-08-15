@@ -104,7 +104,7 @@ def build_context(args):
         output_base.replace('.json', '.log')
     )
     context['s3_log_done'] = os.path.join(
-        context['s3_key',
+        context['s3_key'],
         'logs/user_timeline', currentyear, currentmonth,
         output_base.replace('.json', '.log')
     )
