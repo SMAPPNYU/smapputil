@@ -47,7 +47,7 @@ def parse_args(args):
     parser.add_argument('--start-idx-input', dest='start_idx_input', type=int, default=0, required=False, help='the first input to query')
     parser.add_argument('-n', '--n-tokens', dest='n_tokens', type=int, default=60, required=False, help='the number of tokens to use')
     parser.add_argument('--query-date', dest='query_date', default=datetime.datetime.now().strftime("%Y-%m-%d"), help='YYYY-MM-DD')
-    parser.add_argument('-l', '--local-storage', dest='local_storage', required=False, help='DO access token', regquired=False, nargs='?', default='pylogs/')
+    parser.add_argument('-l', '--local-storage', dest='local_storage', required=False, help='DO access token', required=False, nargs='?', default='pylogs/')
 
     return vars(parser.parse_args())
 
