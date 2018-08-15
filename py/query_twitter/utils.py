@@ -5,6 +5,7 @@ import time
 import socket
 import datetime
 import logging
+import random
 from subprocess import Popen, PIPE
 
 import digitalocean
@@ -150,3 +151,58 @@ def chunker(seq, n):
     Chunks an iterator (seq) into length (n).
     '''
     return (seq[pos:pos + n] for pos in range(0, len(seq), n))
+
+
+def download_from_s3(s3_input, new_dir='pylogs/'):
+    input_filebase = os.path.basename(s3_input)
+    new_file = os.path.join(new_dir, input_filebase)
+    
+    if s3.file_exists(s3_input):
+        s3.wget(s3_input, new_file)
+    else:
+        raise "{} is not in s3!".format(s3_input)
+    
+    return new_file
+
+
+def get_free_tokens(s3_used_token_pattern, s3_all_token_pattern):
+    '''Calculates the delta between the used tokens and all tokens on s3.
+    Returns a Pandas Dataframe of the key metadata.'''
+    used_token_files = s3.ls(s3_used_token_pattern)
+    all_tokens = s3.ls(s3_all_token_pattern)
+    
+    df_all = load_tokens_s3(all_tokens[0])
+    
+    df_used = pd.DataFrame()
+    for s3_path in tqdm(used_token_files):
+        toks = load_tokens_s3(s3_path)
+        toks['s3_path'] = s3_path
+        df_used = df_used.append(toks)
+        
+    df_free = df_all[~df_all['consumer_key'].isin(df_used['consumer_key'])]
+    
+    return df_free
+
+
+def create_token_files(context, 
+                       s3_used_token_pattern='s3://smapp-nyu/tokens/used/*.json', 
+                       s3_all_token_pattern='s3://smapp-nyu/tokens/all_tokens/*.json'):
+    
+    n_tokens_per_file = context['n_tokens']
+    
+    enough = False
+    while not enough:
+        df_free = get_free_tokens(s3_used_token_pattern, 
+                                  s3_all_token_pattern)
+        if len(df_free) >= n_tokens_per_file:
+            enough = True
+            break
+        sleep_mins = random.random() * 15
+        log('Not enough tokens, sleeping for {} mins...'.format(sleep_mins))
+        time.sleep(60 * sleep_mins)
+    
+    log('Enough Tokens!')                   
+    df_token_temp = df_free.sample(tokens_per_file, random_state=303)
+    df_token_temp.to_json(output, orient='records', lines=True)
+
+    

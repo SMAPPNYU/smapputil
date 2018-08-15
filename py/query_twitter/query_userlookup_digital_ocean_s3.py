@@ -40,15 +40,14 @@ def parse_args(args):
     Parses the input arguments.
     '''
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', dest='input', required=True, help='This is a path to your input(csv or json), a [] list of twitter ids.')
-    parser.add_argument('-a', '--auth', dest='auth', required=True, help='This is the path to your oauth.json file for twitter')
-    parser.add_argument('-f', '--filebase', dest='filebase', required=False, default='twitter_query', help='the_base_of_the_file')
+    parser.add_argument('-s3', '--s3-input', dest='s3_input', required=True, help='This is a path to your input cvs on s3. is s3://smapp-dev/project-quries/myproject/input/users_to_query.csv')
+    parser.add_argument('-f', '--filebase', dest='filebase', required=False, default='userlookup', help='the_base_of_the_file')
     parser.add_argument('-d', '--digital-ocean-token', dest='token', required=False, help='DO access token', const=1, nargs='?', default=False)
-    parser.add_argument('-b', '--s3-bucket', dest='s3_bucket', required=True, help='s3 bucket, ie s3://leonyin would be leonyin')
-    parser.add_argument('-r', '--s3-key', dest='s3_key', required=True, help='the path in the bucket.')
-    parser.add_argument('--start-idx-api', dest='start_idx_api', type=int, default=0, help='the first token to use')
-    parser.add_argument('--start-idx-input', dest='start_idx_input', type=int, default=0, help='the first input to query')
+    parser.add_argument('--start-idx-api', dest='start_idx_api', type=int, default=0, required=False, help='the first token to use'required=False)
+    parser.add_argument('--start-idx-input', dest='start_idx_input', type=int, default=0, required=False, help='the first input to query')
+    parser.add_argument('-n', '--n-tokens', dest='n_tokens', type=int, default=60, required=False, help='the number of tokens to use')
     parser.add_argument('--query-date', dest='query_date', default=datetime.datetime.now().strftime("%Y-%m-%d"), help='YYYY-MM-DD')
+    parser.add_argument('-l', '--local-storage', dest='local_storage', required=False, help='DO access token', regquired=False, nargs='?', default='pylogs/')
 
     return vars(parser.parse_args())
 
@@ -63,8 +62,9 @@ def build_context(args):
     currentdate = context['query_date']
     currentyear = datetime.datetime.now().strftime("%Y")
     currentmonth = datetime.datetime.now().strftime("%m")
-    output_base = ( context['filebase'] + '__' + currentdate + '__' +
-        context['input'].split('/')[-1].replace('.csv', '.json') )
+    input_filename = os.path.basename(context['s3_input'])
+    output_base = ( context['filebase'] + '__' + currentdate + '__' + 
+                   input_filename.replace('.csv', '.json') )
     
     # local stuff
     context['currentdate'] = currentdate
@@ -89,12 +89,16 @@ def build_context(args):
         context['volume_directory'], output_base.replace('.json', '.log')
     )
     
-    context['input'] = download_from_s3(context['input']) if 's3://' in context['input'] else context['input']
-    context['auth'] = download_from_s3(context['auth']) if 's3://' in context['auth'] else context['auth']
+    context['input'] = download_from_s3(context['input'], new_dir='pylogs/') \
+                       if 's3://' in context['input'] else context['input']
+    context['auth'] = 'pylogs/{}__{}__tokens.json'.format(mydrop.id, currentdate)
     
     # s3 stuff
+    context['s3_bucket'] = s3.get_bucket(context['s3_input'])
+    context['s3_key'] = context['s3_input'].split('input/')[0]
+    
     context['s3_path'] = os.path.join(
-        's3://' + context['s3_bucket'], context['s3_key'],
+        context['s3_key'],
         'output/user_meta', currentyear, currentmonth,
         output_base + '.bz2'
     )
@@ -103,7 +107,7 @@ def build_context(args):
         output_base.replace('.json', '.log')
     )
     context['s3_log_done'] = os.path.join(
-        's3://' + context['s3_bucket'], context['s3_key'],
+        context['s3_key'],
         'logs/user_meta', currentyear, currentmonth, 
         output_base.replace('.json', '.log')
     )
@@ -215,6 +219,7 @@ if __name__ == '__main__':
     context['volume'] = check_vol_attached(context)
     if context['volume']: # check if volume is attached
         if not s3.file_exists(context['s3_path']): # check if file exists
+            create_token_files(context)
             prep_s3(context)
             twitter_query(context)
             context['output_bz2'] = pbzip2(context)
