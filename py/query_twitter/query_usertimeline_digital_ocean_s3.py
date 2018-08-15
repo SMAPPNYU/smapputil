@@ -95,7 +95,7 @@ def build_context(args):
     context['s3_key'] = context['s3_input'].split('input/')[0]
     
     context['s3_path'] = os.path.join(
-        context['s3_key', 
+        context['s3_key'], 
         'output/user_timeline', currentyear, currentmonth, 
         output_base + '.bz2'
     )
