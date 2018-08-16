@@ -211,14 +211,24 @@ def create_token_files(context,
     df_token_temp = df_free.sample(n_tokens_per_file)
     df_token_temp.to_json(context['auth'], orient='records', lines=True)
     
-def get_user_id_file(user_id, context):
-    '''
-    File locations for user_id csv files.
-    '''
-    filename = os.path.join(context['volume_directory'], user_id + '.json')
-    s3_filename = os.path.join(context['s3_path'], user_id + '.json')
-    s3_id_key = os.path.join(context['s3_path'], user_id)
+# def get_user_id_file(user_id, context):
+#     '''
+#     File locations for user_id csv files.
+#     '''
+#     filename = os.path.join(context['volume_directory'], user_id + '.json')
+#     s3_filename = os.path.join(context['s3_path'], user_id + '.json')
+#     s3_id_key = os.path.join(context['s3_path'], user_id)
 
-    return filename, s3_filename, s3_id_key
+#     return filename, s3_filename, s3_id_key
 
-    
+# def get_user_id_file(user_id, context):
+#     '''
+#     File locations for user_id csv files.
+#     '''
+#     filename = os.path.join(context['volume_directory'], user_id + '.csv')
+#     s3_filename = os.path.join(context['s3_path'], user_id, 
+#         context['currentyear'], context['currentmonth'],
+#         user_id  + '.csv')
+#     s3_id_key = os.path.join(context['s3_path'], user_id)
+
+#     return filename, s3_filename, s3_id_key
