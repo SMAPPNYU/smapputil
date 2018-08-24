@@ -72,10 +72,7 @@ def build_context(args):
     context['log'] = os.path.join(
         context['volume_directory'], output_base + '.log'
     )
-    context['input'] = download_from_s3(context['input'], new_dir='pylogs/') \
-                       if 's3://' in context['input'] else context['input']
-    
-    context['auth'] = 'pylogs/{}__{}__tokens.json'.format(mydrop.id, currentdate)
+
 
     # digital ocean
     if not context['token']: 

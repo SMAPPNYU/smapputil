@@ -206,13 +206,12 @@ if __name__ == '__main__':
     
     context['volume'] = check_vol_attached(context)
     if context['volume']: # check if volume is attached
-        if not s3.file_exists(context['s3_path']): # check if file exists
-            create_token_files(context)
-            prep_s3(context)
-            twitter_query(context)
-            context['output_bz2'] = pbzip2(context)
-            s3.disk_2_s3(context['output_bz2'], context['s3_path'])
-            settle_affairs_in_s3(context)
+        create_token_files(context)
+        prep_s3(context)
+        twitter_query(context)
+        context['output_bz2'] = pbzip2(context)
+        s3.disk_2_s3(context['output_bz2'], context['s3_path'])
+        settle_affairs_in_s3(context)
         detach_and_destroy_volume(context)
         destroy_droplet(context)
 

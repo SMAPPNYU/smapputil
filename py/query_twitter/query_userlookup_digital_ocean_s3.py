@@ -192,17 +192,17 @@ def query_user_meta(user_id, api_pool, context):
             log("Iteration: {} fruitless with error {}".format(i, resp_code))
 
         elif resp_code in [420, 429, 406]: # rate limited, try again
-            log("Iternation: {} rate limited with error {}".format(i, resp_code))
+            log("Iteration: {} rate limited with error {}".format(i, resp_code))
             time.sleep(901)
             api_pool.find_next_token()
             creds = api_pool.get_current_api_creds()
 
         elif resp_code in [500, 502, 503, 504, 104]: # server error, wait, try again.
-            log("Iternation: {} server error {}".format(i, resp_code))
+            log("Iteration: {} server error {}".format(i, resp_code))
             time.sleep(60 * 60)
 
         else: # some other error, just break...
-            log("Iternation: {} unknown error {}".format(i, resp_code))
+            log("Iteration: {} unknown error {}".format(i, resp_code))
             break
 
         # send an update to s3 after each iteration!
@@ -222,14 +222,12 @@ if __name__ == '__main__':
     logging.basicConfig(filename=context['log'], level=logging.INFO)
     context['volume'] = check_vol_attached(context)
     if context['volume']: # check if volume is attached
-        if not s3.file_exists(context['s3_path']): # check if file exists
-            create_token_files(context)
-            prep_s3(context)
-            twitter_query(context)
-            context['output_bz2'] = pbzip2(context)
-            s3.disk_2_s3(context['output_bz2'], context['s3_path'])
-            settle_affairs_in_s3(context)
+        create_token_files(context)
+        prep_s3(context)
+        twitter_query(context)
+        context['output_bz2'] = pbzip2(context)
+        s3.disk_2_s3(context['output_bz2'], context['s3_path'])
+        settle_affairs_in_s3(context)
         detach_and_destroy_volume(context)
         destroy_droplet(context)
-
 
