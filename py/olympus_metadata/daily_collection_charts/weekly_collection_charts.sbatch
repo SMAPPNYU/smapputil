@@ -8,4 +8,4 @@
 
 module purge
 
-/home/$USER/anaconda3/bin/python /home/$USER/smapprepos/smapputil/py/olympus_metadata/daily_collection_charts/weekly_collection_charts.py --log /home/$USER/smapprepos/smapputil/py/olympus_metadata/daily_collection_charts/logging/todays_collection_charts.log
+/home/$USER/miniconda3/bin/python /home/$USER/smapprepos/smapputil/py/olympus_metadata/daily_collection_charts/weekly_collection_charts.py --log /home/$USER/smapprepos/smapputil/py/olympus_metadata/daily_collection_charts/logging/todays_collection_charts.log
