@@ -233,7 +233,12 @@ def get_last_week(df, logger):
 
             yaxis_counter = (file_max - file_min) / 5
 
-            yaxis = np.arange(file_min, file_max + yaxis_counter, yaxis_counter )
+            if yaxis_counter > 0:
+                yaxis = np.arange(file_min, file_max + yaxis_counter, yaxis_counter)
+            else:
+                yaxis = np.arange(file_min, file_max + 0.01, 0.01)
+
+
             yaxis_labels = [convert_size(each_ytick) for each_ytick in yaxis]
 
             logger.info("Plotting weekly graph for collection: %s", df_.collection_name.iloc[0])
@@ -287,13 +292,12 @@ def send_update_email(df, logger):
         msg = MIMEText(fp.read(), 'plain')
 
     msg['Subject'] = 'Daily Account of Stopped Collections'
-    msg['From'] = 'nhb228@nyu.edu'
-    msg['To'] = 'nhb228@nyu.edu'
+    msg['From'] = primary_email
+    msg['To'] = primary_email
 
     s = smtplib.SMTP('localhost')
     logger.info('Update email sent')
-    s.sendmail('nhb228@nyu.edu', ['nicole.baram@nyu.edu', 'leon@leonyin.org'], msg.as_string())
-    # s.sendmail('nhb228@nyu.edu', ['nicole.baram@nyu.edu', 'leon@leonyin.org', 'joshua.tucker@nyu.edu', 'jonathan.nagler@nyu.edu'], msg.as_string())
+    s.sendmail(primary_email, full_email_list, msg.as_string())
     s.quit()
 
 
