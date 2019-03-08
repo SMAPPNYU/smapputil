@@ -126,7 +126,7 @@ def bzip(context):
     When that happens this returns the new file name with the .bz2 extension.
     '''
     f_out = context['output']
-    command = ['/bin/pbzip2', f_out]
+    command = ['/bin/bzip2', f_out]
     process = Popen(command, stdin=PIPE, stderr=PIPE)
     
     while os.path.isfile(f_out):
