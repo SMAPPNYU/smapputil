@@ -13,7 +13,18 @@ def paramiko_list_crontab(collector_machine, username, key):
     ssh = paramiko.SSHClient()
     ssh.load_system_host_keys()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(collector_machine, username=username, key_filename=key)
+    connected = False
+    while not connected:
+        try:
+            ssh.connect(collector_machine, 
+                        username=username, 
+                        password=pubkey, timeout=200)
+            print("Connected to droplet!")
+            connected = True
+        except Exception as e:
+            print(e)
+            print("Trying to connect to droplet again")
+            time.sleep(30)
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command('crontab -l')
     # log any paramiko incident
     if ssh_stderr.read():
