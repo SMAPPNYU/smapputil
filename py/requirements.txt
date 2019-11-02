@@ -10,6 +10,6 @@ six==1.10.0
 wheel==0.29.0
 argparse==1.4.0
 tweepy==3.4.0
-paramiko==1.16.0
+paramiko==2.0.9
 envelopes==0.4
 elasticsearch==2.3.0
